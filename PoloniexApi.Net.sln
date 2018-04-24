@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoloniexApi.Net", "PoloniexApi.Net\PoloniexApi.Net.csproj", "{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsPoloniex", "WindowsFormsPoloniex\WindowsFormsPoloniex.csproj", "{1C29394B-D5EE-45D6-B42E-35BCD46E7A96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushMessage", "PushMessage\PushMessage.csproj", "{16E7D1FF-237A-4E89-94C6-FDDA36FBDDB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinBot_Cv2", "CoinBot_Cv2\CoinBot_Cv2.csproj", "{4626E510-199F-412E-B41F-FAB252648133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetMails", "GetMails\GetMails.csproj", "{C460800D-0ED4-4FA7-B6D0-CADFB28FCA4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormConsole", "FormConsole\FormConsole.csproj", "{E1D908C2-FCCB-4639-AC4F-5E6C77D67F45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C29394B-D5EE-45D6-B42E-35BCD46E7A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C29394B-D5EE-45D6-B42E-35BCD46E7A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C29394B-D5EE-45D6-B42E-35BCD46E7A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C29394B-D5EE-45D6-B42E-35BCD46E7A96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E7D1FF-237A-4E89-94C6-FDDA36FBDDB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E7D1FF-237A-4E89-94C6-FDDA36FBDDB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E7D1FF-237A-4E89-94C6-FDDA36FBDDB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E7D1FF-237A-4E89-94C6-FDDA36FBDDB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4626E510-199F-412E-B41F-FAB252648133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4626E510-199F-412E-B41F-FAB252648133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4626E510-199F-412E-B41F-FAB252648133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4626E510-199F-412E-B41F-FAB252648133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C460800D-0ED4-4FA7-B6D0-CADFB28FCA4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C460800D-0ED4-4FA7-B6D0-CADFB28FCA4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C460800D-0ED4-4FA7-B6D0-CADFB28FCA4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C460800D-0ED4-4FA7-B6D0-CADFB28FCA4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1D908C2-FCCB-4639-AC4F-5E6C77D67F45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D908C2-FCCB-4639-AC4F-5E6C77D67F45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1D908C2-FCCB-4639-AC4F-5E6C77D67F45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1D908C2-FCCB-4639-AC4F-5E6C77D67F45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE57DC06-6575-4D81-9E74-702F765F34C4}
+	EndGlobalSection
+EndGlobal
