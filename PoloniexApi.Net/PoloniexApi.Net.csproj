@@ -127,6 +127,7 @@
     <Compile Include="Common\Models\BalanceModel.cs" />
     <Compile Include="Common\Models\MarketDataModel.cs" />
     <Compile Include="Common\Models\OrderModel.cs" />
+    <Compile Include="Common\Models\TickerModel.cs" />
     <Compile Include="Common\Models\TradeHistoryModel.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="General\CurrencyPair.cs" />

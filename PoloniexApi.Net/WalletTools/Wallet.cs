@@ -29,10 +29,10 @@ namespace Jojatekok.PoloniexAPI.WalletTools
             //var data = PostData<IDictionary<string, IBalance>>("returnCompleteBalances", postData);
             //return data;
 
-            for (int attempts = 0; attempts < 5; attempts++)
-            {
-                try
-                {
+            //for (int attempts = 0; attempts < 5; attempts++)
+            //{
+            //    try
+            //    {
                     var postData = new Dictionary<string, object>();
                     var data = PostData<IDictionary<string, Balance>>("returnCompleteBalances", postData);
                     var returnData = new Dictionary<string, IBalance>();
@@ -42,14 +42,14 @@ namespace Jojatekok.PoloniexAPI.WalletTools
                     }
 
                     return returnData;
-                }
-                catch (WebException ex)
-                {
-                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
-                }
-                Thread.Sleep(5000);
-            }
-            throw new Exception("erreur 500");
+            //    }
+            //    catch (WebException ex)
+            //    {
+            //        Debug.WriteLine($"{DateTime.Now} {ex.Message}");
+            //    }
+            //    Thread.Sleep(5000);
+            //}
+            //throw new Exception("erreur 500 or 502");
         }
 
         public Task<IDictionary<string, string>> GetDepositAddressesAsync()

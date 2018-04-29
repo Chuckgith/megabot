@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -28,20 +29,13 @@ namespace FormConsole
         const double TOLERANCE_PROFIT_HIGHDIFF = -1;   // -1 => 5%, -1.5 => 7.5%, -2 => 10%
         const double LOSS_TOLERANCE_MULTIPLICATOR = 0.2;
 
-        static Mode mode;
-        enum Mode
-        {
-            REAL,
-            SIMULATION
-        };
-
         Business BIZ = new Business();
         EnumStates lastState = EnumStates.WAITING;
         ulong idOrder = 0;
 
         ISubject<OrderModel> source = new Subject<OrderModel>();
         IDisposable subscription;
-        ISubject<string> source2 = new Subject<string>();
+        ISubject<TickerModel> source2 = new Subject<TickerModel>();
         IDisposable subscription2;
 
         Task checkSignal;
@@ -69,11 +63,8 @@ namespace FormConsole
             cbbCoins.Items.AddRange(BIZ.GetMarket(tabsMarkets.SelectedTab.Text).ToArray());
         }
 
-        private void CheckSignal()
+        private void CheckSignal(CurrencyPair currencyPair)
         {
-            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
-
-            IList<UniqueId> uids = new List<UniqueId>();
             UniqueId uid;
 
             checkSignal = Task.Run(async () =>
@@ -160,8 +151,6 @@ namespace FormConsole
 
             if (idOrder != 0)
             {
-                mode = Mode.REAL;
-
                 // Aller chercher les vraies chiffres
                 amountToTrade = (from x in BIZ.GetBalances() where x.Type == currencyPair.QuoteCurrency select x.USDT_Value).SingleOrDefault();
 
@@ -169,8 +158,6 @@ namespace FormConsole
             }
             else
             {
-                mode = Mode.SIMULATION;
-
                 // Si le prix payé n'a pas été défini par l'utilisateur, prendre le prix courant
                 if (pricePaid == 0)
                     pricePaid = marketToTrade.PriceLast;
@@ -189,6 +176,8 @@ namespace FormConsole
                 usdtMarket = BIZ.GetCurrency(markets, currencyPairUsdt);
                 baseCurrencyUnitPrice = (amountToTrade / usdtMarket.PriceLast) / marketToTrade.PriceLast;
             }
+
+            TickerModel ticker;
 
             getTicker = Task.Run(async () =>
             {
@@ -210,7 +199,24 @@ namespace FormConsole
                             highestProfitDiff = (marketToTrade.PriceLast / highestPrice) * 100 - 100;
                             baseCurrencyTotal = marketToTrade.PriceLast * baseCurrencyUnitPrice;
                             usdTotalValue = baseCurrencyTotal * (baseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
-                            source2.OnNext(Ticker.Display(currencyPair, marketToTrade, profit, highestProfit, highestProfitDiff, lossTolerance, highestPrice, baseCurrencyTotal, usdTotalValue, pricePaid, amountToTrade));
+
+                            ticker = new TickerModel()
+                            {
+                                currencyPair = currencyPair,
+                                amountToTrade = amountToTrade,
+                                pricePaid = pricePaid,
+                                priceLast = marketToTrade.PriceLast,
+                                highestPrice = highestPrice,
+                                profit = profit,
+                                higuestProfit = highestProfit,
+                                highestProfitDiff = highestProfitDiff,
+                                lossTolerance = lossTolerance,
+                                baseCurrencyTotal = baseCurrencyTotal,
+                                usdTotalValue = usdTotalValue
+                            };
+
+                            //source2.OnNext(Ticker.Display(ticker));
+                            source2.OnNext(ticker);
                             //CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
                         }
 
@@ -229,23 +235,37 @@ namespace FormConsole
             CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
             GetBalance(currencyPair, true);
 
-            CheckSignal();
+            CheckSignal(currencyPair);
 
             subscription = source
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 .Subscribe(x => txtBot.AppendText(x.IdOrder + Environment.NewLine));
 
-            GetTicker("USDT", "BTC", 20, 8000);
+            GetTicker("USDT", "BTC", 20, 0);
 
             subscription2 = source2
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                .Subscribe(x => txtTicker.AppendText(x + Environment.NewLine));
+                //.Subscribe(x => txtTicker.AppendText(x + Environment.NewLine));
+                .Subscribe(x => dgTrades.DataSource = new List<TickerModel> { x });
 
         }
 
         private void GetBalance(CurrencyPair currencyPair, bool showBalance)
         {
-            IList<BalanceModel> balances = (from x in BIZ.GetBalances() select x).ToList();
+            IList<BalanceModel> balances = null;
+
+            for (int attempts = 0; attempts < 5; attempts++)
+            {
+                try
+                {
+                    balances = (from x in BIZ.GetBalances() select x).ToList();
+                }
+                catch (Exception ex)
+                {
+                    txtBot.AppendText($"{DateTime.Now} - {ex.Message}\n");
+                }
+                Thread.Sleep(1000);
+            }
 
             var balanceBase = (from x in balances where x.Type == currencyPair.BaseCurrency select x.QuoteAvailable).SingleOrDefault();
             var balanceQuote = (from x in balances where x.Type == currencyPair.QuoteCurrency select x.USDT_Value).SingleOrDefault();
