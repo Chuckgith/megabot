@@ -90,6 +90,7 @@
             this.lossToleranceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.baseCurrencyTotalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usdTotalValueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabsExchanges.SuspendLayout();
             this.tabPoloniex.SuspendLayout();
             this.tabsMarkets.SuspendLayout();
@@ -115,6 +116,7 @@
             // tabPoloniex
             // 
             this.tabPoloniex.Controls.Add(this.tabsMarkets);
+            this.tabPoloniex.Controls.Add(this.txtBot);
             this.tabPoloniex.Location = new System.Drawing.Point(23, 4);
             this.tabPoloniex.Name = "tabPoloniex";
             this.tabPoloniex.Padding = new System.Windows.Forms.Padding(3);
@@ -132,7 +134,7 @@
             this.tabsMarkets.Location = new System.Drawing.Point(6, 6);
             this.tabsMarkets.Name = "tabsMarkets";
             this.tabsMarkets.SelectedIndex = 0;
-            this.tabsMarkets.Size = new System.Drawing.Size(1155, 272);
+            this.tabsMarkets.Size = new System.Drawing.Size(838, 272);
             this.tabsMarkets.TabIndex = 0;
             // 
             // tabUsdt
@@ -144,7 +146,7 @@
             this.tabUsdt.Location = new System.Drawing.Point(4, 22);
             this.tabUsdt.Name = "tabUsdt";
             this.tabUsdt.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUsdt.Size = new System.Drawing.Size(1147, 246);
+            this.tabUsdt.Size = new System.Drawing.Size(830, 246);
             this.tabUsdt.TabIndex = 0;
             this.tabUsdt.Text = "USDT";
             this.tabUsdt.UseVisualStyleBackColor = true;
@@ -180,24 +182,24 @@
             this.grbSell.Controls.Add(this.txtSellPrice);
             this.grbSell.Controls.Add(this.lblSellPrice);
             this.grbSell.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grbSell.Location = new System.Drawing.Point(635, 16);
+            this.grbSell.Location = new System.Drawing.Point(502, 16);
             this.grbSell.Name = "grbSell";
-            this.grbSell.Size = new System.Drawing.Size(436, 215);
+            this.grbSell.Size = new System.Drawing.Size(313, 215);
             this.grbSell.TabIndex = 2;
             this.grbSell.TabStop = false;
             this.grbSell.Text = "Sell";
             // 
             // txtSellTotalUsdt
             // 
-            this.txtSellTotalUsdt.Location = new System.Drawing.Point(272, 147);
+            this.txtSellTotalUsdt.Location = new System.Drawing.Point(212, 147);
             this.txtSellTotalUsdt.Name = "txtSellTotalUsdt";
-            this.txtSellTotalUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtSellTotalUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtSellTotalUsdt.TabIndex = 17;
             // 
             // lblSellTotalUsdt
             // 
             this.lblSellTotalUsdt.AutoSize = true;
-            this.lblSellTotalUsdt.Location = new System.Drawing.Point(220, 150);
+            this.lblSellTotalUsdt.Location = new System.Drawing.Point(166, 150);
             this.lblSellTotalUsdt.Name = "lblSellTotalUsdt";
             this.lblSellTotalUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblSellTotalUsdt.TabIndex = 16;
@@ -205,7 +207,7 @@
             // 
             // btnSell
             // 
-            this.btnSell.Location = new System.Drawing.Point(158, 181);
+            this.btnSell.Location = new System.Drawing.Point(98, 181);
             this.btnSell.Name = "btnSell";
             this.btnSell.Size = new System.Drawing.Size(156, 23);
             this.btnSell.TabIndex = 15;
@@ -214,9 +216,9 @@
             // 
             // txtSellTotal
             // 
-            this.txtSellTotal.Location = new System.Drawing.Point(77, 147);
+            this.txtSellTotal.Location = new System.Drawing.Point(69, 147);
             this.txtSellTotal.Name = "txtSellTotal";
-            this.txtSellTotal.Size = new System.Drawing.Size(122, 21);
+            this.txtSellTotal.Size = new System.Drawing.Size(75, 21);
             this.txtSellTotal.TabIndex = 14;
             // 
             // lblSellTotal
@@ -230,34 +232,34 @@
             // 
             // btnSell100
             // 
-            this.btnSell100.Location = new System.Drawing.Point(320, 111);
+            this.btnSell100.Location = new System.Drawing.Point(237, 111);
             this.btnSell100.Name = "btnSell100";
-            this.btnSell100.Size = new System.Drawing.Size(75, 23);
+            this.btnSell100.Size = new System.Drawing.Size(50, 23);
             this.btnSell100.TabIndex = 15;
             this.btnSell100.Text = "100%";
             this.btnSell100.UseVisualStyleBackColor = true;
             // 
             // txtSellAmountUsdt
             // 
-            this.txtSellAmountUsdt.Location = new System.Drawing.Point(272, 75);
+            this.txtSellAmountUsdt.Location = new System.Drawing.Point(212, 75);
             this.txtSellAmountUsdt.Name = "txtSellAmountUsdt";
-            this.txtSellAmountUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtSellAmountUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtSellAmountUsdt.TabIndex = 8;
             // 
             // btnSell75
             // 
-            this.btnSell75.Location = new System.Drawing.Point(239, 111);
+            this.btnSell75.Location = new System.Drawing.Point(181, 111);
             this.btnSell75.Name = "btnSell75";
-            this.btnSell75.Size = new System.Drawing.Size(75, 23);
+            this.btnSell75.Size = new System.Drawing.Size(50, 23);
             this.btnSell75.TabIndex = 14;
             this.btnSell75.Text = "75%";
             this.btnSell75.UseVisualStyleBackColor = true;
             // 
             // btnSell50
             // 
-            this.btnSell50.Location = new System.Drawing.Point(158, 111);
+            this.btnSell50.Location = new System.Drawing.Point(125, 111);
             this.btnSell50.Name = "btnSell50";
-            this.btnSell50.Size = new System.Drawing.Size(75, 23);
+            this.btnSell50.Size = new System.Drawing.Size(50, 23);
             this.btnSell50.TabIndex = 13;
             this.btnSell50.Text = "50%";
             this.btnSell50.UseVisualStyleBackColor = true;
@@ -265,7 +267,7 @@
             // lblSellAmountUsdt
             // 
             this.lblSellAmountUsdt.AutoSize = true;
-            this.lblSellAmountUsdt.Location = new System.Drawing.Point(220, 78);
+            this.lblSellAmountUsdt.Location = new System.Drawing.Point(166, 78);
             this.lblSellAmountUsdt.Name = "lblSellAmountUsdt";
             this.lblSellAmountUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblSellAmountUsdt.TabIndex = 7;
@@ -273,18 +275,18 @@
             // 
             // btnSell25
             // 
-            this.btnSell25.Location = new System.Drawing.Point(77, 111);
+            this.btnSell25.Location = new System.Drawing.Point(69, 111);
             this.btnSell25.Name = "btnSell25";
-            this.btnSell25.Size = new System.Drawing.Size(75, 23);
+            this.btnSell25.Size = new System.Drawing.Size(50, 23);
             this.btnSell25.TabIndex = 12;
             this.btnSell25.Text = "25%";
             this.btnSell25.UseVisualStyleBackColor = true;
             // 
             // txtSellAmount
             // 
-            this.txtSellAmount.Location = new System.Drawing.Point(77, 75);
+            this.txtSellAmount.Location = new System.Drawing.Point(69, 75);
             this.txtSellAmount.Name = "txtSellAmount";
-            this.txtSellAmount.Size = new System.Drawing.Size(122, 21);
+            this.txtSellAmount.Size = new System.Drawing.Size(75, 21);
             this.txtSellAmount.TabIndex = 6;
             // 
             // lblSellAmount
@@ -298,15 +300,15 @@
             // 
             // txtSellUsdt
             // 
-            this.txtSellUsdt.Location = new System.Drawing.Point(272, 37);
+            this.txtSellUsdt.Location = new System.Drawing.Point(212, 37);
             this.txtSellUsdt.Name = "txtSellUsdt";
-            this.txtSellUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtSellUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtSellUsdt.TabIndex = 4;
             // 
             // lblSellPriceUsdt
             // 
             this.lblSellPriceUsdt.AutoSize = true;
-            this.lblSellPriceUsdt.Location = new System.Drawing.Point(220, 40);
+            this.lblSellPriceUsdt.Location = new System.Drawing.Point(166, 40);
             this.lblSellPriceUsdt.Name = "lblSellPriceUsdt";
             this.lblSellPriceUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblSellPriceUsdt.TabIndex = 3;
@@ -314,9 +316,9 @@
             // 
             // txtSellPrice
             // 
-            this.txtSellPrice.Location = new System.Drawing.Point(77, 37);
+            this.txtSellPrice.Location = new System.Drawing.Point(69, 37);
             this.txtSellPrice.Name = "txtSellPrice";
-            this.txtSellPrice.Size = new System.Drawing.Size(122, 21);
+            this.txtSellPrice.Size = new System.Drawing.Size(75, 21);
             this.txtSellPrice.TabIndex = 2;
             // 
             // lblSellPrice
@@ -351,22 +353,22 @@
             this.grbBuy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grbBuy.Location = new System.Drawing.Point(183, 16);
             this.grbBuy.Name = "grbBuy";
-            this.grbBuy.Size = new System.Drawing.Size(436, 215);
+            this.grbBuy.Size = new System.Drawing.Size(313, 215);
             this.grbBuy.TabIndex = 1;
             this.grbBuy.TabStop = false;
             this.grbBuy.Text = "Buy";
             // 
             // txtBuyTotalUsdt
             // 
-            this.txtBuyTotalUsdt.Location = new System.Drawing.Point(274, 147);
+            this.txtBuyTotalUsdt.Location = new System.Drawing.Point(213, 147);
             this.txtBuyTotalUsdt.Name = "txtBuyTotalUsdt";
-            this.txtBuyTotalUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyTotalUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtBuyTotalUsdt.TabIndex = 16;
             // 
             // lblTotalUsdt
             // 
             this.lblTotalUsdt.AutoSize = true;
-            this.lblTotalUsdt.Location = new System.Drawing.Point(222, 150);
+            this.lblTotalUsdt.Location = new System.Drawing.Point(168, 150);
             this.lblTotalUsdt.Name = "lblTotalUsdt";
             this.lblTotalUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblTotalUsdt.TabIndex = 15;
@@ -374,7 +376,7 @@
             // 
             // btnBuy
             // 
-            this.btnBuy.Location = new System.Drawing.Point(159, 181);
+            this.btnBuy.Location = new System.Drawing.Point(98, 181);
             this.btnBuy.Name = "btnBuy";
             this.btnBuy.Size = new System.Drawing.Size(156, 23);
             this.btnBuy.TabIndex = 14;
@@ -383,9 +385,9 @@
             // 
             // txtBuyTotal
             // 
-            this.txtBuyTotal.Location = new System.Drawing.Point(78, 147);
+            this.txtBuyTotal.Location = new System.Drawing.Point(70, 147);
             this.txtBuyTotal.Name = "txtBuyTotal";
-            this.txtBuyTotal.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyTotal.Size = new System.Drawing.Size(75, 21);
             this.txtBuyTotal.TabIndex = 13;
             // 
             // lblBuyTotal
@@ -399,51 +401,51 @@
             // 
             // btnBuy100
             // 
-            this.btnBuy100.Location = new System.Drawing.Point(321, 111);
+            this.btnBuy100.Location = new System.Drawing.Point(238, 111);
             this.btnBuy100.Name = "btnBuy100";
-            this.btnBuy100.Size = new System.Drawing.Size(75, 23);
+            this.btnBuy100.Size = new System.Drawing.Size(50, 23);
             this.btnBuy100.TabIndex = 11;
             this.btnBuy100.Text = "100%";
             this.btnBuy100.UseVisualStyleBackColor = true;
             // 
             // btnBuy75
             // 
-            this.btnBuy75.Location = new System.Drawing.Point(240, 111);
+            this.btnBuy75.Location = new System.Drawing.Point(182, 111);
             this.btnBuy75.Name = "btnBuy75";
-            this.btnBuy75.Size = new System.Drawing.Size(75, 23);
+            this.btnBuy75.Size = new System.Drawing.Size(50, 23);
             this.btnBuy75.TabIndex = 10;
             this.btnBuy75.Text = "75%";
             this.btnBuy75.UseVisualStyleBackColor = true;
             // 
             // btnBuy50
             // 
-            this.btnBuy50.Location = new System.Drawing.Point(159, 111);
+            this.btnBuy50.Location = new System.Drawing.Point(126, 111);
             this.btnBuy50.Name = "btnBuy50";
-            this.btnBuy50.Size = new System.Drawing.Size(75, 23);
+            this.btnBuy50.Size = new System.Drawing.Size(50, 23);
             this.btnBuy50.TabIndex = 9;
             this.btnBuy50.Text = "50%";
             this.btnBuy50.UseVisualStyleBackColor = true;
             // 
             // btnBuy25
             // 
-            this.btnBuy25.Location = new System.Drawing.Point(78, 111);
+            this.btnBuy25.Location = new System.Drawing.Point(70, 111);
             this.btnBuy25.Name = "btnBuy25";
-            this.btnBuy25.Size = new System.Drawing.Size(75, 23);
+            this.btnBuy25.Size = new System.Drawing.Size(50, 23);
             this.btnBuy25.TabIndex = 8;
             this.btnBuy25.Text = "25%";
             this.btnBuy25.UseVisualStyleBackColor = true;
             // 
             // txtBuyAmountUsdt
             // 
-            this.txtBuyAmountUsdt.Location = new System.Drawing.Point(274, 75);
+            this.txtBuyAmountUsdt.Location = new System.Drawing.Point(213, 75);
             this.txtBuyAmountUsdt.Name = "txtBuyAmountUsdt";
-            this.txtBuyAmountUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyAmountUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtBuyAmountUsdt.TabIndex = 7;
             // 
             // lblBuyAmountUsdt
             // 
             this.lblBuyAmountUsdt.AutoSize = true;
-            this.lblBuyAmountUsdt.Location = new System.Drawing.Point(222, 78);
+            this.lblBuyAmountUsdt.Location = new System.Drawing.Point(168, 78);
             this.lblBuyAmountUsdt.Name = "lblBuyAmountUsdt";
             this.lblBuyAmountUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblBuyAmountUsdt.TabIndex = 6;
@@ -451,9 +453,9 @@
             // 
             // txtBuyAmount
             // 
-            this.txtBuyAmount.Location = new System.Drawing.Point(78, 75);
+            this.txtBuyAmount.Location = new System.Drawing.Point(70, 75);
             this.txtBuyAmount.Name = "txtBuyAmount";
-            this.txtBuyAmount.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyAmount.Size = new System.Drawing.Size(75, 21);
             this.txtBuyAmount.TabIndex = 5;
             // 
             // lblBuyAmount
@@ -467,15 +469,15 @@
             // 
             // txtBuyUsdt
             // 
-            this.txtBuyUsdt.Location = new System.Drawing.Point(274, 37);
+            this.txtBuyUsdt.Location = new System.Drawing.Point(213, 37);
             this.txtBuyUsdt.Name = "txtBuyUsdt";
-            this.txtBuyUsdt.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyUsdt.Size = new System.Drawing.Size(75, 21);
             this.txtBuyUsdt.TabIndex = 3;
             // 
             // lblBuyPriceUsdt
             // 
             this.lblBuyPriceUsdt.AutoSize = true;
-            this.lblBuyPriceUsdt.Location = new System.Drawing.Point(222, 40);
+            this.lblBuyPriceUsdt.Location = new System.Drawing.Point(168, 40);
             this.lblBuyPriceUsdt.Name = "lblBuyPriceUsdt";
             this.lblBuyPriceUsdt.Size = new System.Drawing.Size(40, 15);
             this.lblBuyPriceUsdt.TabIndex = 2;
@@ -483,9 +485,9 @@
             // 
             // txtBuyPrice
             // 
-            this.txtBuyPrice.Location = new System.Drawing.Point(78, 37);
+            this.txtBuyPrice.Location = new System.Drawing.Point(70, 37);
             this.txtBuyPrice.Name = "txtBuyPrice";
-            this.txtBuyPrice.Size = new System.Drawing.Size(122, 21);
+            this.txtBuyPrice.Size = new System.Drawing.Size(75, 21);
             this.txtBuyPrice.TabIndex = 1;
             // 
             // lblBuyPrice
@@ -510,7 +512,7 @@
             this.tabBtc.Location = new System.Drawing.Point(4, 22);
             this.tabBtc.Name = "tabBtc";
             this.tabBtc.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBtc.Size = new System.Drawing.Size(1147, 246);
+            this.tabBtc.Size = new System.Drawing.Size(830, 246);
             this.tabBtc.TabIndex = 1;
             this.tabBtc.Text = "BTC";
             this.tabBtc.UseVisualStyleBackColor = true;
@@ -520,7 +522,7 @@
             this.tabEth.Location = new System.Drawing.Point(4, 22);
             this.tabEth.Name = "tabEth";
             this.tabEth.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEth.Size = new System.Drawing.Size(1147, 246);
+            this.tabEth.Size = new System.Drawing.Size(830, 246);
             this.tabEth.TabIndex = 2;
             this.tabEth.Text = "ETH";
             this.tabEth.UseVisualStyleBackColor = true;
@@ -530,7 +532,7 @@
             this.tabXmr.Location = new System.Drawing.Point(4, 22);
             this.tabXmr.Name = "tabXmr";
             this.tabXmr.Padding = new System.Windows.Forms.Padding(3);
-            this.tabXmr.Size = new System.Drawing.Size(1147, 246);
+            this.tabXmr.Size = new System.Drawing.Size(830, 246);
             this.tabXmr.TabIndex = 3;
             this.tabXmr.Text = "XMR";
             this.tabXmr.UseVisualStyleBackColor = true;
@@ -547,20 +549,20 @@
             // 
             // txtBot
             // 
-            this.txtBot.Location = new System.Drawing.Point(35, 311);
+            this.txtBot.Location = new System.Drawing.Point(850, 26);
             this.txtBot.Multiline = true;
             this.txtBot.Name = "txtBot";
             this.txtBot.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBot.Size = new System.Drawing.Size(1174, 141);
+            this.txtBot.Size = new System.Drawing.Size(305, 252);
             this.txtBot.TabIndex = 1;
             // 
             // txtTicker
             // 
-            this.txtTicker.Location = new System.Drawing.Point(35, 458);
+            this.txtTicker.Location = new System.Drawing.Point(35, 410);
             this.txtTicker.Multiline = true;
             this.txtTicker.Name = "txtTicker";
             this.txtTicker.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtTicker.Size = new System.Drawing.Size(1174, 141);
+            this.txtTicker.Size = new System.Drawing.Size(1174, 72);
             this.txtTicker.TabIndex = 2;
             // 
             // dgTrades
@@ -578,11 +580,12 @@
             this.highestProfitDiffDataGridViewTextBoxColumn,
             this.lossToleranceDataGridViewTextBoxColumn,
             this.baseCurrencyTotalDataGridViewTextBoxColumn,
-            this.usdTotalValueDataGridViewTextBoxColumn});
+            this.usdTotalValueDataGridViewTextBoxColumn,
+            this.time});
             this.dgTrades.DataSource = this.tickerModelBindingSource;
-            this.dgTrades.Location = new System.Drawing.Point(35, 605);
+            this.dgTrades.Location = new System.Drawing.Point(35, 311);
             this.dgTrades.Name = "dgTrades";
-            this.dgTrades.Size = new System.Drawing.Size(1174, 182);
+            this.dgTrades.Size = new System.Drawing.Size(1174, 93);
             this.dgTrades.TabIndex = 3;
             // 
             // tickerModelBindingSource
@@ -594,12 +597,14 @@
             this.currencyPairDataGridViewTextBoxColumn.DataPropertyName = "currencyPair";
             this.currencyPairDataGridViewTextBoxColumn.HeaderText = "currencyPair";
             this.currencyPairDataGridViewTextBoxColumn.Name = "currencyPairDataGridViewTextBoxColumn";
+            this.currencyPairDataGridViewTextBoxColumn.Width = 75;
             // 
             // amountToTradeDataGridViewTextBoxColumn
             // 
             this.amountToTradeDataGridViewTextBoxColumn.DataPropertyName = "amountToTrade";
             this.amountToTradeDataGridViewTextBoxColumn.HeaderText = "amountToTrade";
             this.amountToTradeDataGridViewTextBoxColumn.Name = "amountToTradeDataGridViewTextBoxColumn";
+            this.amountToTradeDataGridViewTextBoxColumn.Width = 50;
             // 
             // pricePaidDataGridViewTextBoxColumn
             // 
@@ -624,24 +629,28 @@
             this.profitDataGridViewTextBoxColumn.DataPropertyName = "profit";
             this.profitDataGridViewTextBoxColumn.HeaderText = "profit";
             this.profitDataGridViewTextBoxColumn.Name = "profitDataGridViewTextBoxColumn";
+            this.profitDataGridViewTextBoxColumn.Width = 75;
             // 
             // higuestProfitDataGridViewTextBoxColumn
             // 
             this.higuestProfitDataGridViewTextBoxColumn.DataPropertyName = "higuestProfit";
             this.higuestProfitDataGridViewTextBoxColumn.HeaderText = "higuestProfit";
             this.higuestProfitDataGridViewTextBoxColumn.Name = "higuestProfitDataGridViewTextBoxColumn";
+            this.higuestProfitDataGridViewTextBoxColumn.Width = 75;
             // 
             // highestProfitDiffDataGridViewTextBoxColumn
             // 
             this.highestProfitDiffDataGridViewTextBoxColumn.DataPropertyName = "highestProfitDiff";
             this.highestProfitDiffDataGridViewTextBoxColumn.HeaderText = "highestProfitDiff";
             this.highestProfitDiffDataGridViewTextBoxColumn.Name = "highestProfitDiffDataGridViewTextBoxColumn";
+            this.highestProfitDiffDataGridViewTextBoxColumn.Width = 75;
             // 
             // lossToleranceDataGridViewTextBoxColumn
             // 
             this.lossToleranceDataGridViewTextBoxColumn.DataPropertyName = "lossTolerance";
             this.lossToleranceDataGridViewTextBoxColumn.HeaderText = "lossTolerance";
             this.lossToleranceDataGridViewTextBoxColumn.Name = "lossToleranceDataGridViewTextBoxColumn";
+            this.lossToleranceDataGridViewTextBoxColumn.Width = 75;
             // 
             // baseCurrencyTotalDataGridViewTextBoxColumn
             // 
@@ -655,19 +664,26 @@
             this.usdTotalValueDataGridViewTextBoxColumn.HeaderText = "usdTotalValue";
             this.usdTotalValueDataGridViewTextBoxColumn.Name = "usdTotalValueDataGridViewTextBoxColumn";
             // 
+            // time
+            // 
+            this.time.DataPropertyName = "time";
+            this.time.HeaderText = "time";
+            this.time.Name = "time";
+            this.time.Width = 125;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1244, 799);
+            this.ClientSize = new System.Drawing.Size(1230, 504);
             this.Controls.Add(this.dgTrades);
             this.Controls.Add(this.txtTicker);
-            this.Controls.Add(this.txtBot);
             this.Controls.Add(this.tabsExchanges);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.tabsExchanges.ResumeLayout(false);
             this.tabPoloniex.ResumeLayout(false);
+            this.tabPoloniex.PerformLayout();
             this.tabsMarkets.ResumeLayout(false);
             this.tabUsdt.ResumeLayout(false);
             this.grbSell.ResumeLayout(false);
@@ -732,7 +748,6 @@
         private System.Windows.Forms.TextBox txtBuyTotalUsdt;
         private System.Windows.Forms.Label lblTotalUsdt;
         private System.Windows.Forms.DataGridView dgTrades;
-        private System.Windows.Forms.DataGridViewTextBoxColumn marketDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource tickerModelBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn amountToTradeDataGridViewTextBoxColumn;
@@ -745,6 +760,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn baseCurrencyTotalDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn usdTotalValueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn time;
     }
 }
 

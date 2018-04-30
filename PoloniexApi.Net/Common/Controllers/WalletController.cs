@@ -13,7 +13,7 @@ namespace Jojatekok.PoloniexAPI
 
         public List<BalanceModel> GetBalances()
         {
-            var balances = client.Wallet.GetBalances();
+            var balances = client.Wallet.GetCompleteBalances();
 
             var walletList = new List<BalanceModel>();
 

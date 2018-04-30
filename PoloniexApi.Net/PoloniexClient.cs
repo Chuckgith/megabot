@@ -14,7 +14,7 @@ namespace Jojatekok.PoloniexAPI
         /// <summary>A class which contains trading tools for the client.</summary>
         public ITrading Trading { get; private set; }
         /// <summary>A class which contains wallet tools for the client.</summary>
-        public IWallet Wallet { get; private set; }
+        public Wallet Wallet { get; private set; }
         /// <summary>A class which represents live data fetched automatically from the server.</summary>
         public ILive Live { get; private set; }
 

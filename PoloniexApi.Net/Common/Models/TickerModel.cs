@@ -20,5 +20,6 @@ namespace Jojatekok.PoloniexAPI
         public double lossTolerance { get; set; }        
         public double baseCurrencyTotal { get; set; }
         public double usdTotalValue { get; set; }
+        public DateTime time { get; set; }
     }
 }

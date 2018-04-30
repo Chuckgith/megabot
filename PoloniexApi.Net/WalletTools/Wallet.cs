@@ -19,11 +19,11 @@ namespace Jojatekok.PoloniexAPI.WalletTools
 
         public Task<IDictionary<string, IBalance>> GetBalancesAsync()
         {
-            var result = Task.Factory.StartNew(() => GetBalances());
+            var result = Task.Factory.StartNew(() => GetCompleteBalances());
        
             return result;
         }
-        public IDictionary<string, IBalance> GetBalances()
+        public IDictionary<string, IBalance> GetCompleteBalances()
         {
             //var postData = new Dictionary<string, object>();
             //var data = PostData<IDictionary<string, IBalance>>("returnCompleteBalances", postData);
@@ -35,13 +35,7 @@ namespace Jojatekok.PoloniexAPI.WalletTools
             //    {
                     var postData = new Dictionary<string, object>();
                     var data = PostData<IDictionary<string, Balance>>("returnCompleteBalances", postData);
-                    var returnData = new Dictionary<string, IBalance>();
-                    foreach (string key in data.Keys)
-                    {
-                        returnData.Add(key, data[key]);
-                    }
-
-                    return returnData;
+                    return ConvertBalanceToIBalance(data);
             //    }
             //    catch (WebException ex)
             //    {
@@ -50,6 +44,16 @@ namespace Jojatekok.PoloniexAPI.WalletTools
             //    Thread.Sleep(5000);
             //}
             //throw new Exception("erreur 500 or 502");
+        }
+
+        private IDictionary<string, IBalance> ConvertBalanceToIBalance(IDictionary<string, Balance> data)
+        {
+            var returnData = new Dictionary<string, IBalance>();
+            foreach (string key in data.Keys)
+            {
+                returnData.Add(key, data[key]);
+            }
+            return returnData;
         }
 
         public Task<IDictionary<string, string>> GetDepositAddressesAsync()

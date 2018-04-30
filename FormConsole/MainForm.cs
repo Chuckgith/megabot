@@ -56,6 +56,15 @@ namespace FormConsole
             FillCbbCoins();
 
             cbbCoins.SelectedIndex = cbbCoins.FindStringExact("usdt_btc");
+
+            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
+            GetBalance(currencyPair, true);
+
+            CheckSignal(currencyPair);
+
+            subscription = source
+                .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                .Subscribe(x => txtBot.AppendText(x.IdOrder + Environment.NewLine));
         }
 
         private void FillCbbCoins()
@@ -212,7 +221,8 @@ namespace FormConsole
                                 highestProfitDiff = highestProfitDiff,
                                 lossTolerance = lossTolerance,
                                 baseCurrencyTotal = baseCurrencyTotal,
-                                usdTotalValue = usdTotalValue
+                                usdTotalValue = usdTotalValue,
+                                time = DateTime.Now
                             };
 
                             //source2.OnNext(Ticker.Display(ticker));
@@ -233,21 +243,36 @@ namespace FormConsole
         private void btnStartBot_Click(object sender, EventArgs e)
         {
             CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
-            GetBalance(currencyPair, true);
-
-            CheckSignal(currencyPair);
-
-            subscription = source
-                .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                .Subscribe(x => txtBot.AppendText(x.IdOrder + Environment.NewLine));
-
-            GetTicker("USDT", "BTC", 20, 0);
+            GetTicker(currencyPair.BaseCurrency, currencyPair.QuoteCurrency, 20, 0);
 
             subscription2 = source2
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 //.Subscribe(x => txtTicker.AppendText(x + Environment.NewLine));
-                .Subscribe(x => dgTrades.DataSource = new List<TickerModel> { x });
+                .Subscribe(x => AddTrades(x));
 
+            dgTrades.Columns[5].DefaultCellStyle.Format = "N4";
+            dgTrades.Columns[6].DefaultCellStyle.Format = "N4";
+            dgTrades.Columns[7].DefaultCellStyle.Format = "N4";
+            dgTrades.Columns[8].DefaultCellStyle.Format = "N4";
+            dgTrades.Columns[9].DefaultCellStyle.Format = "C";
+            dgTrades.Columns[10].DefaultCellStyle.Format = "C";
+        }
+
+        List<TickerModel> trades = new List<TickerModel>();
+
+        private void AddTrades(TickerModel ticker)
+        {
+            trades.Add(ticker);
+
+            dgTrades.DataSource = new List<TickerModel> { ticker };
+
+            foreach (DataGridViewRow row in dgTrades.Rows)
+            {
+                if (ticker.profit >= 0)                
+                    row.DefaultCellStyle.BackColor = Color.LightGreen;
+                else
+                    row.DefaultCellStyle.BackColor = Color.LightPink;
+            }
         }
 
         private void GetBalance(CurrencyPair currencyPair, bool showBalance)
@@ -259,6 +284,7 @@ namespace FormConsole
                 try
                 {
                     balances = (from x in BIZ.GetBalances() select x).ToList();
+                    break;
                 }
                 catch (Exception ex)
                 {

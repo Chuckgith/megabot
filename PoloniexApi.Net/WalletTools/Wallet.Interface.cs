@@ -9,7 +9,7 @@ namespace Jojatekok.PoloniexAPI
     {
         /// <summary>Fetches all the balances in your account, split down into available balance, balance on orders, and the estimated BTC value of your balance.</summary>
         Task<IDictionary<string, IBalance>> GetBalancesAsync();
-        IDictionary<string, IBalance> GetBalances();
+        IDictionary<string, IBalance> GetCompleteBalances();
 
         /// <summary>Returns all of your deposit addresses.</summary>
         Task<IDictionary<string, string>> GetDepositAddressesAsync();
