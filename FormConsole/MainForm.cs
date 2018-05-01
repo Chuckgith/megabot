@@ -30,8 +30,8 @@ namespace FormConsole
         EnumStates lastState = EnumStates.WAITING;
         ulong idOrder = 0;
 
-
-        ISubject<IList<BalanceModel>> sourceGetBalances = new Subject<IList<BalanceModel>>();
+        BalanceSource _balances;
+        //ISubject<IList<BalanceModel>> sourceGetBalances = new Subject<IList<BalanceModel>>();
         IDisposable subscriptionGetBalances;
         ISubject<EnumStates> sourceGetSignal = new Subject<EnumStates>();
         IDisposable subscriptionGtSignal;
@@ -58,11 +58,15 @@ namespace FormConsole
 
             cbbCoins.SelectedIndex = cbbCoins.FindStringExact("usdt_btc");
 
-            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
+            if (_balances != null) //Si existe, alors dispose objet existant (pour sortir de la boucle)
+                _balances.Dispose();
 
-            GetBalances(currencyPair.BaseCurrency);
-            subscriptionGetBalances = sourceGetBalances
-                .ObserveOn(WindowsFormsSynchronizationContext.Current)
+            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
+            _balances = new BalanceSource(currencyPair.BaseCurrency); //cré un nouvel objet pour balance
+
+            subscriptionGetBalances = _balances.DataSource //S'abonne à l'observable
+                //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
+                .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
                 .Subscribe(x => DisplayBalances(x));
 
             CheckSignal(currencyPair);
@@ -245,7 +249,7 @@ namespace FormConsole
                 {
                     txtTicker.AppendText(ex.Message + Environment.NewLine);
                 }
-            });          
+            });
         }
 
         private void btnStartBot_Click(object sender, EventArgs e)
@@ -277,34 +281,38 @@ namespace FormConsole
 
             foreach (DataGridViewRow row in dgvTrades.Rows)
             {
-                if (ticker.profit >= 0)                
+                if (ticker.profit >= 0)
                     row.DefaultCellStyle.BackColor = Color.LightGreen;
                 else
                     row.DefaultCellStyle.BackColor = Color.LightPink;
             }
         }
 
-        private void GetBalances(string baseCurrency)
-        {
-            getBalances = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    IList<BalanceModel> balances = (from x in BIZ.GetBalances() select x).ToList();                    
-                    sourceGetBalances.OnNext(balances);
-                    await Task.Delay(5000);
-                }
-            });
-        }
+        //private void GetBalances(string baseCurrency)
+        //{
+        //    getBalances = Task.Run(async () =>
+        //    {
+        //        while (true)
+        //        {
+        //            IList<BalanceModel> balances = (from x in BIZ.GetBalances() select x).ToList();
+        //            sourceGetBalances.OnNext(balances);
+        //            await Task.Delay(5000);
+        //        }
+        //    });
+        //}
 
         private void DisplayBalances(IList<BalanceModel> balances)
         {
-            dgvBalances.DataSource = 
-                (from balance in balances
-                 where balance.Type == CurrencyPair.BaseCurrency || balance.USDT_Value > 0
-                 select balance)
-                 .OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
-                 .ThenBy(x => x).ToList();
+            dgvBalances.DataSource =
+                //(from balance in balances
+                // where balance.Type == CurrencyPair.BaseCurrency || balance.USDT_Value > 0
+                // select balance)
+                //Tu peux réécrire en extension style de manière plus concise. Les deux approches sont tout
+                //à fait équivalente mais souvent on utilise le style déclaratif lorsqu'on fait une requête BD
+                                 balances
+                                     .Where(balance => balance.Type == CurrencyPair.BaseCurrency || balance.USDT_Value > 0)
+                                     .OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
+                                     .ThenBy(x => x).ToList();
 
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
         }
