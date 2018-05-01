@@ -12,7 +12,7 @@ namespace FormConsole
 {
     static class Signal
     {
-        public static OrderModel ExecuteBuySell(MimeMessage message, EnumStates lastState)
+        public static EnumStates ExecuteBuySell(MimeMessage message, EnumStates lastState)
         {
             CurrencyPair currencyPair = null;
             OrderModel order = new OrderModel();
@@ -22,7 +22,7 @@ namespace FormConsole
             currencyPair = new CurrencyPair(valueSplit[0].Trim().ToUpper());
 
             if (lastState == EnumStates.WAITING && message.Subject.Contains("sell"))
-                return null;
+                return lastState;
             else if (lastState == EnumStates.WAITING && message.Subject.Contains("buy"))
                 lastState = EnumStates.SOLD;
 
@@ -39,7 +39,7 @@ namespace FormConsole
                 Sell(currencyPair);
             }
 
-            return order;
+            return lastState;
         }
 
         private static OrderModel Buy(CurrencyPair currencyPair)

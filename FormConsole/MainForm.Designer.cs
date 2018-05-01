@@ -78,10 +78,12 @@
             this.tabBinance = new System.Windows.Forms.TabPage();
             this.txtTicker = new System.Windows.Forms.TextBox();
             this.dgvTrades = new System.Windows.Forms.DataGridView();
+            this.priceLast = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvBalances = new System.Windows.Forms.DataGridView();
             this.currencyPairDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.amountToTradeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pricePaidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.priceLast = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.highestPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.profitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.higuestProfitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -89,9 +91,7 @@
             this.lossToleranceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.baseCurrencyTotalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usdTotalValueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tickerModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dgvBalances = new System.Windows.Forms.DataGridView();
             this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quoteAvailableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -104,8 +104,8 @@
             this.grbSell.SuspendLayout();
             this.grbBuy.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrades)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tickerModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBalances)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tickerModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -521,7 +521,7 @@
             this.tabBtc.Location = new System.Drawing.Point(4, 22);
             this.tabBtc.Name = "tabBtc";
             this.tabBtc.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBtc.Size = new System.Drawing.Size(830, 246);
+            this.tabBtc.Size = new System.Drawing.Size(664, 295);
             this.tabBtc.TabIndex = 1;
             this.tabBtc.Text = "BTC";
             this.tabBtc.UseVisualStyleBackColor = true;
@@ -531,7 +531,7 @@
             this.tabEth.Location = new System.Drawing.Point(4, 22);
             this.tabEth.Name = "tabEth";
             this.tabEth.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEth.Size = new System.Drawing.Size(830, 246);
+            this.tabEth.Size = new System.Drawing.Size(664, 295);
             this.tabEth.TabIndex = 2;
             this.tabEth.Text = "ETH";
             this.tabEth.UseVisualStyleBackColor = true;
@@ -541,7 +541,7 @@
             this.tabXmr.Location = new System.Drawing.Point(4, 22);
             this.tabXmr.Name = "tabXmr";
             this.tabXmr.Padding = new System.Windows.Forms.Padding(3);
-            this.tabXmr.Size = new System.Drawing.Size(830, 246);
+            this.tabXmr.Size = new System.Drawing.Size(664, 295);
             this.tabXmr.TabIndex = 3;
             this.tabXmr.Text = "XMR";
             this.tabXmr.UseVisualStyleBackColor = true;
@@ -560,7 +560,7 @@
             this.tabBinance.Location = new System.Drawing.Point(23, 4);
             this.tabBinance.Name = "tabBinance";
             this.tabBinance.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBinance.Size = new System.Drawing.Size(1170, 285);
+            this.tabBinance.Size = new System.Drawing.Size(1170, 333);
             this.tabBinance.TabIndex = 1;
             this.tabBinance.Text = "Binance";
             this.tabBinance.UseVisualStyleBackColor = true;
@@ -597,6 +597,34 @@
             this.dgvTrades.Size = new System.Drawing.Size(1174, 93);
             this.dgvTrades.TabIndex = 3;
             // 
+            // priceLast
+            // 
+            this.priceLast.DataPropertyName = "priceLast";
+            this.priceLast.HeaderText = "priceLast";
+            this.priceLast.Name = "priceLast";
+            // 
+            // time
+            // 
+            this.time.DataPropertyName = "time";
+            this.time.HeaderText = "time";
+            this.time.Name = "time";
+            this.time.Width = 125;
+            // 
+            // dgvBalances
+            // 
+            this.dgvBalances.AutoGenerateColumns = false;
+            this.dgvBalances.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvBalances.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.typeDataGridViewTextBoxColumn,
+            this.quoteAvailableDataGridViewTextBoxColumn,
+            this.quoteOnOrdersDataGridViewTextBoxColumn,
+            this.uSDTValueDataGridViewTextBoxColumn});
+            this.dgvBalances.DataSource = this.balanceModelBindingSource;
+            this.dgvBalances.Location = new System.Drawing.Point(684, 28);
+            this.dgvBalances.Name = "dgvBalances";
+            this.dgvBalances.Size = new System.Drawing.Size(470, 170);
+            this.dgvBalances.TabIndex = 2;
+            // 
             // currencyPairDataGridViewTextBoxColumn
             // 
             this.currencyPairDataGridViewTextBoxColumn.DataPropertyName = "currencyPair";
@@ -616,12 +644,6 @@
             this.pricePaidDataGridViewTextBoxColumn.DataPropertyName = "pricePaid";
             this.pricePaidDataGridViewTextBoxColumn.HeaderText = "pricePaid";
             this.pricePaidDataGridViewTextBoxColumn.Name = "pricePaidDataGridViewTextBoxColumn";
-            // 
-            // priceLast
-            // 
-            this.priceLast.DataPropertyName = "priceLast";
-            this.priceLast.HeaderText = "priceLast";
-            this.priceLast.Name = "priceLast";
             // 
             // highestPriceDataGridViewTextBoxColumn
             // 
@@ -669,31 +691,9 @@
             this.usdTotalValueDataGridViewTextBoxColumn.HeaderText = "usdTotalValue";
             this.usdTotalValueDataGridViewTextBoxColumn.Name = "usdTotalValueDataGridViewTextBoxColumn";
             // 
-            // time
-            // 
-            this.time.DataPropertyName = "time";
-            this.time.HeaderText = "time";
-            this.time.Name = "time";
-            this.time.Width = 125;
-            // 
             // tickerModelBindingSource
             // 
             this.tickerModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.TickerModel);
-            // 
-            // dgvBalances
-            // 
-            this.dgvBalances.AutoGenerateColumns = false;
-            this.dgvBalances.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvBalances.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.typeDataGridViewTextBoxColumn,
-            this.quoteAvailableDataGridViewTextBoxColumn,
-            this.quoteOnOrdersDataGridViewTextBoxColumn,
-            this.uSDTValueDataGridViewTextBoxColumn});
-            this.dgvBalances.DataSource = this.balanceModelBindingSource;
-            this.dgvBalances.Location = new System.Drawing.Point(684, 28);
-            this.dgvBalances.Name = "dgvBalances";
-            this.dgvBalances.Size = new System.Drawing.Size(470, 170);
-            this.dgvBalances.TabIndex = 2;
             // 
             // balanceModelBindingSource
             // 
@@ -743,8 +743,8 @@
             this.grbBuy.ResumeLayout(false);
             this.grbBuy.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrades)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tickerModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBalances)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tickerModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -816,11 +816,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn usdTotalValueDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn time;
         private System.Windows.Forms.DataGridView dgvBalances;
+        private System.Windows.Forms.BindingSource balanceModelBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn quoteAvailableDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn quoteOnOrdersDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn uSDTValueDataGridViewTextBoxColumn;
-        private System.Windows.Forms.BindingSource balanceModelBindingSource;
     }
 }
 

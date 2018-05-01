@@ -33,10 +33,10 @@ namespace FormConsole
 
         ISubject<IList<BalanceModel>> sourceGetBalances = new Subject<IList<BalanceModel>>();
         IDisposable subscriptionGetBalances;
-        ISubject<OrderModel> sourceOrderModel = new Subject<OrderModel>();
-        IDisposable subscriptionOrderModel;
-        ISubject<TickerModel> sourceTickerModel = new Subject<TickerModel>();
-        IDisposable subscriptionTickerModel;
+        ISubject<EnumStates> sourceGetSignal = new Subject<EnumStates>();
+        IDisposable subscriptionGtSignal;
+        ISubject<TickerModel> sourceGetTicker = new Subject<TickerModel>();
+        IDisposable subscriptionGetTicker;
 
         Task getBalances;
         Task checkSignal;
@@ -66,9 +66,9 @@ namespace FormConsole
                 .Subscribe(x => DisplayBalances(x));
 
             CheckSignal(currencyPair);
-            //subscriptionOrderModel = sourceOrderModel
-            //    .ObserveOn(WindowsFormsSynchronizationContext.Current)
-            //    .Subscribe(x => txtBot.AppendText(x.IdOrder + Environment.NewLine));
+            subscriptionGtSignal = sourceGetSignal
+                .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                .Subscribe(x => DisplaySignal(x));
         }
 
         private void FillCbbCoins()
@@ -103,10 +103,10 @@ namespace FormConsole
 
                                 if (uid.IsValid)
                                 {
-                                    GetBalance(CurrencyPair);
+                                    //GetBalance(CurrencyPair);
                                     System.Media.SystemSounds.Exclamation.Play();
                                     MimeMessage message = folder.GetMessage(uid);
-                                    sourceOrderModel.OnNext(Signal.ExecuteBuySell(message, lastState));
+                                    sourceGetSignal.OnNext(Signal.ExecuteBuySell(message, lastState));
                                     //source.OnError(new Exception());
                                     DeleteOldMessages(folder);
                                     MarkAllMessagesAsSeen(folder);
@@ -134,6 +134,11 @@ namespace FormConsole
 
                 } while (true);
             });
+        }
+
+        private void DisplaySignal(EnumStates lastState)
+        {
+            txtBot.AppendText(lastState + Environment.NewLine);
         }
 
         private void GetTicker(string baseCurrency, string quoteCurrency, double amountToTrade, double pricePaid, ulong idOrder = 0)
@@ -229,8 +234,7 @@ namespace FormConsole
                                 time = DateTime.Now
                             };
 
-                            //source2.OnNext(Ticker.Display(ticker));
-                            sourceTickerModel.OnNext(ticker);
+                            sourceGetTicker.OnNext(ticker);
                             //CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
                         }
 
@@ -249,7 +253,7 @@ namespace FormConsole
             CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
             GetTicker(currencyPair.BaseCurrency, currencyPair.QuoteCurrency, 20, 0);
 
-            subscriptionTickerModel = sourceTickerModel
+            subscriptionGetTicker = sourceGetTicker
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 //.Subscribe(x => txtTicker.AppendText(x + Environment.NewLine));
                 .Subscribe(x => AddTrades(x));
@@ -295,12 +299,14 @@ namespace FormConsole
 
         private void DisplayBalances(IList<BalanceModel> balances)
         {
-            txtBot.Text = string.Empty;
-
             dgvBalances.DataSource = 
                 (from balance in balances
                  where balance.Type == CurrencyPair.BaseCurrency || balance.USDT_Value > 0
-                 select balance).ToList();
+                 select balance)
+                 .OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
+                 .ThenBy(x => x).ToList();
+
+            dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
         }
 
         private void GetBalance(CurrencyPair currencyPair)
