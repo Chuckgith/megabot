@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using System.Reactive.Linq;
+using System.Diagnostics;
 
 namespace FormConsole.Sources
 {
@@ -15,8 +16,12 @@ namespace FormConsole.Sources
         Task _balancesLoop;
         CancellationTokenSource _cts = new CancellationTokenSource();
 
+        Business BIZ = new Business();
+        string _baseCurrency = string.Empty;
+
         public Balances(string baseCurrency)
         {
+            _baseCurrency = baseCurrency;
             _balancesLoop = GetBalances(baseCurrency);
         }
 
@@ -28,8 +33,20 @@ namespace FormConsole.Sources
                 //que tu vas avoir mis. Tu pourrais par exemple mettre des where data != null etc.
 
                 return _balancesSubject
-                         .DistinctUntilChanged() //Lève des évènements seulement si la donnée a changée
-                         .ObserveOn(System.Reactive.Concurrency.Scheduler.Default); //Chaque abonnement (subscribe) se fait sur un Task différente ce qui donne un indépendance total entre chaque souscription
+                    .Buffer(TimeSpan.FromSeconds(120), 1)
+                    .Select(x =>
+                    {
+                        if (!x.Any())
+                        {
+                            GetBalances(_baseCurrency);
+                            return null;
+                        }
+                        return x.First();
+                    })
+                    .Where(x => x != null)
+                    .DistinctUntilChanged()
+                    .ObserveOn(System.Reactive.Concurrency.Scheduler.Default); 
+                //Chaque abonnement (subscribe) se fait sur un Task différente ce qui donne un indépendance total entre chaque souscription
             }
         }
 
@@ -40,7 +57,6 @@ namespace FormConsole.Sources
 
         private Task GetBalances(string baseCurrency)
         {
-            Business BIZ = new Business();
             return Task.Run(async () =>
             {
                 while (!_cts.IsCancellationRequested)
@@ -53,7 +69,7 @@ namespace FormConsole.Sources
                     }
                     catch (Exception ex)
                     {
-                        _balancesSubject.OnError(ex);
+                        Debug.WriteLine($"{DateTime.Now} - {ex}");
                     }
                 }
 

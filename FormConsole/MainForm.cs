@@ -64,10 +64,17 @@ namespace FormConsole
             _balances = new Balances(currencyPair.BaseCurrency); //cré un nouvel objet pour balance
             _signal = new Signal(currencyPair);
 
-            _subsBalances = _balances.DataSource //S'abonne à l'observable
-                //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
-                .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
-                .Subscribe(x => DisplayBalances(x));
+            try
+            {
+                _subsBalances = _balances.DataSource //S'abonne à l'observable
+                                                     //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
+                    .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
+                    .Subscribe(x => DisplayBalances(x));
+            }
+            catch (Exception ex)
+            {
+                txtTicker.AppendText(ex.Message + Environment.NewLine);
+            }
 
             _subsSignal = _signal.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)

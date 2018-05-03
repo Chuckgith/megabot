@@ -5,6 +5,7 @@ using MailKit.Search;
 using MimeKit;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -48,36 +49,43 @@ namespace FormConsole.Sources
             return Task.Run(async () =>
             {
                 while (!_cts.IsCancellationRequested)
-                { 
-                    using (var client = new ImapClient())
-                    {
-                        client.Connect("outlook.office365.com", 993, true);
-                        client.Authenticate(ConfigurationManager.AppSettings["username"], ConfigurationManager.AppSettings["password"]);
-
-                        var folder = client.GetFolder($"_tradingview/{currencyPair.QuoteCurrency}usdt");
-                        folder.Open(FolderAccess.ReadWrite);
-
-                        DeleteOldMessages(folder);
-                        MarkAllMessagesAsSeen(folder);
-
-                        while (true)
+                {
+                    try
+                    { 
+                        using (var client = new ImapClient())
                         {
-                            uid = folder.Search(SearchQuery.NotSeen).LastOrDefault();
+                            client.Connect("outlook.office365.com", 993, true);
+                            client.Authenticate(ConfigurationManager.AppSettings["username"], ConfigurationManager.AppSettings["password"]);
 
-                            if (uid.IsValid)
+                            var folder = client.GetFolder($"_tradingview/{currencyPair.QuoteCurrency}usdt");
+                            folder.Open(FolderAccess.ReadWrite);
+
+                            DeleteOldMessages(folder);
+                            MarkAllMessagesAsSeen(folder);
+
+                            while (true)
                             {
-                                //GetBalance(CurrencyPair);
-                                System.Media.SystemSounds.Exclamation.Play();
-                                MimeMessage message = folder.GetMessage(uid);
-                                _signalSubject.OnNext(ExecuteBuySell(message, lastState));
-                                //source.OnError(new Exception());
-                                DeleteOldMessages(folder);
-                                MarkAllMessagesAsSeen(folder);
-                            }
+                                uid = folder.Search(SearchQuery.NotSeen).LastOrDefault();
 
-                            client.NoOp();
-                            await Task.Delay(5000);
+                                if (uid.IsValid)
+                                {
+                                    //GetBalance(CurrencyPair);
+                                    System.Media.SystemSounds.Exclamation.Play();
+                                    MimeMessage message = folder.GetMessage(uid);
+                                    _signalSubject.OnNext(ExecuteBuySell(message, lastState));
+                                    //source.OnError(new Exception());
+                                    DeleteOldMessages(folder);
+                                    MarkAllMessagesAsSeen(folder);
+                                }
+
+                                client.NoOp();
+                                await Task.Delay(5000);
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - {ex}");
                     }
                 }
 

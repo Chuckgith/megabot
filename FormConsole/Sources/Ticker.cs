@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Reactive.Linq;
 using Jojatekok.PoloniexAPI.MarketTools;
+using System.Diagnostics;
 
 namespace FormConsole.Sources
 {
@@ -106,42 +107,49 @@ namespace FormConsole.Sources
             {
                 while (!_cts.IsCancellationRequested)
                 {
-                    marketToTrade = BIZ.GetCurrency(currencyPair);
-
-                    profit = (marketToTrade.PriceLast / pricePaid) * 100 - 100;
-                    highestProfit = profit > highestProfit ? profit : highestProfit;
-                    lossTolerance = TOLERANCE_PROFIT_HIGHDIFF + (highestProfit * LOSS_TOLERANCE_MULTIPLICATOR);
-
-                    // Évite d'afficher les données si rien n'a changé
-                    if (Math.Round(previousProfit, 4) != Math.Round(profit, 4))
+                    try
                     {
-                        previousProfit = profit;
-                        highestPrice = marketToTrade.PriceLast > highestPrice ? marketToTrade.PriceLast : highestPrice;
-                        highestProfitDiff = (marketToTrade.PriceLast / highestPrice) * 100 - 100;
-                        baseCurrencyTotal = marketToTrade.PriceLast * baseCurrencyUnitPrice;
-                        usdTotalValue = baseCurrencyTotal * (currencyPair.BaseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
+                        marketToTrade = BIZ.GetCurrency(currencyPair);
 
-                        ticker = new TickerModel()
+                        profit = (marketToTrade.PriceLast / pricePaid) * 100 - 100;
+                        highestProfit = profit > highestProfit ? profit : highestProfit;
+                        lossTolerance = TOLERANCE_PROFIT_HIGHDIFF + (highestProfit * LOSS_TOLERANCE_MULTIPLICATOR);
+
+                        // Évite d'afficher les données si rien n'a changé
+                        if (Math.Round(previousProfit, 4) != Math.Round(profit, 4))
                         {
-                            currencyPair = currencyPair,
-                            amountToTrade = amountToTrade,
-                            pricePaid = pricePaid,
-                            priceLast = marketToTrade.PriceLast,
-                            highestPrice = highestPrice,
-                            profit = profit,
-                            higuestProfit = highestProfit,
-                            highestProfitDiff = highestProfitDiff,
-                            lossTolerance = lossTolerance,
-                            baseCurrencyTotal = baseCurrencyTotal,
-                            usdTotalValue = usdTotalValue,
-                            time = DateTime.Now
-                        };
+                            previousProfit = profit;
+                            highestPrice = marketToTrade.PriceLast > highestPrice ? marketToTrade.PriceLast : highestPrice;
+                            highestProfitDiff = (marketToTrade.PriceLast / highestPrice) * 100 - 100;
+                            baseCurrencyTotal = marketToTrade.PriceLast * baseCurrencyUnitPrice;
+                            usdTotalValue = baseCurrencyTotal * (currencyPair.BaseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
 
-                        _tickerSubject.OnNext(ticker);
-                        //CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
+                            ticker = new TickerModel()
+                            {
+                                currencyPair = currencyPair,
+                                amountToTrade = amountToTrade,
+                                pricePaid = pricePaid,
+                                priceLast = marketToTrade.PriceLast,
+                                highestPrice = highestPrice,
+                                profit = profit,
+                                higuestProfit = highestProfit,
+                                highestProfitDiff = highestProfitDiff,
+                                lossTolerance = lossTolerance,
+                                baseCurrencyTotal = baseCurrencyTotal,
+                                usdTotalValue = usdTotalValue,
+                                time = DateTime.Now
+                            };
+
+                            _tickerSubject.OnNext(ticker);
+                            //CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
+                        }
+
+                        await Task.Delay(5000);
                     }
-
-                    await Task.Delay(5000);
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - {ex}");
+                    }
                 }
 
                 _tickerSubject.OnCompleted();
