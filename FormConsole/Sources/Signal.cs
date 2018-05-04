@@ -24,7 +24,7 @@ namespace FormConsole.Sources
 
         public Signal(CurrencyPair currencyPair)
         {
-            _signalLoop = CheckSignal(currencyPair);
+            _signalLoop = GetSignal(currencyPair);
         }
 
         public IObservable<EnumStates> DataSource
@@ -42,7 +42,7 @@ namespace FormConsole.Sources
             _cts.Cancel();
         }
 
-        private Task CheckSignal(CurrencyPair currencyPair)
+        private Task GetSignal(CurrencyPair currencyPair)
         {
             UniqueId uid;
 
@@ -85,7 +85,7 @@ namespace FormConsole.Sources
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"{DateTime.Now} - {ex}");
+                        Debug.WriteLine($"{DateTime.Now} - GetSignal() - {ex}");
                     }
                 }
 

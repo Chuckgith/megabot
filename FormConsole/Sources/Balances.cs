@@ -57,6 +57,7 @@ namespace FormConsole.Sources
 
         private Task GetBalances(string baseCurrency)
         {
+            Debug.WriteLine($"{DateTime.Now} - GetBalances(...)");
             return Task.Run(async () =>
             {
                 while (!_cts.IsCancellationRequested)
@@ -69,7 +70,7 @@ namespace FormConsole.Sources
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"{DateTime.Now} - {ex}");
+                        Debug.WriteLine($"{DateTime.Now} - GetBalances() - {ex}");
                     }
                 }
 

@@ -31,12 +31,14 @@ namespace FormConsole
         Ticker _ticker;
         IDisposable _subsTicker;
 
+        IList<TickerModel> _trades = new List<TickerModel>();
+
         private CurrencyPair CurrencyPair
         {
             get
             {
                 //return new CurrencyPair(tabsMarkets.SelectedTab.Text, cbbCoins.SelectedText);
-                return new CurrencyPair(cbbCoins.SelectedItem.ToString());
+                return new CurrencyPair(lbCoins.SelectedItem.ToString());
             }
         }
 
@@ -55,26 +57,19 @@ namespace FormConsole
 
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
 
-            cbbCoins.SelectedIndex = cbbCoins.FindStringExact("usdt_btc");
+            lbCoins.SelectedIndex = lbCoins.FindStringExact("usdt_btc");
 
             if (_balances != null) //Si existe, alors dispose objet existant (pour sortir de la boucle)
                 _balances.Dispose();
 
-            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
+            CurrencyPair currencyPair = new CurrencyPair(lbCoins.SelectedItem.ToString());
             _balances = new Balances(currencyPair.BaseCurrency); //cré un nouvel objet pour balance
             _signal = new Signal(currencyPair);
 
-            try
-            {
-                _subsBalances = _balances.DataSource //S'abonne à l'observable
-                                                     //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
-                    .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
-                    .Subscribe(x => DisplayBalances(x));
-            }
-            catch (Exception ex)
-            {
-                txtTicker.AppendText(ex.Message + Environment.NewLine);
-            }
+            _subsBalances = _balances.DataSource //S'abonne à l'observable
+                //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
+                .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
+                .Subscribe(x => DisplayBalances(x));
 
             _subsSignal = _signal.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
@@ -83,7 +78,7 @@ namespace FormConsole
 
         private void FillCbbCoins()
         {
-            cbbCoins.Items.AddRange(BIZ.GetMarket(tabsMarkets.SelectedTab.Text).ToArray());
+            lbCoins.DataSource = BIZ.GetMarket(tabsMarkets.SelectedTab.Text).ToList();
         }
 
         private void DisplaySignal(EnumStates lastState)
@@ -93,21 +88,17 @@ namespace FormConsole
 
         private void btnStartBot_Click(object sender, EventArgs e)
         {
-            CurrencyPair currencyPair = new CurrencyPair(cbbCoins.SelectedItem.ToString());
+            CurrencyPair currencyPair = new CurrencyPair(lbCoins.SelectedItem.ToString());
             _ticker = new Ticker(currencyPair, 20, 0);
 
             _subsTicker = _ticker.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 .Subscribe(x => AddTrades(x));
-
-
         }
-
-        List<TickerModel> trades = new List<TickerModel>();
 
         private void AddTrades(TickerModel ticker)
         {
-            trades.Add(ticker);
+            //_trades.Add(ticker);
 
             dgvTrades.DataSource = new List<TickerModel> { ticker };
 

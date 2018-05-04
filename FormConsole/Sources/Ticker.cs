@@ -148,7 +148,7 @@ namespace FormConsole.Sources
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"{DateTime.Now} - {ex}");
+                        Debug.WriteLine($"{DateTime.Now} - GetTicker() - {ex}");
                     }
                 }
 
