@@ -10,9 +10,24 @@ namespace Jojatekok.PoloniexAPI
     {
         const double ROUND_FOR_POLONIEX = 100000000;
 
-        public static double Truncate(double number)
+        public static double? TryParseDouble(string text)
+        {
+            if (double.TryParse(text.Replace(".", ","), out double temp))
+                return TruncateDouble(temp);
+            return null;
+        }
+
+        public static double TruncateDouble(double number)
         {
             return Math.Truncate(number * ROUND_FOR_POLONIEX) / ROUND_FOR_POLONIEX;
+        }
+
+        public static double? TruncateDouble(double? number)
+        {
+            if (number == null)
+                return null;
+
+            return Math.Truncate(double.Parse(number.ToString()) * ROUND_FOR_POLONIEX) / ROUND_FOR_POLONIEX;
         }
     }
 }

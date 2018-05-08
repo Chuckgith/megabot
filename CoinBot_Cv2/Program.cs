@@ -156,7 +156,7 @@ namespace CoinBot_Cv2
             {
                 usdtMarket = BIZ.GetCurrency(markets, currencyPairUsdt);
                 baseCurrencyUnitPrice = (amountToTrade / usdtMarket.PriceLast) / marketToTrade.PriceLast;
-            }            
+            }
             
             try
             {

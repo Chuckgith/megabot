@@ -147,7 +147,7 @@ namespace Jojatekok.PoloniexAPI
                         bestPricePerCoin = bestPricePerCoinTemp;
                         Debug.WriteLine($"\nnew bestPrice {bestPricePerCoin}");
 
-                        amountQuote = Utilities.Truncate((from x in GetBalances() where x.Type == currencyPair.BaseCurrency select x.QuoteOnOrders).SingleOrDefault() / bestPricePerCoin);
+                        amountQuote = Utilities.TruncateDouble((from x in GetBalances() where x.Type == currencyPair.BaseCurrency select x.QuoteOnOrders).SingleOrDefault() / bestPricePerCoin);
 
                         if (amountQuote > 0)
                             tradeId = MoveOrder(currencyPair, tradeId, bestPricePerCoin, amountQuote);
@@ -287,7 +287,7 @@ namespace Jojatekok.PoloniexAPI
             Debug.WriteLine($"{orderType.ToString()}: {currencyPair}\n" +
                 $"bestPricePerCoin = {bestPricePerCoin}\n" +
                 $"amountQuote = {amountQuote}\n" +
-                $"USDT = {Utilities.Truncate(amountQuote * bestPricePerCoin)}");
+                $"USDT = {Utilities.TruncateDouble(amountQuote * bestPricePerCoin)}");
 
             return amountQuote;
         }
@@ -306,12 +306,12 @@ namespace Jojatekok.PoloniexAPI
             if (USDT == 0 || USDT > balance.QuoteAvailable)
             {
                 // La valeur a descendue entre temps... on parle ici du USDT... hummm...
-                amountQuote = Utilities.Truncate(balance.QuoteAvailable / bestPricePerCoin);
+                amountQuote = Utilities.TruncateDouble(balance.QuoteAvailable / bestPricePerCoin);
             }
             else
             {
                 // Transiger le montant spécifié dans le textbox
-                amountQuote = Utilities.Truncate(USDT / bestPricePerCoin);
+                amountQuote = Utilities.TruncateDouble(USDT / bestPricePerCoin);
             }
 
             return amountQuote;
@@ -339,7 +339,7 @@ namespace Jojatekok.PoloniexAPI
             else
             {
                 // Transiger le montant spécifié dans le textbox
-                amountQuote = Utilities.Truncate(USDT / bestPricePerCoin);
+                amountQuote = Utilities.TruncateDouble(USDT / bestPricePerCoin);
             }
 
             return amountQuote;
@@ -357,13 +357,13 @@ namespace Jojatekok.PoloniexAPI
             {
                 // Ne pas prendre les ordres de montants ridicules
                 // Ajouter un % à la meilleure offre pour être au top
-                return Utilities.Truncate(pricePerCoin + (pricePerCoin * BEST_PRICE_MULTIPLICATOR));
+                return Utilities.TruncateDouble(pricePerCoin + (pricePerCoin * BEST_PRICE_MULTIPLICATOR));
             }
             else // OrderType.Sell
             {
                 // Ne pas prendre les ordres de montants ridicules
                 // Ajouter un % à la meilleure offre pour être au top
-                return Utilities.Truncate(pricePerCoin - (pricePerCoin * BEST_PRICE_MULTIPLICATOR));
+                return Utilities.TruncateDouble(pricePerCoin - (pricePerCoin * BEST_PRICE_MULTIPLICATOR));
             }
         }
 
