@@ -72,8 +72,7 @@ namespace FormConsole.Sources
                                     //GetBalance(CurrencyPair);
                                     System.Media.SystemSounds.Exclamation.Play();
                                     MimeMessage message = folder.GetMessage(uid);
-                                    _signalSubject.OnNext(ExecuteBuySell(message, lastState));
-                                    //source.OnError(new Exception());
+                                    _signalSubject.OnNext(GetLastState(message, lastState));
                                     DeleteOldMessages(folder);
                                     MarkAllMessagesAsSeen(folder);
                                 }
@@ -82,6 +81,11 @@ namespace FormConsole.Sources
                                 await Task.Delay(5000);
                             }
                         }
+                    }
+                    catch (FolderNotFoundException ex)
+                    {
+                        _cts.Cancel();
+                        Debug.WriteLine($"{DateTime.Now} - GetSignal() - {ex}");
                     }
                     catch (Exception ex)
                     {
@@ -93,7 +97,7 @@ namespace FormConsole.Sources
             });
         }
 
-        public EnumStates ExecuteBuySell(MimeMessage message, EnumStates lastState)
+        public EnumStates GetLastState(MimeMessage message, EnumStates lastState)
         {
             CurrencyPair currencyPair = null;
             OrderModel order = new OrderModel();
@@ -111,47 +115,14 @@ namespace FormConsole.Sources
             {
                 Console.WriteLine($"{DateTime.Now} - {message.Date.LocalDateTime} - {message.Subject.Remove(0, 19)}");
                 lastState = EnumStates.BOUGHT;
-                Buy(currencyPair);
             }
             else if (lastState == EnumStates.BOUGHT && message.Subject.Contains("sell"))
             {
                 Console.WriteLine($"{DateTime.Now} - {message.Date.LocalDateTime} - {message.Subject.Remove(0, 19)}");
                 lastState = EnumStates.SOLD;
-                Sell(currencyPair);
             }
 
             return lastState;
-        }
-
-        private OrderModel Buy(CurrencyPair currencyPair)
-        {
-            OrderModel order = new OrderModel();
-
-            Console.WriteLine($"{DateTime.Now} - ACHETER!!");
-            //order = BIZ.PostBestBuyOrder(currencyPair);
-            Console.WriteLine($"{DateTime.Now} - OK DONE!! (idOrder: {order.IdOrder})\n");
-
-            //try
-            //{
-            //    Process.Start($"D:\\code\\Polov3\\CoinBot_Cv2\\bin\\Debug\\CoinBot_Cv2.exe", $" {currencyPair.BaseCurrency} {currencyPair.QuoteCurrency} {0} {0} {idOrder}");
-            //}
-            //catch (Exception)
-            //{
-            //    Process.Start($"C:\\bot\\CoinBot\\Application Files\\CoinBot_Cv2_1_0_0_0\\CoinBot_Cv2.exe", $" {currencyPair.BaseCurrency} {currencyPair.QuoteCurrency} {0} {0} {idOrder}");
-            //}
-
-            return order;
-        }
-
-        private OrderModel Sell(CurrencyPair currencyPair)
-        {
-            OrderModel order = new OrderModel();
-
-            Console.WriteLine($"{DateTime.Now} - VENDRE!!");
-            //order = BIZ.PostBestSellOrder(currencyPair, idOrder);
-            Console.WriteLine($"{DateTime.Now} - OK DONE!!\n");
-
-            return order;
         }
 
         private void DeleteOldMessages(IMailFolder folder)

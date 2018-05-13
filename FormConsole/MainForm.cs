@@ -7,6 +7,7 @@ using MailKit.Search;
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
@@ -33,8 +34,11 @@ namespace FormConsole
         Ticker _ticker;
         IDisposable _subsTicker;
 
-        IList<TickerModel> _trades = new List<TickerModel>();
-        BindingSource _source = null;
+        //IList<TickerModel> _trades = new List<TickerModel>();
+        BindingList<TickerModel> _blBots = new BindingList<TickerModel>();
+        BindingSource _bsBots = null;
+        BindingList<TickerModel> _blTrades = new BindingList<TickerModel>();
+        BindingSource _bsTrades = null;
 
         #region Properties
 
@@ -44,6 +48,42 @@ namespace FormConsole
             {
                 //return new CurrencyPair(tabsMarkets.SelectedTab.Text, cbbCoins.SelectedText);
                 return new CurrencyPair(lbCoins.SelectedItem.ToString());
+            }
+        }
+
+        private string BalancesBase
+        {
+            get
+            {
+                return lblBalancesBase.Text;
+            }
+            set
+            {
+                lblBalancesBase.Text = value;
+            }
+        }
+
+        private string BalancesQuote
+        {
+            get
+            {
+                return lblBalancesQuote.Text;
+            }
+            set
+            {
+                lblBalancesQuote.Text = value;
+            }
+        }
+
+        private string BotAmount
+        {
+            get
+            {
+                return txtBotAmount.Text;
+            }
+            set
+            {
+                txtBotAmount.Text = value;
             }
         }
 
@@ -232,6 +272,16 @@ namespace FormConsole
             return BIZ.GetCurrency(markets, CurrencyPair).PriceLast;
         }
 
+        private double GetBotAmount()
+        {
+            double? amount = Utilities.TryParseDouble(BotAmount);
+
+            if (amount != null)
+                return double.Parse(amount.ToString());
+
+            return 0;
+        }
+
         private double? GetBuySellPriceUsdt(IDictionary<CurrencyPair, IMarketData> markets)
         {
             if (CurrencyPair.BaseCurrency == CURRENCY_USDT)
@@ -303,13 +353,14 @@ namespace FormConsole
             InitializeComponent();
             FillCbbCoins();
 
-            dgvTrades.Columns[5].DefaultCellStyle.Format = "N4";
-            dgvTrades.Columns[6].DefaultCellStyle.Format = "N4";
-            dgvTrades.Columns[7].DefaultCellStyle.Format = "N4";
-            dgvTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvTrades.Columns[9].DefaultCellStyle.Format = "C";
-            dgvTrades.Columns[10].DefaultCellStyle.Format = "C";
-            dgvTrades.Columns[11].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
+            dgvCurrentTrades.Columns[1].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[6].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[7].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[8].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "C";
+            dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "C";
+            dgvCurrentTrades.Columns[11].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
 
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
 
@@ -324,13 +375,6 @@ namespace FormConsole
                 //.Sample(TimeSpan.FromMilliseconds(300)) //1 donnée au 300 ms pour affichage
                 .ObserveOn(WindowsFormsSynchronizationContext.Current) //Reviens sur le thread du UI
                 .Subscribe(x => DisplayBalances(x));
-
-            //_signal = new Signal(currencyPair);
-            //_subsSignal = _signal.DataSource
-            //    .ObserveOn(WindowsFormsSynchronizationContext.Current)
-            //    .Subscribe(x => DisplaySignal(x));
-
-            dgvTrades.DataSource = new List<TickerModel>();
         }
 
         private void FillCbbCoins()
@@ -338,41 +382,89 @@ namespace FormConsole
             lbCoins.DataSource = BIZ.GetMarket(tabsMarkets.SelectedTab.Text).ToList();
         }
 
-        private void DisplaySignal(EnumStates lastState)
-        {
-            txtBot.AppendText(lastState + Environment.NewLine);
-        }
-
         private void btnStartBot_Click(object sender, EventArgs e)
         {
             CurrencyPair currencyPair = new CurrencyPair(lbCoins.SelectedItem.ToString());
-            _ticker = new Ticker(currencyPair, 20, 0);
+            _ticker = new Ticker(currencyPair, GetBotAmount(), 0);
 
-            _subsTicker = _ticker.DataSource
-                .Select(x => CreateBot(x))
-                .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                .Subscribe(x => UpdateBots(x));
-        }
-
-        private TickerModel CreateBot(TickerModel ticker)
-        {
-            _trades.Add(ticker);
-            _source = new BindingSource();
-            _source.DataSource = _trades;
-            
-            return ticker;
-        }
-
-        private void UpdateBots(TickerModel ticker)
-        {
-            dgvTrades.DataSource = _source;
-
-            foreach (DataGridViewRow row in dgvTrades.Rows)
+            TickerModel bot = new TickerModel()
             {
-                if (ticker.profit >= 0)
-                    row.DefaultCellStyle.BackColor = Color.LightGreen;
-                else
-                    row.DefaultCellStyle.BackColor = Color.LightPink;
+                currencyPair = currencyPair
+            };
+
+            CreateBot(bot);
+        }
+
+        private void CreateBot(TickerModel bot)
+        {
+            if (!_blBots.Select(x => x.currencyPair).Contains(bot.currencyPair))
+            {
+                _blBots.Add(bot);
+
+                _signal = new Signal(CurrencyPair);
+                _subsSignal = _signal.DataSource
+                    .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                    .Subscribe(x => DisplaySignal(x, bot));
+
+                _bsBots = new BindingSource();
+                _bsBots.DataSource = _blBots;
+                dgvBots.DataSource = _bsBots;
+            }
+        }
+
+        private void DisplaySignal(EnumStates lastState, TickerModel bot)
+        {
+            switch (lastState)
+            {
+                case EnumStates.BOUGHT:
+                    ExecuteOrder.ExecuteBuySell(lastState, CurrencyPair);
+                    _blTrades.Add(bot);
+                    _bsTrades = new BindingSource();
+                    _bsTrades.DataSource = _blTrades;
+
+                    UpdateTrades(bot);
+
+                    _subsTicker = _ticker.DataSource
+                        //.Select(x => CreateBot(x))
+                        .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                        .Subscribe(x => UpdateTrades(x));
+
+                    break;
+                case EnumStates.SOLD:
+                    break;
+                case EnumStates.WAITING:
+                    break;
+                default:
+
+                    break;
+            }
+        }
+
+        private void UpdateTrades(TickerModel ticker)
+        {
+            dgvCurrentTrades.DataSource = _bsTrades;
+
+            foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
+            {
+                if (row.Cells[0].Value == ticker.currencyPair)
+                {
+                    row.Cells[1].Value = ticker.amountToTrade;
+                    row.Cells[2].Value = ticker.pricePaid;
+                    row.Cells[3].Value = ticker.priceLast;
+                    row.Cells[4].Value = ticker.highestPrice;
+                    row.Cells[5].Value = ticker.profit;
+                    row.Cells[6].Value = ticker.higuestProfit;
+                    row.Cells[7].Value = ticker.highestProfitDiff;
+                    row.Cells[8].Value = ticker.lossTolerance;
+                    row.Cells[9].Value = ticker.baseCurrencyTotal;
+                    row.Cells[10].Value = ticker.usdTotalValue;
+                    row.Cells[11].Value = DateTime.Now;
+
+                    if (ticker.profit >= 0)
+                        row.DefaultCellStyle.BackColor = Color.LightGreen;
+                    else
+                        row.DefaultCellStyle.BackColor = Color.LightPink;
+                }
             }
         }
 
@@ -383,19 +475,19 @@ namespace FormConsole
                 .OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
                 .ThenBy(x => x).ToList();
 
-            //UpdateBalance(balances);
+            UpdateBalances(balances);
             //UpdatePrice();
             //UpdateAmountUsdt();
         }
 
-        private void UpdateBalance(IList<BalanceModel> balances)
+        private void UpdateBalances(IList<BalanceModel> balances)
         {
-            BalanceBuy = balances
+            BalancesBase = balances
                 .Where(x => x.Type == CurrencyPair.BaseCurrency)
                 .Select(x => x.QuoteAvailable)
                 .FirstOrDefault().ToString();
 
-            BalanceSell = balances
+            BalancesQuote = balances
                 .Where(x => x.Type == CurrencyPair.QuoteCurrency)
                 .Select(x => x.QuoteAvailable)
                 .FirstOrDefault().ToString();
@@ -415,15 +507,17 @@ namespace FormConsole
 
         private void lbCoins_SelectedIndexChanged(object sender, EventArgs e)
         {
-            grbBuy.Text = $"Buy {CurrencyPair.QuoteCurrency}";
-            grbSell.Text = $"Sell {CurrencyPair.QuoteCurrency}";
+            gbTrade.Text = $"Trade {CurrencyPair.QuoteCurrency}";
+            
+            lblBalancesTitleBase.Text = $"{CurrencyPair.BaseCurrency}";
+            lblBalancesTitleQuote.Text = $"{CurrencyPair.QuoteCurrency}";
 
-            lblBalanceTitleBuy.Text = $"Balance {CurrencyPair.BaseCurrency}";
-            lblBalanceTitleSell.Text = $"Balance {CurrencyPair.QuoteCurrency}";
+            lblBalanceTitleBuy.Text = $"{CurrencyPair.BaseCurrency} Balance:";
+            lblBalanceTitleSell.Text = $"{CurrencyPair.QuoteCurrency} Balance:";
 
             IList<BalanceModel> balances = BIZ.GetBalances();
-            BalanceBuy = GetBuyBalance(balances).ToString();
-            BalanceSell = GetSellBalance(balances).ToString();
+            BalancesBase = BalanceBuy = BotAmount = GetBuyBalance(balances).ToString();
+            BalancesQuote = BalanceSell = GetSellBalance(balances).ToString();
 
             IDictionary<CurrencyPair, IMarketData> markets = BIZ.GetSummary();
             BuyPrice = SellPrice = GetBuySellPrice(markets).ToString();

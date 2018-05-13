@@ -33,17 +33,17 @@ namespace FormConsole.Sources
                 //que tu vas avoir mis. Tu pourrais par exemple mettre des where data != null etc.
 
                 return _balancesSubject
-                    .Buffer(TimeSpan.FromSeconds(120), 1)
-                    .Select(x =>
-                    {
-                        if (!x.Any())
-                        {
-                            GetBalances(_baseCurrency);
-                            return null;
-                        }
-                        return x.First();
-                    })
-                    .Where(x => x != null)
+                    //.Buffer(TimeSpan.FromSeconds(120), 1)
+                    //.Select(x =>
+                    //{
+                    //    if (!x.Any())
+                    //    {
+                    //        GetBalances(_baseCurrency);
+                    //        return null;
+                    //    }
+                    //    return x.First();
+                    //})
+                    //.Where(x => x != null)
                     .DistinctUntilChanged()
                     .ObserveOn(System.Reactive.Concurrency.Scheduler.Default); 
                 //Chaque abonnement (subscribe) se fait sur un Task différente ce qui donne un indépendance total entre chaque souscription
@@ -57,7 +57,6 @@ namespace FormConsole.Sources
 
         private Task GetBalances(string baseCurrency)
         {
-            Debug.WriteLine($"{DateTime.Now} - GetBalances(...)");
             return Task.Run(async () =>
             {
                 while (!_cts.IsCancellationRequested)
@@ -70,7 +69,7 @@ namespace FormConsole.Sources
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"{DateTime.Now} - GetBalances() - {ex}");
+                        Debug.WriteLine($"{DateTime.Now} - GetBalances() - {ex.Message}");
                     }
                 }
 
