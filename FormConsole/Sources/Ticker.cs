@@ -23,7 +23,7 @@ namespace FormConsole.Sources
         const double LOSS_TOLERANCE_MULTIPLICATOR = 0.2;
 
         Business BIZ = new Business();
-        EnumStates lastState = EnumStates.WAITING;
+        EnumStatus lastState = EnumStatus.WAITING;
 
         public Ticker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, ulong idOrder = 0)
         {
@@ -54,7 +54,7 @@ namespace FormConsole.Sources
             IMarketData marketToTrade = null;
             IMarketData usdtMarket = null;
 
-            lastState = EnumStates.BOUGHT;
+            lastState = EnumStatus.BOUGHT;
 
             double previousProfit = -1;
             double profit = 0;
@@ -126,18 +126,18 @@ namespace FormConsole.Sources
 
                             ticker = new TickerModel()
                             {
-                                currencyPair = currencyPair,
-                                amountToTrade = amountToTrade,
-                                pricePaid = pricePaid,
-                                priceLast = marketToTrade.PriceLast,
-                                highestPrice = highestPrice,
-                                profit = profit,
-                                higuestProfit = highestProfit,
-                                highestProfitDiff = highestProfitDiff,
-                                lossTolerance = lossTolerance,
-                                baseCurrencyTotal = baseCurrencyTotal,
-                                usdTotalValue = usdTotalValue,
-                                time = DateTime.Now
+                                CurrencyPair = currencyPair,
+                                Amount = amountToTrade,
+                                PricePaid = pricePaid,
+                                PriceLast = marketToTrade.PriceLast,
+                                HighestPrice = highestPrice,
+                                Profit = profit,
+                                HiguestProfit = highestProfit,
+                                HighestProfitDiff = highestProfitDiff,
+                                LossTolerance = lossTolerance,
+                                BaseCurrencyTotal = baseCurrencyTotal,
+                                UsdTotalValue = usdTotalValue,
+                                Time = DateTime.Now
                             };
 
                             _tickerSubject.OnNext(ticker);

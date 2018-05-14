@@ -9,17 +9,18 @@ namespace Jojatekok.PoloniexAPI
 {
     public class TickerModel
     {
-        public CurrencyPair currencyPair { get; set; }
-        public double amountToTrade { get; set; }
-        public double pricePaid { get; set; }
-        public double priceLast { get; set; }
-        public double highestPrice { get; set; }
-        public double profit { get; set; }
-        public double higuestProfit { get; set; }
-        public double highestProfitDiff { get; set; }
-        public double lossTolerance { get; set; }        
-        public double baseCurrencyTotal { get; set; }
-        public double usdTotalValue { get; set; }
-        public DateTime time { get; set; }
+        public CurrencyPair CurrencyPair { get; set; }
+        public string Status { get; set; }
+        public double Amount { get; set; }
+        public double PricePaid { get; set; }
+        public double PriceLast { get; set; }
+        public double HighestPrice { get; set; }
+        public double Profit { get; set; }
+        public double HiguestProfit { get; set; }
+        public double HighestProfitDiff { get; set; }
+        public double LossTolerance { get; set; }        
+        public double BaseCurrencyTotal { get; set; }
+        public double UsdTotalValue { get; set; }
+        public DateTime Time { get; set; }
     }
 }

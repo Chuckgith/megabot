@@ -16,18 +16,18 @@ namespace FormConsole.Sources
 {
     public class Signal : IDisposable
     {
-        ISubject<EnumStates> _signalSubject = new Subject<EnumStates>();
+        ISubject<EnumStatus> _signalSubject = new Subject<EnumStatus>();
         Task _signalLoop;
         CancellationTokenSource _cts = new CancellationTokenSource();
 
-        EnumStates lastState = EnumStates.WAITING;
+        EnumStatus lastState = EnumStatus.WAITING;
 
         public Signal(CurrencyPair currencyPair)
         {
             _signalLoop = GetSignal(currencyPair);
         }
 
-        public IObservable<EnumStates> DataSource
+        public IObservable<EnumStatus> DataSource
         {
             get
             {
@@ -97,7 +97,7 @@ namespace FormConsole.Sources
             });
         }
 
-        public EnumStates GetLastState(MimeMessage message, EnumStates lastState)
+        public EnumStatus GetLastState(MimeMessage message, EnumStatus status)
         {
             CurrencyPair currencyPair = null;
             OrderModel order = new OrderModel();
@@ -106,23 +106,23 @@ namespace FormConsole.Sources
             var valueSplit = message.Subject.Remove(0, 19).Split(',');
             currencyPair = new CurrencyPair(valueSplit[0].Trim().ToUpper());
 
-            if (lastState == EnumStates.WAITING && message.Subject.Contains("sell"))
-                return lastState;
-            else if (lastState == EnumStates.WAITING && message.Subject.Contains("buy"))
-                lastState = EnumStates.SOLD;
+            if (status == EnumStatus.WAITING && message.Subject.Contains("sell"))
+                return status;
+            else if (status == EnumStatus.WAITING && message.Subject.Contains("buy"))
+                status = EnumStatus.SOLD;
 
-            if (lastState == EnumStates.SOLD && message.Subject.Contains("buy"))
+            if (status == EnumStatus.SOLD && message.Subject.Contains("buy"))
             {
                 Console.WriteLine($"{DateTime.Now} - {message.Date.LocalDateTime} - {message.Subject.Remove(0, 19)}");
-                lastState = EnumStates.BOUGHT;
+                status = EnumStatus.BOUGHT;
             }
-            else if (lastState == EnumStates.BOUGHT && message.Subject.Contains("sell"))
+            else if (status == EnumStatus.BOUGHT && message.Subject.Contains("sell"))
             {
                 Console.WriteLine($"{DateTime.Now} - {message.Date.LocalDateTime} - {message.Subject.Remove(0, 19)}");
-                lastState = EnumStates.SOLD;
+                status = EnumStatus.SOLD;
             }
 
-            return lastState;
+            return status;
         }
 
         private void DeleteOldMessages(IMailFolder folder)

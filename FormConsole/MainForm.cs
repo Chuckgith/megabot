@@ -353,14 +353,14 @@ namespace FormConsole
             InitializeComponent();
             FillCbbCoins();
 
-            dgvCurrentTrades.Columns[1].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[6].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[7].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "C";
-            dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "C";
-            dgvCurrentTrades.Columns[11].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
+            dgvCurrentTrades.Columns[2].DefaultCellStyle.Format = "N8";
+            //dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N4";
+            //dgvCurrentTrades.Columns[6].DefaultCellStyle.Format = "N4";
+            //dgvCurrentTrades.Columns[7].DefaultCellStyle.Format = "N4";
+            //dgvCurrentTrades.Columns[8].DefaultCellStyle.Format = "N4";
+            //dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "C";
+            //dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "C";
+            //dgvCurrentTrades.Columns["Time"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss";
 
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
 
@@ -389,7 +389,8 @@ namespace FormConsole
 
             TickerModel bot = new TickerModel()
             {
-                currencyPair = currencyPair
+                CurrencyPair = currencyPair,
+                Status = EnumStatus.WAITING.ToString()
             };
 
             CreateBot(bot);
@@ -397,42 +398,51 @@ namespace FormConsole
 
         private void CreateBot(TickerModel bot)
         {
-            if (!_blBots.Select(x => x.currencyPair).Contains(bot.currencyPair))
+            if (!_blBots.Select(x => x.CurrencyPair).Contains(bot.CurrencyPair))
             {
-                _blBots.Add(bot);
+                //_blBots.Add(bot);
+                //_bsBots = new BindingSource();
+                //_bsBots.DataSource = _blBots;
+                //dgvBots.DataSource = _bsBots;
 
                 _signal = new Signal(CurrencyPair);
                 _subsSignal = _signal.DataSource
                     .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                    .Subscribe(x => DisplaySignal(x, bot));
+                    .Subscribe(x => DisplaySignal(bot, x));
 
-                _bsBots = new BindingSource();
-                _bsBots.DataSource = _blBots;
-                dgvBots.DataSource = _bsBots;
+                _blTrades.Add(bot);
+                _bsTrades = new BindingSource();
+                _bsTrades.DataSource = _blTrades;
+                dgvCurrentTrades.DataSource = _bsTrades;
+                //UpdateTrades(bot);
             }
         }
 
-        private void DisplaySignal(EnumStates lastState, TickerModel bot)
+        private void DisplaySignal(TickerModel bot, EnumStatus status)
         {
-            switch (lastState)
+            OrderModel order = null;
+
+            switch (status)
             {
-                case EnumStates.BOUGHT:
-                    ExecuteOrder.ExecuteBuySell(lastState, CurrencyPair);
-                    _blTrades.Add(bot);
-                    _bsTrades = new BindingSource();
-                    _bsTrades.DataSource = _blTrades;
+                case EnumStatus.BOUGHT:
+                    if (bot.Status == EnumStatus.WAITING.ToString())
+                    {
+                        bot.Status = EnumStatus.BUYING.ToString();
 
-                    UpdateTrades(bot);
+                        order = ExecuteOrder.ExecuteBuySell(status, CurrencyPair);
+                        bot.Status = EnumStatus.BOUGHT.ToString();
 
-                    _subsTicker = _ticker.DataSource
-                        //.Select(x => CreateBot(x))
-                        .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                        .Subscribe(x => UpdateTrades(x));
+                        bot.Amount = GetBotAmount();
 
+                        _subsTicker = _ticker.DataSource
+                            //.Select(x => CreateBot(x))
+                            .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                            .Subscribe(x => UpdateTrades(x));
+                    }
                     break;
-                case EnumStates.SOLD:
+                case EnumStatus.SOLD:
                     break;
-                case EnumStates.WAITING:
+                case EnumStatus.WAITING:
                     break;
                 default:
 
@@ -442,25 +452,24 @@ namespace FormConsole
 
         private void UpdateTrades(TickerModel ticker)
         {
-            dgvCurrentTrades.DataSource = _bsTrades;
+            //dgvCurrentTrades.DataSource = _bsTrades;
 
             foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
             {
-                if (row.Cells[0].Value == ticker.currencyPair)
+                if ((CurrencyPair)row.Cells[0].Value == ticker.CurrencyPair)
                 {
-                    row.Cells[1].Value = ticker.amountToTrade;
-                    row.Cells[2].Value = ticker.pricePaid;
-                    row.Cells[3].Value = ticker.priceLast;
-                    row.Cells[4].Value = ticker.highestPrice;
-                    row.Cells[5].Value = ticker.profit;
-                    row.Cells[6].Value = ticker.higuestProfit;
-                    row.Cells[7].Value = ticker.highestProfitDiff;
-                    row.Cells[8].Value = ticker.lossTolerance;
-                    row.Cells[9].Value = ticker.baseCurrencyTotal;
-                    row.Cells[10].Value = ticker.usdTotalValue;
-                    row.Cells[11].Value = DateTime.Now;
+                    DataGridHelper.SetCell(row.Cells, "PricePaid", ticker.Amount);
+                    DataGridHelper.SetCell(row.Cells, "PriceLast", ticker.PriceLast);
+                    DataGridHelper.SetCell(row.Cells, "HighestPrice", ticker.HighestPrice);
+                    DataGridHelper.SetCell(row.Cells, "Profit", ticker.Profit);
+                    DataGridHelper.SetCell(row.Cells, "HiguestProfit", ticker.HiguestProfit);
+                    DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", ticker.HighestProfitDiff);
+                    DataGridHelper.SetCell(row.Cells, "LossTolerance", ticker.LossTolerance);
+                    DataGridHelper.SetCell(row.Cells, "BaseCurrencyTotal", ticker.BaseCurrencyTotal);
+                    DataGridHelper.SetCell(row.Cells, "UsdTotalValue", ticker.UsdTotalValue);
+                    DataGridHelper.SetCell(row.Cells, "Time", DateTime.Now);
 
-                    if (ticker.profit >= 0)
+                    if (ticker.Profit >= 0)
                         row.DefaultCellStyle.BackColor = Color.LightGreen;
                     else
                         row.DefaultCellStyle.BackColor = Color.LightPink;

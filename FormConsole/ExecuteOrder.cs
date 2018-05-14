@@ -10,23 +10,23 @@ namespace FormConsole
 {
     static class ExecuteOrder
     {
-        public static OrderModel ExecuteBuySell(EnumStates lastState, CurrencyPair currencyPair)
+        public static OrderModel ExecuteBuySell(EnumStatus status, CurrencyPair currencyPair)
         {
             OrderModel order = new OrderModel();
 
-            if (lastState == EnumStates.WAITING)
+            if (status == EnumStatus.WAITING)
                 return null;
 
-            if (lastState == EnumStates.SOLD)
+            if (status == EnumStatus.SOLD)
             {
                 Console.WriteLine($"{DateTime.Now} - {currencyPair}");
-                lastState = EnumStates.BOUGHT;
+                status = EnumStatus.BOUGHT;
                 Buy(currencyPair);
             }
-            else if (lastState == EnumStates.BOUGHT)
+            else if (status == EnumStatus.BOUGHT)
             {
                 Console.WriteLine($"{DateTime.Now} - {currencyPair}");
-                lastState = EnumStates.SOLD;
+                status = EnumStatus.SOLD;
                 Sell(currencyPair);
             }
 

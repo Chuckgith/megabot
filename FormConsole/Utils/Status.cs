@@ -6,9 +6,11 @@ using System.Text;
 
 namespace FormConsole
 {
-    public enum EnumStates
+    public enum EnumStatus
     {
+        BUYING,
         BOUGHT,
+        SELLING,
         SOLD,
         WAITING
     };

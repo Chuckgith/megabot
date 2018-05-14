@@ -65,7 +65,7 @@ namespace FormConsole.Sources
                     {
                         IList<BalanceModel> balances = (from x in BIZ.GetBalances() select x).ToList();
                         _balancesSubject.OnNext(balances);
-                        await Task.Delay(5000);
+                        await Task.Delay(10000);
                     }
                     catch (Exception ex)
                     {
