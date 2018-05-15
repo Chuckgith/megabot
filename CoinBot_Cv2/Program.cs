@@ -216,7 +216,7 @@ namespace CoinBot_Cv2
                 Console.WriteLine(string.Format("\n{0} ({1}%)\n", ReasonToSell.TOLERANCE_PROFIT_PRICEPAID, TOLERANCE_PROFIT_PRICEPAID));
 
                 //if (mode == Mode.REAL)
-                    BIZ.PostBestSellOrder(currencyPair, idOrder);
+                    //BIZ.PostBestSellOrder(currencyPair, idOrder);
 
                 lastState = EnumLastState.SOLD;
             }
@@ -235,7 +235,7 @@ namespace CoinBot_Cv2
                 Console.WriteLine(string.Format("\n{0} ({1}%)\n", ReasonToSell.TOLERANCE_PROFIT_HIGHDIFF, TOLERANCE_PROFIT_HIGHDIFF));
 
                 //if (mode == Mode.REAL)
-                    BIZ.PostBestSellOrder(currencyPair, idOrder);
+                    //BIZ.PostBestSellOrder(currencyPair, idOrder);
 
                 lastState = EnumLastState.SOLD;
             }

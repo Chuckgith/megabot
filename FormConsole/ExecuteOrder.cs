@@ -5,29 +5,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace FormConsole
 {
     static class ExecuteOrder
     {
-        public static OrderModel ExecuteBuySell(EnumStatus status, CurrencyPair currencyPair)
+        public static OrderModel ExecuteBuySell(OrderType orderType, CurrencyPair currencyPair)
         {
             OrderModel order = new OrderModel();
 
-            if (status == EnumStatus.WAITING)
-                return null;
-
-            if (status == EnumStatus.SOLD)
+            if (orderType == OrderType.Buy)
             {
-                Console.WriteLine($"{DateTime.Now} - {currencyPair}");
-                status = EnumStatus.BOUGHT;
-                Buy(currencyPair);
+                order = Buy(currencyPair);
+                Thread.Sleep(2000);
             }
-            else if (status == EnumStatus.BOUGHT)
+            else if (orderType == OrderType.Sell)
             {
-                Console.WriteLine($"{DateTime.Now} - {currencyPair}");
-                status = EnumStatus.SOLD;
-                Sell(currencyPair);
+                order = Sell(currencyPair);
+                Thread.Sleep(2000);
             }
 
             return order;
@@ -37,9 +33,7 @@ namespace FormConsole
         {
             OrderModel order = new OrderModel();
 
-            Console.WriteLine($"{DateTime.Now} - ACHETER!!");
             //order = BIZ.PostBestBuyOrder(currencyPair);
-            Console.WriteLine($"{DateTime.Now} - OK DONE!! (idOrder: {order.IdOrder})\n");
 
             return order;
         }
@@ -48,9 +42,7 @@ namespace FormConsole
         {
             OrderModel order = new OrderModel();
 
-            Console.WriteLine($"{DateTime.Now} - VENDRE!!");
             //order = BIZ.PostBestSellOrder(currencyPair, idOrder);
-            Console.WriteLine($"{DateTime.Now} - OK DONE!!\n");
 
             return order;
         }

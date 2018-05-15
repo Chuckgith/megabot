@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Reactive.Linq;
 using System.Diagnostics;
+using System.Net;
 
 namespace FormConsole.Sources
 {
@@ -66,6 +67,11 @@ namespace FormConsole.Sources
                         IList<BalanceModel> balances = (from x in BIZ.GetBalances() select x).ToList();
                         _balancesSubject.OnNext(balances);
                         await Task.Delay(10000);
+                    }
+                    // erreurs connues: 502, 520
+                    catch (WebException ex)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - GetBalances() - {ex.Message}");
                     }
                     catch (Exception ex)
                     {

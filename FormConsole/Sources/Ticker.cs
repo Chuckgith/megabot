@@ -8,6 +8,7 @@ using System.Threading;
 using System.Reactive.Linq;
 using Jojatekok.PoloniexAPI.MarketTools;
 using System.Diagnostics;
+using System.Net;
 
 namespace FormConsole.Sources
 {
@@ -23,11 +24,10 @@ namespace FormConsole.Sources
         const double LOSS_TOLERANCE_MULTIPLICATOR = 0.2;
 
         Business BIZ = new Business();
-        EnumStatus lastState = EnumStatus.WAITING;
 
-        public Ticker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, ulong idOrder = 0)
+        public Ticker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, double lossTolerance, ulong idOrder = 0)
         {
-            _tickerLoop = GetTicker(currencyPair, amountToTrade, pricePaid, idOrder);
+            _tickerLoop = GetTicker(currencyPair, amountToTrade, pricePaid, lossTolerance, idOrder);
         }
 
         public IObservable<TickerModel> DataSource
@@ -38,8 +38,8 @@ namespace FormConsole.Sources
                 //que tu vas avoir mis. Tu pourrais par exemple mettre des where data != null etc.
 
                 return _tickerSubject
-                    .DistinctUntilChanged() //Lève des évènements seulement si la donnée a changée
-                    .ObserveOn(System.Reactive.Concurrency.Scheduler.Default); //Chaque abonnement (subscribe) se fait sur un Task différente ce qui donne un indépendance total entre chaque souscription
+                    .DistinctUntilChanged() // Lève des évènements seulement si la donnée a changée
+                    .ObserveOn(System.Reactive.Concurrency.Scheduler.Default); // Chaque abonnement se fait sur un Task différent
             }
         }
 
@@ -48,13 +48,11 @@ namespace FormConsole.Sources
             _cts.Cancel();
         }
 
-        private Task GetTicker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, ulong idOrder = 0)
+        private Task GetTicker(CurrencyPair currencyPair, double amount, double pricePaid, double lossTolerance, ulong idOrder = 0)
         {
             IDictionary<CurrencyPair, IMarketData> markets;
             IMarketData marketToTrade = null;
             IMarketData usdtMarket = null;
-
-            lastState = EnumStatus.BOUGHT;
 
             double previousProfit = -1;
             double profit = 0;
@@ -63,7 +61,6 @@ namespace FormConsole.Sources
             double highestPrice = 0;
             double baseCurrencyTotal = 0;
             double usdTotalValue = 0;
-            double lossTolerance = 0;
 
             var currencyPairUsdt = new CurrencyPair(CURRENCY_USDT, currencyPair.BaseCurrency);
 
@@ -76,7 +73,7 @@ namespace FormConsole.Sources
             if (idOrder != 0)
             {
                 // Aller chercher les vraies chiffres
-                amountToTrade = (from x in BIZ.GetBalances() where x.Type == currencyPair.QuoteCurrency select x.USDT_Value).SingleOrDefault();
+                amount = (from x in BIZ.GetBalances() where x.Type == currencyPair.QuoteCurrency select x.USDT_Value).SingleOrDefault();
 
                 pricePaid = BIZ.GetTrades(currencyPair).Where(x => x.IdOrder == idOrder).FirstOrDefault().PricePerCoin;
             }
@@ -88,17 +85,17 @@ namespace FormConsole.Sources
             }
 
             // Enlève un pourcentage du montant à transiger si le prix payé était plus haut que le prix courant
-            amountToTrade = amountToTrade + (marketToTrade.PriceLast / pricePaid) * 100 - 100;
+            amount = amount + (marketToTrade.PriceLast / pricePaid) * 100 - 100;
 
             // Identifier l'unité de base de la monnaie à marchander
             if (currencyPair.BaseCurrency == CURRENCY_USDT)
             {
-                baseCurrencyUnitPrice = amountToTrade / marketToTrade.PriceLast;
+                baseCurrencyUnitPrice = amount / marketToTrade.PriceLast;
             }
             else
             {
                 usdtMarket = BIZ.GetCurrency(markets, currencyPairUsdt);
-                baseCurrencyUnitPrice = (amountToTrade / usdtMarket.PriceLast) / marketToTrade.PriceLast;
+                baseCurrencyUnitPrice = (amount / usdtMarket.PriceLast) / marketToTrade.PriceLast;
             }
 
             TickerModel ticker;
@@ -127,16 +124,14 @@ namespace FormConsole.Sources
                             ticker = new TickerModel()
                             {
                                 CurrencyPair = currencyPair,
-                                Amount = amountToTrade,
-                                PricePaid = pricePaid,
                                 PriceLast = marketToTrade.PriceLast,
                                 HighestPrice = highestPrice,
                                 Profit = profit,
                                 HiguestProfit = highestProfit,
                                 HighestProfitDiff = highestProfitDiff,
-                                LossTolerance = lossTolerance,
                                 BaseCurrencyTotal = baseCurrencyTotal,
                                 UsdTotalValue = usdTotalValue,
+                                LossTolerance = lossTolerance,
                                 Time = DateTime.Now
                             };
 
@@ -146,9 +141,14 @@ namespace FormConsole.Sources
 
                         await Task.Delay(5000);
                     }
+                    // erreurs connues: 404
+                    catch (WebException ex)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - GetTicker() - {ex.Message}");
+                    }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"{DateTime.Now} - GetTicker() - {ex}");
+                        Debug.WriteLine($"{DateTime.Now} - GetTicker() - {ex.Message}");
                     }
                 }
 

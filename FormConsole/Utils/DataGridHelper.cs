@@ -9,7 +9,7 @@ namespace FormConsole
 {
     public static class DataGridHelper
     {
-        public static object GetCell(this DataGridViewCellCollection CellCollection, string HeaderText)
+        public static object GetCell(DataGridViewCellCollection CellCollection, string HeaderText)
         {
             return CellCollection.Cast<DataGridViewCell>().First(c => c.OwningColumn.HeaderText == HeaderText).Value;
         }
