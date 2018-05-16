@@ -131,7 +131,7 @@ namespace FormConsole.Sources
                                 HighestProfitDiff = highestProfitDiff,
                                 BaseCurrencyTotal = baseCurrencyTotal,
                                 UsdTotalValue = usdTotalValue,
-                                Time = DateTime.Now
+                                LastTicker = DateTime.Now
                             };
 
                             _tickerSubject.OnNext(ticker);
