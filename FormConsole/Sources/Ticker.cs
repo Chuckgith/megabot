@@ -123,7 +123,7 @@ namespace FormConsole.Sources
 
                             ticker = new TickerModel()
                             {
-                                CurrencyPair = currencyPair,
+                                //CurrencyPair = currencyPair,
                                 PriceLast = marketToTrade.PriceLast,
                                 HighestPrice = highestPrice,
                                 Profit = profit,
@@ -131,12 +131,10 @@ namespace FormConsole.Sources
                                 HighestProfitDiff = highestProfitDiff,
                                 BaseCurrencyTotal = baseCurrencyTotal,
                                 UsdTotalValue = usdTotalValue,
-                                LossTolerance = lossTolerance,
                                 Time = DateTime.Now
                             };
 
                             _tickerSubject.OnNext(ticker);
-                            //CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
                         }
 
                         await Task.Delay(5000);

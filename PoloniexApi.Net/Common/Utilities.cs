@@ -13,6 +13,13 @@ namespace Jojatekok.PoloniexAPI
         public static double? TryParseDouble(string text)
         {
             if (double.TryParse(text.Replace(".", ","), out double temp))
+                return temp;
+            return null;
+        }
+
+        public static double? TryParseDoublePolo(string text)
+        {
+            if (double.TryParse(text.Replace(".", ","), out double temp))
                 return TruncateDouble(temp);
             return null;
         }

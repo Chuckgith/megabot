@@ -100,6 +100,7 @@ namespace FormConsole.Sources
                         {
                             client.Disconnect(true);
                             client.Dispose();
+                            await Task.Delay(5000);
                         }
                     }                    
                 }

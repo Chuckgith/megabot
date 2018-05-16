@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="ExecuteOrder.cs" />
     <Compile Include="Models\BotModel.cs" />
+    <Compile Include="Models\FlatBotModel.cs" />
     <Compile Include="Models\SignalModel.cs" />
     <Compile Include="Models\TickerModel.cs" />
     <Compile Include="Sources\Balances.cs" />
@@ -96,6 +97,8 @@
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\BotModel.datasource" />
+    <None Include="Properties\DataSources\FlatBotModel.datasource" />
+    <None Include="Properties\DataSources\FlatBotModel1.datasource" />
     <None Include="Properties\DataSources\Jojatekok.PoloniexAPI.BalanceModel.datasource" />
     <None Include="Properties\DataSources\Jojatekok.PoloniexAPI.TickerModel.datasource" />
     <None Include="Properties\Settings.settings">
