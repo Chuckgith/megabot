@@ -381,32 +381,36 @@ namespace FormConsole
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
 
             dgvCurrentTrades.Columns[2].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[3].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[4].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N8";
+            dgvCurrentTrades.Columns[3].DefaultCellStyle.Format = "N2";
+            dgvCurrentTrades.Columns[4].DefaultCellStyle.Format = "N2";
+            dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N2";
             dgvCurrentTrades.Columns[6].DefaultCellStyle.Format = "N8";
             dgvCurrentTrades.Columns[7].DefaultCellStyle.Format = "N4";
             dgvCurrentTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[11].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[12].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
+            dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[11].DefaultCellStyle.Format = "N4";
+            dgvCurrentTrades.Columns[12].DefaultCellStyle.Format = "N8";
+            dgvCurrentTrades.Columns[13].DefaultCellStyle.Format = "N2";
+            dgvCurrentTrades.Columns[14].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
 
             dgvClosedTrades.Columns[2].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[3].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[4].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[5].DefaultCellStyle.Format = "N8";
+            dgvClosedTrades.Columns[3].DefaultCellStyle.Format = "N2";
+            dgvClosedTrades.Columns[4].DefaultCellStyle.Format = "N2";
+            dgvClosedTrades.Columns[5].DefaultCellStyle.Format = "N2";
             dgvClosedTrades.Columns[6].DefaultCellStyle.Format = "N8";
             dgvClosedTrades.Columns[7].DefaultCellStyle.Format = "N4";
             dgvClosedTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[9].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[10].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[11].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[12].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
+            dgvClosedTrades.Columns[9].DefaultCellStyle.Format = "N4";
+            dgvClosedTrades.Columns[10].DefaultCellStyle.Format = "N4";
+            dgvClosedTrades.Columns[11].DefaultCellStyle.Format = "N4";
+            dgvClosedTrades.Columns[12].DefaultCellStyle.Format = "N8";
+            dgvClosedTrades.Columns[13].DefaultCellStyle.Format = "N2";
+            dgvClosedTrades.Columns[14].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
 
             lbCoins.SelectedIndex = lbCoins.FindStringExact("usdt_btc");
 
-            BotLosstolerance = "-0.001";
+            BotLosstolerance = "-1";
             BotMultiplicator = "0.2";
 
             if (_balances != null) //Si existe, alors dispose objet existant (pour sortir de la boucle)
@@ -434,8 +438,8 @@ namespace FormConsole
                 Status = EnumStatus.WAITING,
                 Amount = GetBotAmount(),
                 LossTolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
-                ToleranceProfitHighDiff = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
-                LossToleranceMultiplicator = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString())
+                LossToleranceMultiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString()),
+                ToleranceProfitHighDiff = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString())                
             };
 
             CreateBot(bot);
@@ -495,7 +499,7 @@ namespace FormConsole
 
             bot.PricePaid = order.PricePerCoin;
 
-            _ticker = new Ticker(bot.CurrencyPair, bot.Amount, bot.PricePaid, bot.LossTolerance, 0);
+            _ticker = new Ticker(bot.CurrencyPair, bot.Amount, bot.PricePaid, 0);
             _subsTickers.Add(bot.CurrencyPair, (_ticker.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 .Subscribe(x => UpdateTrades(bot, x))));
@@ -519,19 +523,24 @@ namespace FormConsole
             txtLogs.AppendText($" => OK SOLD (elapsed time: {elapsedTime / 1000} secs){Environment.NewLine}");
             bot.Status = EnumStatus.SOLD;
 
-            if (_subsTickers.TryGetValue(bot.CurrencyPair, out IDisposable subscribe))
-            {
-                _subsTickers.Remove(bot.CurrencyPair);
-                _subsSignals.Remove(bot.CurrencyPair);
-                subscribe.Dispose();
-            }
+            DisposeSubscribeTicker(bot);
 
+            AddClosedTrade(bot);
+
+            bot.Status = EnumStatus.WAITING;
+            UpdateTrades(bot);
+        }
+
+        private void AddClosedTrade(BotModel bot)
+        {
             FlatBotModel botClosed = new FlatBotModel()
             {
                 CurrencyPair = bot.CurrencyPair,
                 Status = bot.Status,
                 Amount = bot.Amount,
                 LossTolerance = bot.LossTolerance,
+                ToleranceProfitHighDiff = bot.ToleranceProfitHighDiff,
+                LossToleranceMultiplicator = bot.LossToleranceMultiplicator,
                 PricePaid = bot.PricePaid,
                 PriceLast = bot.Ticker.PriceLast,
                 HighestPrice = bot.Ticker.HighestPrice,
@@ -547,8 +556,16 @@ namespace FormConsole
             _bsClosedTrades = new BindingSource(_blClosedTrades, null);
             dgvClosedTrades.DataSource = _bsClosedTrades;
 
-            bot.Status = EnumStatus.WAITING;
-            UpdateTrades(bot);
+            foreach (DataGridViewRow row in dgvClosedTrades.Rows)
+            {
+                if (object.Equals(DataGridHelper.GetCell(row.Cells, "CurrencyPair"), botClosed.CurrencyPair))
+                {
+                    if (botClosed.Profit >= 0)
+                        row.DefaultCellStyle.BackColor = Color.LightGreen;
+                    else
+                        row.DefaultCellStyle.BackColor = Color.LightPink;
+                }
+            }
         }
 
         private void UpdateTrades(BotModel bot, TickerModel ticker = null)
@@ -608,7 +625,9 @@ namespace FormConsole
             if (ticker == null)
                 return false;
 
-            if (//ticker.HighestProfitDiff < -0.3 &&
+            bot.ToleranceProfitHighDiff = bot.LossTolerance + (ticker.HiguestProfit * bot.LossToleranceMultiplicator);
+
+            if (ticker.HighestProfitDiff < -0.3 &&
                 ticker.HighestProfitDiff < bot.ToleranceProfitHighDiff)
             {
                 System.Media.SystemSounds.Exclamation.Play();
@@ -686,6 +705,15 @@ namespace FormConsole
             BuyAmountUsdt = string.Empty;
             SellAmountUsdt = string.Empty;
 
+        }
+
+        private void DisposeSubscribeTicker(BotModel bot)
+        {
+            if (_subsTickers.TryGetValue(bot.CurrencyPair, out IDisposable subscribe))
+            {
+                _subsTickers.Remove(bot.CurrencyPair);
+                subscribe.Dispose();
+            }
         }
 
         #region Buttons percentages

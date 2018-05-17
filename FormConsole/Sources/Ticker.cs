@@ -25,9 +25,9 @@ namespace FormConsole.Sources
 
         Business BIZ = new Business();
 
-        public Ticker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, double lossTolerance, ulong idOrder = 0)
+        public Ticker(CurrencyPair currencyPair, double amountToTrade, double pricePaid, ulong idOrder = 0)
         {
-            _tickerLoop = GetTicker(currencyPair, amountToTrade, pricePaid, lossTolerance, idOrder);
+            _tickerLoop = GetTicker(currencyPair, amountToTrade, pricePaid, idOrder);
         }
 
         public IObservable<TickerModel> DataSource
@@ -48,7 +48,7 @@ namespace FormConsole.Sources
             _cts.Cancel();
         }
 
-        private Task GetTicker(CurrencyPair currencyPair, double amount, double pricePaid, double lossTolerance, ulong idOrder = 0)
+        private Task GetTicker(CurrencyPair currencyPair, double amount, double pricePaid, ulong idOrder = 0)
         {
             IDictionary<CurrencyPair, IMarketData> markets;
             IMarketData marketToTrade = null;
@@ -110,7 +110,6 @@ namespace FormConsole.Sources
 
                         profit = (marketToTrade.PriceLast / pricePaid) * 100 - 100;
                         highestProfit = profit > highestProfit ? profit : highestProfit;
-                        lossTolerance = TOLERANCE_PROFIT_HIGHDIFF + (highestProfit * LOSS_TOLERANCE_MULTIPLICATOR);
 
                         // Évite d'afficher les données si rien n'a changé
                         if (Math.Round(previousProfit, 4) != Math.Round(profit, 4))
