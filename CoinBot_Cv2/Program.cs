@@ -254,7 +254,7 @@ namespace CoinBot_Cv2
         }
 
         private static void Display(
-            CurrencyPair currencyPair, IMarketData market, double profit, double higuestProfit, double highestProfitDiff, double lossTolerance, double highestPrice, 
+            CurrencyPair currencyPair, IMarketData market, double profit, double highestProfit, double highestProfitDiff, double lossTolerance, double highestPrice, 
             double baseCurrencyTotal, double usdTotalValue, double pricePaid, double amountToTrade)
         {
             string arrow = SetDisplay(profit);

@@ -126,7 +126,7 @@ namespace FormConsole.Sources
                                 PriceLast = marketToTrade.PriceLast,
                                 HighestPrice = highestPrice,
                                 Profit = profit,
-                                HiguestProfit = highestProfit,
+                                HighestProfit = highestProfit,
                                 HighestProfitDiff = highestProfitDiff,
                                 BaseCurrencyTotal = baseCurrencyTotal,
                                 UsdTotalValue = usdTotalValue,

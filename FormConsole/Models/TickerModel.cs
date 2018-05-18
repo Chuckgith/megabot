@@ -13,7 +13,7 @@ namespace FormConsole
         public double PriceLast { get; set; }
         public double HighestPrice { get; set; }
         public double Profit { get; set; }
-        public double HiguestProfit { get; set; }
+        public double HighestProfit { get; set; }
         public double HighestProfitDiff { get; set; }      
         public double BaseCurrencyTotal { get; set; }
         public double UsdTotalValue { get; set; }

@@ -35,10 +35,10 @@ namespace FormConsole
         Ticker _ticker;
         IDictionary<CurrencyPair, IDisposable> _subsTickers = new Dictionary<CurrencyPair, IDisposable>();
 
-        BindingList<BotModel> _blTrades = new BindingList<BotModel>();
+        BindingList<FlatTradeModel> _blTrades = new BindingList<FlatTradeModel>();
         BindingSource _bsTrades = null;
 
-        BindingList<FlatBotModel> _blClosedTrades = new BindingList<FlatBotModel>();
+        BindingList<FlatTradeModel> _blClosedTrades = new BindingList<FlatTradeModel>();
         BindingSource _bsClosedTrades = null;
 
         #region Properties
@@ -380,34 +380,6 @@ namespace FormConsole
 
             dgvBalances.Columns[3].DefaultCellStyle.Format = "N8";
 
-            dgvCurrentTrades.Columns[2].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[3].DefaultCellStyle.Format = "N2";
-            dgvCurrentTrades.Columns[4].DefaultCellStyle.Format = "N2";
-            dgvCurrentTrades.Columns[5].DefaultCellStyle.Format = "N2";
-            dgvCurrentTrades.Columns[6].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[7].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[9].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[10].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[11].DefaultCellStyle.Format = "N4";
-            dgvCurrentTrades.Columns[12].DefaultCellStyle.Format = "N8";
-            dgvCurrentTrades.Columns[13].DefaultCellStyle.Format = "N2";
-            dgvCurrentTrades.Columns[14].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
-
-            dgvClosedTrades.Columns[2].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[3].DefaultCellStyle.Format = "N2";
-            dgvClosedTrades.Columns[4].DefaultCellStyle.Format = "N2";
-            dgvClosedTrades.Columns[5].DefaultCellStyle.Format = "N2";
-            dgvClosedTrades.Columns[6].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[7].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[8].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[9].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[10].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[11].DefaultCellStyle.Format = "N4";
-            dgvClosedTrades.Columns[12].DefaultCellStyle.Format = "N8";
-            dgvClosedTrades.Columns[13].DefaultCellStyle.Format = "N2";
-            dgvClosedTrades.Columns[14].DefaultCellStyle.Format = "dd/MM HH:mm:ss";
-
             lbCoins.SelectedIndex = lbCoins.FindStringExact("usdt_btc");
 
             BotLosstolerance = "-1";
@@ -432,35 +404,45 @@ namespace FormConsole
         {
             CurrencyPair currencyPair = new CurrencyPair(lbCoins.SelectedItem.ToString());
 
-            BotModel bot = new BotModel()
+            TradeModel bot = new TradeModel()
             {
                 CurrencyPair = currencyPair,
                 Status = EnumStatus.WAITING,
                 Amount = GetBotAmount(),
                 LossTolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
-                LossToleranceMultiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString()),
-                ToleranceProfitHighDiff = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString())                
+                LossToleranceMultiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString())               
             };
 
-            CreateBot(bot);
+            AddBot(bot);
         }
 
-        private void CreateBot(BotModel bot)
+        private void AddBot(TradeModel bot)
         {
             if (!_blTrades.Select(x => x.CurrencyPair).Contains(bot.CurrencyPair))
             {
-                _blTrades.Add(bot);
+                FlatTradeModel flatBot = new FlatTradeModel()
+                {
+                    CurrencyPair = bot.CurrencyPair,
+                    Status = bot.Status,
+                    Amount = bot.Amount.ToString(),
+                    LossTolerance = bot.LossTolerance.ToString(),
+                    LossToleranceMultiplicator = bot.LossToleranceMultiplicator.ToString()
+                };
+
+                _blTrades.Add(flatBot);
                 _bsTrades = new BindingSource(_blTrades, null);
                 dgvCurrentTrades.DataSource = _bsTrades;
 
                 _signal = new Signal(CurrencyPair);
                 _subsSignals.Add(bot.CurrencyPair, _signal.DataSource
                     .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                    .Subscribe(x => PerformSignal(bot, x)));
+                    .Subscribe(x => AnalyseSignal(bot, x)));
             }
+            else
+                txtLogs.AppendText($"Bot {bot.CurrencyPair} - Already running{Environment.NewLine}");
         }
 
-        private void PerformSignal(BotModel bot, SignalModel signal)
+        private void AnalyseSignal(TradeModel bot, SignalModel signal)
         {
             if (signal.OrderType == OrderType.Buy)
             {
@@ -472,13 +454,13 @@ namespace FormConsole
             else if (signal.OrderType == OrderType.Sell)
             {
                 if (bot.Status == EnumStatus.BOUGHT)
-                    PerformSell(bot);
+                    PerformSell(bot, true);
                 else if (bot.Status == EnumStatus.WAITING)
                     txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} - SELL - Already sold{Environment.NewLine}");
             }
         }
 
-        private void PerformBuy(BotModel bot)
+        private void PerformBuy(TradeModel bot)
         {
             OrderModel order = null;
             var stopwatch = new Stopwatch();
@@ -498,6 +480,7 @@ namespace FormConsole
             //UpdateTrades(bot);
 
             bot.PricePaid = order.PricePerCoin;
+            bot.ToleranceProfitHighDiff = bot.LossTolerance;
 
             _ticker = new Ticker(bot.CurrencyPair, bot.Amount, bot.PricePaid, 0);
             _subsTickers.Add(bot.CurrencyPair, (_ticker.DataSource
@@ -505,13 +488,13 @@ namespace FormConsole
                 .Subscribe(x => UpdateTrades(bot, x))));
         }
 
-        private void PerformSell(BotModel bot)
+        private void PerformSell(TradeModel bot, bool fromSignal)
         {
             OrderModel order = null;
             var stopwatch = new Stopwatch();
             long elapsedTime = 0;
 
-            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} - SELL");
+            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} - SELL {(fromSignal ? "(signal)" : "(tolerance)")}");
             bot.Status = EnumStatus.SELLING;
             //UpdateTrades(bot);
 
@@ -531,44 +514,8 @@ namespace FormConsole
             UpdateTrades(bot);
         }
 
-        private void AddClosedTrade(BotModel bot)
-        {
-            FlatBotModel botClosed = new FlatBotModel()
-            {
-                CurrencyPair = bot.CurrencyPair,
-                Status = bot.Status,
-                Amount = bot.Amount,
-                LossTolerance = bot.LossTolerance,
-                ToleranceProfitHighDiff = bot.ToleranceProfitHighDiff,
-                LossToleranceMultiplicator = bot.LossToleranceMultiplicator,
-                PricePaid = bot.PricePaid,
-                PriceLast = bot.Ticker.PriceLast,
-                HighestPrice = bot.Ticker.HighestPrice,
-                Profit = bot.Ticker.Profit,
-                HiguestProfit = bot.Ticker.HiguestProfit,
-                HighestProfitDiff = bot.Ticker.HighestProfitDiff,
-                BaseCurrencyTotal = bot.Ticker.BaseCurrencyTotal,
-                UsdTotalValue = bot.Ticker.UsdTotalValue,
-                LastTicker = bot.Ticker.LastTicker
-            };
 
-            _blClosedTrades.Add(botClosed);
-            _bsClosedTrades = new BindingSource(_blClosedTrades, null);
-            dgvClosedTrades.DataSource = _bsClosedTrades;
-
-            foreach (DataGridViewRow row in dgvClosedTrades.Rows)
-            {
-                if (object.Equals(DataGridHelper.GetCell(row.Cells, "CurrencyPair"), botClosed.CurrencyPair))
-                {
-                    if (botClosed.Profit >= 0)
-                        row.DefaultCellStyle.BackColor = Color.LightGreen;
-                    else
-                        row.DefaultCellStyle.BackColor = Color.LightPink;
-                }
-            }
-        }
-
-        private void UpdateTrades(BotModel bot, TickerModel ticker = null)
+        private void UpdateTrades(TradeModel bot, TickerModel ticker = null)
         {
             bot.Ticker = ticker;
 
@@ -580,64 +527,109 @@ namespace FormConsole
                     //DataGridHelper.SetCell(row.Cells, "Amount", bot.Amount);
 
                     if (bot.Ticker != null)
-                    {                        
-                        DataGridHelper.SetCell(row.Cells, "PricePaid", bot.PricePaid);
-                        DataGridHelper.SetCell(row.Cells, "LossTolerance", bot.LossTolerance);
-                        DataGridHelper.SetCell(row.Cells, "PriceLast", bot.Ticker.PriceLast);
-                        DataGridHelper.SetCell(row.Cells, "HighestPrice", bot.Ticker.HighestPrice);
-                        DataGridHelper.SetCell(row.Cells, "Profit", bot.Ticker.Profit);
-                        DataGridHelper.SetCell(row.Cells, "HiguestProfit", bot.Ticker.HiguestProfit);
-                        DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", bot.Ticker.HighestProfitDiff);                        
-                        DataGridHelper.SetCell(row.Cells, "BaseCurrencyTotal", bot.Ticker.BaseCurrencyTotal);
-                        DataGridHelper.SetCell(row.Cells, "UsdTotalValue", bot.Ticker.UsdTotalValue);
-                        DataGridHelper.SetCell(row.Cells, "LastTicker", DateTime.Now);
-
-                        if (bot.Ticker.Profit >= 0)
-                            row.DefaultCellStyle.BackColor = Color.LightGreen;
-                        else
-                            row.DefaultCellStyle.BackColor = Color.LightPink;
+                    {
+                        //DataGridHelper.SetCell(row.Cells, "PricePaid", string.Format("{0:0.00000000}", bot.PricePaid));
+                        //DataGridHelper.SetCell(row.Cells, "LossTolerance", bot.LossTolerance);
+                        DataGridHelper.SetCell(row.Cells, "UsdTotalValue", string.Format("{0:0.00}", bot.Ticker.UsdTotalValue));
+                        DataGridHelper.SetCell(row.Cells, "PriceLast", string.Format("{0:0.00000000}", bot.Ticker.PriceLast));
+                        DataGridHelper.SetCell(row.Cells, "Profit", string.Format("{0:0.0000}", bot.Ticker.Profit));
+                        DataGridHelper.SetCell(row.Cells, "HighestProfit", string.Format("{0:0.0000}", bot.Ticker.HighestProfit));
+                        DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", bot.Ticker.HighestProfitDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff));
+                        DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", string.Format("{0:0.0000}", bot.ToleranceProfitHighDiff));                        
+                        DataGridHelper.SetCell(row.Cells, "LastTicker", $"{DateTime.Now:dd/MM HH:mm:ss}");
                     }
                     else
                     {
-                        DataGridHelper.SetCell(row.Cells, "PricePaid", 0);
-                        DataGridHelper.SetCell(row.Cells, "PriceLast", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "HighestPrice", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "Profit", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "HiguestProfit", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "BaseCurrencyTotal", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "PricePaid", string.Empty);
                         DataGridHelper.SetCell(row.Cells, "UsdTotalValue", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "PriceLast", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "Profit", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "HighestProfit", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", string.Empty);                        
                         DataGridHelper.SetCell(row.Cells, "LastTicker", string.Empty);
-
-                        row.DefaultCellStyle.BackColor = Color.White;
                     }
+
+                    SetColor(bot, row);
                 }
             }
 
             if (CheckTolerance(bot, ticker))
             {
-                PerformSell(bot);
+                PerformSell(bot, false);
             }
         }
 
-        private bool CheckTolerance(BotModel bot, TickerModel ticker)
+        private void AddClosedTrade(TradeModel bot)
+        {
+            FlatTradeModel botClosed = new FlatTradeModel()
+            {
+                CurrencyPair = bot.CurrencyPair,
+                Status = bot.Status,
+                Amount = bot.Amount.ToString(),
+                LossTolerance = bot.LossTolerance.ToString(),
+                LossToleranceMultiplicator = bot.LossToleranceMultiplicator.ToString(),
+                PricePaid = string.Format("{0:0.00000000}", bot.PricePaid),
+                UsdTotalValue = string.Format("{0:0.00}", bot.Ticker.UsdTotalValue),
+                PriceLast = string.Format("{0:0.00000000}", bot.Ticker.PriceLast),
+                Profit = string.Format("{0:0.0000}", bot.Ticker.Profit),
+                HighestProfit = string.Format("{0:0.0000}", bot.Ticker.HighestProfit),
+                HighestProfitDiff = string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff)),
+                ToleranceProfitHighDiff = string.Format("{0:0.0000}", bot.ToleranceProfitHighDiff),
+                LastTicker = $"{bot.Ticker.LastTicker:dd/MM HH:mm:ss}"
+            };
+
+            _blClosedTrades.Add(botClosed);
+            _bsClosedTrades = new BindingSource(_blClosedTrades, null);
+            dgvClosedTrades.DataSource = _bsClosedTrades;
+
+            foreach (DataGridViewRow row in dgvClosedTrades.Rows)
+            {
+                double profit = double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
+
+                if (profit >= 5)
+                    row.DefaultCellStyle.BackColor = Color.Purple;
+                else if (profit >= 1)
+                    row.DefaultCellStyle.BackColor = Color.Lime;
+                else if (profit >= 0)
+                    row.DefaultCellStyle.BackColor = Color.LightGreen;
+                else
+                    row.DefaultCellStyle.BackColor = Color.LightPink;
+            }
+        }
+
+        private void SetColor(TradeModel bot, DataGridViewRow row)
+        {
+            if (bot.Ticker != null)
+            {
+                if (bot.Ticker.Profit >= 5)
+                    row.DefaultCellStyle.BackColor = Color.Purple;
+                else if (bot.Ticker.Profit >= 1)
+                    row.DefaultCellStyle.BackColor = Color.Lime;
+                else if (bot.Ticker.Profit >= 0)
+                    row.DefaultCellStyle.BackColor = Color.LightGreen;
+                else
+                    row.DefaultCellStyle.BackColor = Color.LightPink;
+            }
+            else
+            {
+                row.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
+
+        private bool CheckTolerance(TradeModel bot, TickerModel ticker)
         {
             if (ticker == null)
                 return false;
 
-            bot.ToleranceProfitHighDiff = bot.LossTolerance + (ticker.HiguestProfit * bot.LossToleranceMultiplicator);
+            bot.ToleranceProfitHighDiff = bot.LossTolerance + (ticker.HighestProfit * bot.LossToleranceMultiplicator);
 
-            if (ticker.HighestProfitDiff < -0.3 &&
+            bot.ToleranceProfitHighDiff = bot.ToleranceProfitHighDiff > 0 ? 0 : bot.ToleranceProfitHighDiff;
+
+            if (//ticker.HighestProfitDiff < -0.3 &&
                 ticker.HighestProfitDiff < bot.ToleranceProfitHighDiff)
             {
                 System.Media.SystemSounds.Exclamation.Play();
-
-                Debug.WriteLine(string.Format(
-                    "{0} (limit: {1}% - High_diff: {2}%)",
-                        "tolerance reach",
-                        bot.ToleranceProfitHighDiff,
-                        string.Format("{0:0.0000}", ticker.HighestProfitDiff)));
-
                 return true;
             }
             return false;
@@ -707,7 +699,7 @@ namespace FormConsole
 
         }
 
-        private void DisposeSubscribeTicker(BotModel bot)
+        private void DisposeSubscribeTicker(TradeModel bot)
         {
             if (_subsTickers.TryGetValue(bot.CurrencyPair, out IDisposable subscribe))
             {
