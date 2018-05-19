@@ -112,7 +112,7 @@ namespace CoinBot_Cv2
             double highestProfitDiff = 0;
             double highestPrice = 0;
             double baseCurrencyTotal = 0;
-            double usdTotalValue = 0;
+            double usdtValue = 0;
             double lossTolerance = 0;
 
             IsAlertProfitPricePaidSent = false;
@@ -141,7 +141,7 @@ namespace CoinBot_Cv2
 
                 // Si le prix payé n'a pas été défini par l'utilisateur, prendre le prix courant
                 if (pricePaid == 0)
-                    pricePaid = marketToTrade.PriceLast;
+                    pricePaid = BIZ.FindBestPrice(currencyPair, OrderType.Buy);
             }
 
             // Enlève un pourcentage du montant à transiger si le prix payé était plus haut que le prix courant
@@ -175,8 +175,8 @@ namespace CoinBot_Cv2
                         highestPrice = marketToTrade.PriceLast > highestPrice ? marketToTrade.PriceLast : highestPrice;
                         highestProfitDiff = (marketToTrade.PriceLast / highestPrice) * 100 - 100;
                         baseCurrencyTotal = marketToTrade.PriceLast * baseCurrencyUnitPrice;
-                        usdTotalValue = baseCurrencyTotal * (baseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
-                        Display(currencyPair, marketToTrade, profit, highestProfit, highestProfitDiff, lossTolerance, highestPrice, baseCurrencyTotal, usdTotalValue, pricePaid, amountToTrade);
+                        usdtValue = baseCurrencyTotal * (baseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
+                        Display(currencyPair, marketToTrade, profit, highestProfit, highestProfitDiff, lossTolerance, highestPrice, baseCurrencyTotal, usdtValue, pricePaid, amountToTrade);
                         CheckTolerance(profit, highestProfit, highestProfitDiff, lossTolerance, marketToTrade, pricePaid, currencyPair, idOrder);
                     }
 
@@ -255,7 +255,7 @@ namespace CoinBot_Cv2
 
         private static void Display(
             CurrencyPair currencyPair, IMarketData market, double profit, double highestProfit, double highestProfitDiff, double lossTolerance, double highestPrice, 
-            double baseCurrencyTotal, double usdTotalValue, double pricePaid, double amountToTrade)
+            double baseCurrencyTotal, double usdtValue, double pricePaid, double amountToTrade)
         {
             string arrow = SetDisplay(profit);
 
@@ -275,7 +275,7 @@ namespace CoinBot_Cv2
                 "Last: {0}  |  {1}  |  USD_value: {2}  |  Profit: {3}  |  High_diff: {4} ({5})  |  Loss tolerance: {6}\n",
                     string.Format("{0,13:0.00000000}", market.PriceLast),                    
                     currencyPair.BaseCurrency + "_value: " + string.Format("{0,13:0.00000000}", baseCurrencyTotal),
-                    string.Format("{0,8:0.00$}", usdTotalValue),
+                    string.Format("{0,8:0.00$}", usdtValue),
                     string.Format("{0,8:0.0000}%", profit),
                     (highestPrice < pricePaid) ? "---------" : (highestProfitDiff != 0 ? string.Format("{0,8:0.0000}%", highestProfitDiff) : "NEW_HIGH!"),
                     (highestPrice < pricePaid) ? "-------------" : string.Format("{0:0.00000000}", highestPrice),

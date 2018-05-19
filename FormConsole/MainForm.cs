@@ -402,11 +402,9 @@ namespace FormConsole
 
         private void btnStartBot_Click(object sender, EventArgs e)
         {
-            CurrencyPair currencyPair = new CurrencyPair(lbCoins.SelectedItem.ToString());
-
             TradeModel bot = new TradeModel()
             {
-                CurrencyPair = currencyPair,
+                CurrencyPair = CurrencyPair,
                 Status = EnumStatus.WAITING,
                 Amount = GetBotAmount(),
                 LossTolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
@@ -433,13 +431,15 @@ namespace FormConsole
                 _bsTrades = new BindingSource(_blTrades, null);
                 dgvCurrentTrades.DataSource = _bsTrades;
 
-                _signal = new Signal(CurrencyPair);
+                //UpdateTrades(bot);
+
+                _signal = new Signal(bot.CurrencyPair);
                 _subsSignals.Add(bot.CurrencyPair, _signal.DataSource
                     .ObserveOn(WindowsFormsSynchronizationContext.Current)
                     .Subscribe(x => AnalyseSignal(bot, x)));
             }
             else
-                txtLogs.AppendText($"Bot {bot.CurrencyPair} - Already running{Environment.NewLine}");
+                txtLogs.AppendText($"Bot {bot.CurrencyPair} => Already running{Environment.NewLine}");
         }
 
         private void AnalyseSignal(TradeModel bot, SignalModel signal)
@@ -449,14 +449,14 @@ namespace FormConsole
                 if (bot.Status == EnumStatus.WAITING)
                     PerformBuy(bot);
                 else if (bot.Status == EnumStatus.BOUGHT)
-                    txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} - BUY - Already bought{Environment.NewLine}");
+                    txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} => BUY - Already bought{Environment.NewLine}");
             }
             else if (signal.OrderType == OrderType.Sell)
             {
                 if (bot.Status == EnumStatus.BOUGHT)
                     PerformSell(bot, true);
                 else if (bot.Status == EnumStatus.WAITING)
-                    txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} - SELL - Already sold{Environment.NewLine}");
+                    txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} => SELL - Already sold{Environment.NewLine}");
             }
         }
 
@@ -466,16 +466,16 @@ namespace FormConsole
             var stopwatch = new Stopwatch();
             long elapsedTime = 0;
 
-            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} - BUY");
+            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} => BUY ...{Environment.NewLine}");
             bot.Status = EnumStatus.BUYING;
             //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, CurrencyPair);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, bot.CurrencyPair, bot.Amount);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
-            txtLogs.AppendText($" => OK BOUGHT (elapsed time: {elapsedTime / 1000} secs){Environment.NewLine}");
+            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} => OK BOUGHT ({elapsedTime / 1000} secs){Environment.NewLine}");
             bot.Status = EnumStatus.BOUGHT;
             //UpdateTrades(bot);
 
@@ -494,16 +494,16 @@ namespace FormConsole
             var stopwatch = new Stopwatch();
             long elapsedTime = 0;
 
-            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} - SELL {(fromSignal ? "(signal)" : "(tolerance)")}");
+            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} => SELL {(fromSignal ? "(signal)" : "(tol)")} ...{Environment.NewLine}");
             bot.Status = EnumStatus.SELLING;
             //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, CurrencyPair);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, bot.CurrencyPair, bot.Amount);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
-            txtLogs.AppendText($" => OK SOLD (elapsed time: {elapsedTime / 1000} secs){Environment.NewLine}");
+            txtLogs.AppendText($"{DateTime.Now} - {bot.CurrencyPair} => OK SOLD ({elapsedTime / 1000} secs){Environment.NewLine}");
             bot.Status = EnumStatus.SOLD;
 
             DisposeSubscribeTicker(bot);
@@ -528,20 +528,20 @@ namespace FormConsole
 
                     if (bot.Ticker != null)
                     {
-                        //DataGridHelper.SetCell(row.Cells, "PricePaid", string.Format("{0:0.00000000}", bot.PricePaid));
+                        DataGridHelper.SetCell(row.Cells, "PricePaid", string.Format("{0:0.00000000}", bot.PricePaid));
                         //DataGridHelper.SetCell(row.Cells, "LossTolerance", bot.LossTolerance);
-                        DataGridHelper.SetCell(row.Cells, "UsdTotalValue", string.Format("{0:0.00}", bot.Ticker.UsdTotalValue));
+                        DataGridHelper.SetCell(row.Cells, "UsdtValue", string.Format("{0:0.00}", bot.Ticker.UsdtValue));
                         DataGridHelper.SetCell(row.Cells, "PriceLast", string.Format("{0:0.00000000}", bot.Ticker.PriceLast));
                         DataGridHelper.SetCell(row.Cells, "Profit", string.Format("{0:0.0000}", bot.Ticker.Profit));
                         DataGridHelper.SetCell(row.Cells, "HighestProfit", string.Format("{0:0.0000}", bot.Ticker.HighestProfit));
                         DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", bot.Ticker.HighestProfitDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff));
-                        DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", string.Format("{0:0.0000}", bot.ToleranceProfitHighDiff));                        
+                        DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", string.Format("{0:0.00}", bot.ToleranceProfitHighDiff));                        
                         DataGridHelper.SetCell(row.Cells, "LastTicker", $"{DateTime.Now:dd/MM HH:mm:ss}");
                     }
                     else
                     {
                         DataGridHelper.SetCell(row.Cells, "PricePaid", string.Empty);
-                        DataGridHelper.SetCell(row.Cells, "UsdTotalValue", string.Empty);
+                        DataGridHelper.SetCell(row.Cells, "UsdtValue", string.Empty);
                         DataGridHelper.SetCell(row.Cells, "PriceLast", string.Empty);
                         DataGridHelper.SetCell(row.Cells, "Profit", string.Empty);
                         DataGridHelper.SetCell(row.Cells, "HighestProfit", string.Empty);
@@ -558,6 +558,27 @@ namespace FormConsole
             {
                 PerformSell(bot, false);
             }
+
+            CalculTotalGain();
+        }
+
+        private void CalculTotalGain()
+        {
+            double total = 0;
+
+            foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
+            {
+                if (!string.IsNullOrEmpty(DataGridHelper.GetCell(row.Cells, "Profit").ToString()))
+                    total = total + double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
+            }
+
+            foreach (DataGridViewRow row in dgvClosedTrades.Rows)
+            {
+                if (!string.IsNullOrEmpty(DataGridHelper.GetCell(row.Cells, "Profit").ToString()))
+                    total = total + double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
+            }
+
+            Total.Text = total.ToString();
         }
 
         private void AddClosedTrade(TradeModel bot)
@@ -570,12 +591,12 @@ namespace FormConsole
                 LossTolerance = bot.LossTolerance.ToString(),
                 LossToleranceMultiplicator = bot.LossToleranceMultiplicator.ToString(),
                 PricePaid = string.Format("{0:0.00000000}", bot.PricePaid),
-                UsdTotalValue = string.Format("{0:0.00}", bot.Ticker.UsdTotalValue),
+                UsdtValue = string.Format("{0:0.00}", bot.Ticker.UsdtValue),
                 PriceLast = string.Format("{0:0.00000000}", bot.Ticker.PriceLast),
                 Profit = string.Format("{0:0.0000}", bot.Ticker.Profit),
                 HighestProfit = string.Format("{0:0.0000}", bot.Ticker.HighestProfit),
                 HighestProfitDiff = string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", bot.Ticker.HighestProfitDiff)),
-                ToleranceProfitHighDiff = string.Format("{0:0.0000}", bot.ToleranceProfitHighDiff),
+                ToleranceProfitHighDiff = string.Format("{0:0.00}", bot.ToleranceProfitHighDiff),
                 LastTicker = $"{bot.Ticker.LastTicker:dd/MM HH:mm:ss}"
             };
 
@@ -588,7 +609,7 @@ namespace FormConsole
                 double profit = double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
 
                 if (profit >= 5)
-                    row.DefaultCellStyle.BackColor = Color.Purple;
+                    row.DefaultCellStyle.BackColor = Color.MediumPurple;
                 else if (profit >= 1)
                     row.DefaultCellStyle.BackColor = Color.Lime;
                 else if (profit >= 0)
@@ -603,7 +624,7 @@ namespace FormConsole
             if (bot.Ticker != null)
             {
                 if (bot.Ticker.Profit >= 5)
-                    row.DefaultCellStyle.BackColor = Color.Purple;
+                    row.DefaultCellStyle.BackColor = Color.MediumPurple;
                 else if (bot.Ticker.Profit >= 1)
                     row.DefaultCellStyle.BackColor = Color.Lime;
                 else if (bot.Ticker.Profit >= 0)
@@ -638,9 +659,9 @@ namespace FormConsole
         private void DisplayBalances(IList<BalanceModel> balances)
         {
             dgvBalances.DataSource = balances
-                .Where(x => x.Type == CurrencyPair.BaseCurrency || x.USDT_Value > 0)
-                .OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
-                .ThenBy(x => x).ToList();
+                .Where(x => x.Type == CurrencyPair.BaseCurrency || x.USDT_Value > 0).ToList();
+                //.OrderByDescending(x => x.Type == CurrencyPair.BaseCurrency)
+                //.ThenBy(x => x).ToList();
 
             UpdateBalances(balances);
             //UpdatePrice();
@@ -683,7 +704,8 @@ namespace FormConsole
             lblBalanceTitleSell.Text = $"{CurrencyPair.QuoteCurrency} Balance:";
 
             IList<BalanceModel> balances = BIZ.GetBalances();
-            BalancesBase = BalanceBuy = BotAmount = GetBuyBalance(balances).ToString();
+            BalancesBase = BalanceBuy = GetBuyBalance(balances).ToString();
+            BotAmount = "20";
             BalancesQuote = BalanceSell = GetSellBalance(balances).ToString();
 
             IDictionary<CurrencyPair, IMarketData> markets = BIZ.GetSummary();
@@ -752,26 +774,6 @@ namespace FormConsole
 
         #endregion Buttons percentages
 
-        private void lblBalanceBuy_Click(object sender, EventArgs e)
-        {
-            BuyAmountUsdt = BalanceBuy;
-        }
-
-        //private void lblBalanceBuy_TextChanged(object sender, EventArgs e)
-        //{
-        //    BuyAmountUsdt = BalanceBuy;
-        //}
-
-        private void lblBalanceSell_Click(object sender, EventArgs e)
-        {
-            SellAmount = lblBalanceSell.Text;
-        }
-
-        //private void lblBalanceSell_TextChanged(object sender, EventArgs e)
-        //{
-        //    SellAmountUsdt = lblBalanceSell.Text;
-        //}
-
         #region TextChanged
 
         private void txtBuyPrice_TextChanged(object sender, EventArgs e)
@@ -811,6 +813,36 @@ namespace FormConsole
             SellTotalUsdt = (Utilities.TryParseDoublePolo(SellTotal)).ToString();
         }
 
+        private void lblBalancesBase_Click(object sender, EventArgs e)
+        {
+            BotAmount = (Utilities.TryParseDoublePolo(BalancesBase)).ToString();
+        }
+
+        private void lblBalanceBuy_Click(object sender, EventArgs e)
+        {
+            BuyAmountUsdt = BalanceBuy;
+        }
+
+        //private void lblBalanceBuy_TextChanged(object sender, EventArgs e)
+        //{
+        //    BuyAmountUsdt = BalanceBuy;
+        //}
+
+        private void lblBalanceSell_Click(object sender, EventArgs e)
+        {
+            SellAmount = lblBalanceSell.Text;
+        }
+
+        //private void lblBalanceSell_TextChanged(object sender, EventArgs e)
+        //{
+        //    SellAmountUsdt = lblBalanceSell.Text;
+        //}
+
         #endregion TextChanged
+
+        private void txtBotAmount_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -100,7 +100,7 @@ namespace WindowsFormsPoloniex
             try
             {
                 var currencyPair = cbCurrencyVente.SelectedItem.ToString();
-                BIZ.PostBestSellOrder(new CurrencyPair(currencyPair), double.Parse(txtUSDTVente.Text));
+                BIZ.PostBestSellOrder(new CurrencyPair(currencyPair), false, double.Parse(txtUSDTVente.Text));
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ namespace WindowsFormsPoloniex
                 double amountQuote = 0;
 
                 amountQuote = double.Parse(txtUSDTAchat.Text);
-                idOrder = BIZ.PostBestBuyOrder(currencyPair, amountQuote).IdOrder;
+                idOrder = BIZ.PostBestBuyOrder(currencyPair, false, amountQuote).IdOrder;
 
                 if (idOrder != 0 && checkBoxAutoRunCoinBot.Checked)
                 {

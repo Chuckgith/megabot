@@ -15,7 +15,7 @@ namespace Jojatekok.PoloniexAPI
     {
         public Live live = new Live();
 
-        public async void Subcribe()
+        public async void Subscribe()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Jojatekok.PoloniexAPI
         public BusinessLive()
         {
             live.Start();
-            Subcribe();
+            Subscribe();
         }
     }
 }

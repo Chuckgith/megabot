@@ -60,7 +60,7 @@ namespace FormConsole.Sources
             double highestProfitDiff = 0;
             double highestPrice = 0;
             double baseCurrencyTotal = 0;
-            double usdTotalValue = 0;
+            double usdtValue = 0;
 
             var currencyPairUsdt = new CurrencyPair(CURRENCY_USDT, currencyPair.BaseCurrency);
 
@@ -118,7 +118,7 @@ namespace FormConsole.Sources
                             highestPrice = marketToTrade.PriceLast > highestPrice ? marketToTrade.PriceLast : highestPrice;
                             highestProfitDiff = (marketToTrade.PriceLast / highestPrice) * 100 - 100;
                             baseCurrencyTotal = marketToTrade.PriceLast * baseCurrencyUnitPrice;
-                            usdTotalValue = baseCurrencyTotal * (currencyPair.BaseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
+                            usdtValue = baseCurrencyTotal * (currencyPair.BaseCurrency == CURRENCY_USDT ? 1 : usdtMarket.PriceLast);
 
                             ticker = new TickerModel()
                             {
@@ -129,7 +129,7 @@ namespace FormConsole.Sources
                                 HighestProfit = highestProfit,
                                 HighestProfitDiff = highestProfitDiff,
                                 BaseCurrencyTotal = baseCurrencyTotal,
-                                UsdTotalValue = usdTotalValue,
+                                UsdtValue = usdtValue,
                                 LastTicker = DateTime.Now
                             };
 

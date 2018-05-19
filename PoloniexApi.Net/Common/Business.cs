@@ -102,8 +102,11 @@ namespace Jojatekok.PoloniexAPI
             return MC.GetOpenOrders(currencyPair, depth);
         }
 
-        public OrderModel PostBestBuyOrder(CurrencyPair currencyPair, double USDT = 0)
+        public OrderModel PostBestBuyOrder(CurrencyPair currencyPair, bool realTrade, double USDT = 0)
         {
+            if (!realTrade)
+                return PostBestBuyOrderFictif(currencyPair, USDT);
+
             var tradeId = new ulong();
             OrderModel order = new OrderModel();
             double bestPricePerCoin = 0;
@@ -181,8 +184,37 @@ namespace Jojatekok.PoloniexAPI
             return order;
         }
 
-        public OrderModel PostBestSellOrder(CurrencyPair currencyPair, double USDT = 0, ulong previousIdOrder = 0)
+        public OrderModel PostBestBuyOrderFictif(CurrencyPair currencyPair, double USDT = 0)
         {
+            OrderModel order = new OrderModel();
+            double bestPricePerCoin = 0;
+            double amountQuote = 0;
+
+            bestPricePerCoin = FindBestPrice(currencyPair, OrderType.Buy);
+            amountQuote = USDT;
+
+            System.Media.SystemSounds.Exclamation.Play();
+
+            PushMessage("BOUGHT!",
+                $"Currency: {currencyPair}\\n" +
+                $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
+                $"At: {bestPricePerCoin}");
+
+            order.CurrencyPair = currencyPair;
+            order.OrderType = OrderType.Buy;
+            order.AmountBase = 0;
+            order.AmountQuote = amountQuote;
+            order.PricePerCoin = bestPricePerCoin;
+            order.IdOrder = 0;
+
+            return order;
+        }
+
+        public OrderModel PostBestSellOrder(CurrencyPair currencyPair, bool realTrade, double USDT = 0, ulong previousIdOrder = 0)
+        {
+            if (!realTrade)
+                return PostBestSellOrderFictif(currencyPair, USDT);
+
             var tradeId = new ulong();
             OrderModel order = new OrderModel();
             double bestPricePerCoin = 0;
@@ -275,6 +307,31 @@ namespace Jojatekok.PoloniexAPI
             return order;
         }
 
+        public OrderModel PostBestSellOrderFictif(CurrencyPair currencyPair, double USDT = 0)
+        {
+            OrderModel order = new OrderModel();
+            double bestPricePerCoin = 0;
+            double amountQuote = 0;
+
+            bestPricePerCoin = FindBestPrice(currencyPair, OrderType.Sell);
+            amountQuote = USDT;
+
+            PushMessage("SOLD!",
+                $"Currency: {currencyPair}\\n" +
+                $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
+                $"At: {bestPricePerCoin}\\n" +
+                $"Profit: {string.Format("{0:0.00}%", 0 * 100)}");
+
+            order.CurrencyPair = currencyPair;
+            order.OrderType = OrderType.Buy;
+            order.AmountBase = 0;
+            order.AmountQuote = amountQuote;
+            order.PricePerCoin = bestPricePerCoin;
+            order.IdOrder = 0;
+
+            return order;
+        }
+
         private double InitPost(CurrencyPair currencyPair, double bestPricePerCoin, OrderType orderType, double USDT = 0)
         {
             double amountQuote = 0; // Quantité de la monnaie que je possède            
@@ -345,7 +402,7 @@ namespace Jojatekok.PoloniexAPI
             return amountQuote;
         }
 
-        private double FindBestPrice(CurrencyPair currencyPair, OrderType orderType, double? amountQuote = null)
+        public double FindBestPrice(CurrencyPair currencyPair, OrderType orderType, double? amountQuote = null)
         {
             IOrderBook orders = GetOpenOrders(currencyPair, 20);
 

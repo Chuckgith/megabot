@@ -184,7 +184,7 @@ namespace GetMails
         private static void Buy(CurrencyPair currencyPair)
         {
             Console.WriteLine($"\n{DateTime.Now} - ACHETER!!");
-            idOrder = BIZ.PostBestBuyOrder(currencyPair).IdOrder;
+            idOrder = BIZ.PostBestBuyOrder(currencyPair, false).IdOrder;
             Console.WriteLine($"{DateTime.Now} - OK DONE!! (idOrder: {idOrder})\n");
 
             try
@@ -200,7 +200,7 @@ namespace GetMails
         private static void Sell(CurrencyPair currencyPair)
         {
             Console.WriteLine($"\n{DateTime.Now} - VENDRE!!");
-            BIZ.PostBestSellOrder(currencyPair, idOrder);
+            BIZ.PostBestSellOrder(currencyPair, false, idOrder);
             Console.WriteLine($"{DateTime.Now} - OK DONE!!\n");
         }
 
