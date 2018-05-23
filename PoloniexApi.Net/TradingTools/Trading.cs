@@ -141,21 +141,5 @@ namespace Jojatekok.PoloniexAPI.TradingTools
         {
             return GetTrades(currencyPair, Helper.DateTimeUnixEpochStart, DateTime.MaxValue);
         }
-
-        public AllTradeHistory GetAllTrades()
-        {
-            var postData = new Dictionary<string, object> {
-                { "currencyPair", "all" },
-                //{ "start", Helper.DateTimeUnixEpochStart },
-                //{ "end", DateTime.MaxValue }
-                 { "start",(Int32)(DateTime.UtcNow.AddYears(-1).Subtract(new DateTime(1970, 1, 1))).TotalSeconds},
-                { "end",(Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds}
-            };
-
-            //var data = PostData<IList<Trade>>("returnTradeHistory", postData);
-            var data = PostData<AllTradeHistory>("returnTradeHistory", postData);
-            //return data.Any() ? data.ToList<ITrade>() : new List<ITrade>();
-            return data;
-        }
     }
 }

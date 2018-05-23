@@ -37,10 +37,14 @@
             this.tabBtc = new System.Windows.Forms.TabPage();
             this.tabEth = new System.Windows.Forms.TabPage();
             this.tabXmr = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grbCoinSelectedBalances = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblValueMultiplicator = new System.Windows.Forms.Label();
+            this.trbMultiplicator = new System.Windows.Forms.TrackBar();
+            this.lblValueTolerance = new System.Windows.Forms.Label();
+            this.trbTolerance = new System.Windows.Forms.TrackBar();
             this.label2 = new System.Windows.Forms.Label();
             this.txtBotAmount = new System.Windows.Forms.TextBox();
-            this.txtBotLossTolerance = new System.Windows.Forms.TextBox();
             this.lblLossTolerance = new System.Windows.Forms.Label();
             this.lblBalancesQuote = new System.Windows.Forms.Label();
             this.lblBalancesBase = new System.Windows.Forms.Label();
@@ -48,7 +52,6 @@
             this.lblBalancesTitleQuote = new System.Windows.Forms.Label();
             this.lblBalancesTitleBase = new System.Windows.Forms.Label();
             this.btnStartBot = new System.Windows.Forms.Button();
-            this.txtBotMultiplicator = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvBalances = new System.Windows.Forms.DataGridView();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -58,7 +61,7 @@
             this.tabBinance = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtLogs = new System.Windows.Forms.TextBox();
-            this.gbTrade = new System.Windows.Forms.GroupBox();
+            this.grbTrade = new System.Windows.Forms.GroupBox();
             this.gbBuy = new System.Windows.Forms.GroupBox();
             this.lblBalanceBuy = new System.Windows.Forms.Label();
             this.lblBalanceTitleBuy = new System.Windows.Forms.Label();
@@ -100,10 +103,12 @@
             this.txtSellPrice = new System.Windows.Forms.TextBox();
             this.lblSellPrice = new System.Windows.Forms.Label();
             this.dgvCurrentTrades = new System.Windows.Forms.DataGridView();
+            this.Action = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dgvClosedTrades = new System.Windows.Forms.DataGridView();
-            this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.Total = new System.Windows.Forms.Label();
+            this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.currencyPairDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lossToleranceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -116,6 +121,7 @@
             this.highestProfitDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.highestProfitDiffDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeBuyDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastTickerDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flatTradeModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.currencyPairDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -130,22 +136,25 @@
             this.highestProfitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.highestProfitDiffDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeBuyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastTickerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabsExchanges.SuspendLayout();
             this.tabPoloniex.SuspendLayout();
             this.tabsMarkets.SuspendLayout();
             this.tabUsdt.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grbCoinSelectedBalances.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbMultiplicator)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trbTolerance)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBalances)).BeginInit();
             this.groupBox3.SuspendLayout();
-            this.gbTrade.SuspendLayout();
+            this.grbTrade.SuspendLayout();
             this.gbBuy.SuspendLayout();
             this.gbSell.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCurrentTrades)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClosedTrades)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.flatTradeModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -158,18 +167,18 @@
             this.tabsExchanges.Multiline = true;
             this.tabsExchanges.Name = "tabsExchanges";
             this.tabsExchanges.SelectedIndex = 0;
-            this.tabsExchanges.Size = new System.Drawing.Size(420, 435);
+            this.tabsExchanges.Size = new System.Drawing.Size(492, 435);
             this.tabsExchanges.TabIndex = 0;
             // 
             // tabPoloniex
             // 
             this.tabPoloniex.Controls.Add(this.tabsMarkets);
-            this.tabPoloniex.Controls.Add(this.groupBox1);
+            this.tabPoloniex.Controls.Add(this.grbCoinSelectedBalances);
             this.tabPoloniex.Controls.Add(this.groupBox2);
             this.tabPoloniex.Location = new System.Drawing.Point(23, 4);
             this.tabPoloniex.Name = "tabPoloniex";
             this.tabPoloniex.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPoloniex.Size = new System.Drawing.Size(393, 427);
+            this.tabPoloniex.Size = new System.Drawing.Size(465, 427);
             this.tabPoloniex.TabIndex = 0;
             this.tabPoloniex.Text = "Poloniex";
             this.tabPoloniex.UseVisualStyleBackColor = true;
@@ -236,31 +245,83 @@
             this.tabXmr.Text = "XMR";
             this.tabXmr.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // grbCoinSelectedBalances
             // 
-            this.groupBox1.BackColor = System.Drawing.Color.AliceBlue;
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.txtBotAmount);
-            this.groupBox1.Controls.Add(this.txtBotLossTolerance);
-            this.groupBox1.Controls.Add(this.lblLossTolerance);
-            this.groupBox1.Controls.Add(this.lblBalancesQuote);
-            this.groupBox1.Controls.Add(this.lblBalancesBase);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.lblBalancesTitleQuote);
-            this.groupBox1.Controls.Add(this.lblBalancesTitleBase);
-            this.groupBox1.Controls.Add(this.btnStartBot);
-            this.groupBox1.Controls.Add(this.txtBotMultiplicator);
-            this.groupBox1.Location = new System.Drawing.Point(197, 179);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(189, 240);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Balances";
+            this.grbCoinSelectedBalances.BackColor = System.Drawing.Color.AliceBlue;
+            this.grbCoinSelectedBalances.Controls.Add(this.textBox1);
+            this.grbCoinSelectedBalances.Controls.Add(this.label3);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblValueMultiplicator);
+            this.grbCoinSelectedBalances.Controls.Add(this.trbMultiplicator);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblValueTolerance);
+            this.grbCoinSelectedBalances.Controls.Add(this.trbTolerance);
+            this.grbCoinSelectedBalances.Controls.Add(this.label2);
+            this.grbCoinSelectedBalances.Controls.Add(this.txtBotAmount);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblLossTolerance);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesQuote);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesBase);
+            this.grbCoinSelectedBalances.Controls.Add(this.label1);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesTitleQuote);
+            this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesTitleBase);
+            this.grbCoinSelectedBalances.Controls.Add(this.btnStartBot);
+            this.grbCoinSelectedBalances.Location = new System.Drawing.Point(197, 179);
+            this.grbCoinSelectedBalances.Name = "grbCoinSelectedBalances";
+            this.grbCoinSelectedBalances.Size = new System.Drawing.Size(262, 240);
+            this.grbCoinSelectedBalances.TabIndex = 6;
+            this.grbCoinSelectedBalances.TabStop = false;
+            this.grbCoinSelectedBalances.Text = "Balances";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(80, 153);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(21, 13);
+            this.label3.TabIndex = 29;
+            this.label3.Text = "(%)";
+            // 
+            // lblValueMultiplicator
+            // 
+            this.lblValueMultiplicator.AutoSize = true;
+            this.lblValueMultiplicator.Location = new System.Drawing.Point(176, 173);
+            this.lblValueMultiplicator.Name = "lblValueMultiplicator";
+            this.lblValueMultiplicator.Size = new System.Drawing.Size(13, 13);
+            this.lblValueMultiplicator.TabIndex = 28;
+            this.lblValueMultiplicator.Text = "0";
+            // 
+            // trbMultiplicator
+            // 
+            this.trbMultiplicator.Location = new System.Drawing.Point(6, 166);
+            this.trbMultiplicator.Maximum = 6;
+            this.trbMultiplicator.Name = "trbMultiplicator";
+            this.trbMultiplicator.Size = new System.Drawing.Size(169, 45);
+            this.trbMultiplicator.TabIndex = 27;
+            this.trbMultiplicator.Value = 1;
+            this.trbMultiplicator.ValueChanged += new System.EventHandler(this.trbMultiplicator_ValueChanged);
+            // 
+            // lblValueTolerance
+            // 
+            this.lblValueTolerance.AutoSize = true;
+            this.lblValueTolerance.Location = new System.Drawing.Point(176, 116);
+            this.lblValueTolerance.Name = "lblValueTolerance";
+            this.lblValueTolerance.Size = new System.Drawing.Size(13, 13);
+            this.lblValueTolerance.TabIndex = 26;
+            this.lblValueTolerance.Text = "0";
+            // 
+            // trbTolerance
+            // 
+            this.trbTolerance.Location = new System.Drawing.Point(4, 110);
+            this.trbTolerance.Maximum = 40;
+            this.trbTolerance.Minimum = 1;
+            this.trbTolerance.Name = "trbTolerance";
+            this.trbTolerance.Size = new System.Drawing.Size(169, 45);
+            this.trbTolerance.TabIndex = 25;
+            this.trbTolerance.Value = 1;
+            this.trbTolerance.ValueChanged += new System.EventHandler(this.trbTolerance_ValueChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 154);
+            this.label2.Location = new System.Drawing.Point(11, 69);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 24;
@@ -268,23 +329,16 @@
             // 
             // txtBotAmount
             // 
-            this.txtBotAmount.Location = new System.Drawing.Point(93, 151);
+            this.txtBotAmount.Location = new System.Drawing.Point(91, 66);
             this.txtBotAmount.Name = "txtBotAmount";
             this.txtBotAmount.Size = new System.Drawing.Size(82, 20);
             this.txtBotAmount.TabIndex = 23;
             this.txtBotAmount.TextChanged += new System.EventHandler(this.txtBotAmount_TextChanged);
             // 
-            // txtBotLossTolerance
-            // 
-            this.txtBotLossTolerance.Location = new System.Drawing.Point(93, 99);
-            this.txtBotLossTolerance.Name = "txtBotLossTolerance";
-            this.txtBotLossTolerance.Size = new System.Drawing.Size(82, 20);
-            this.txtBotLossTolerance.TabIndex = 22;
-            // 
             // lblLossTolerance
             // 
             this.lblLossTolerance.AutoSize = true;
-            this.lblLossTolerance.Location = new System.Drawing.Point(11, 102);
+            this.lblLossTolerance.Location = new System.Drawing.Point(11, 97);
             this.lblLossTolerance.Name = "lblLossTolerance";
             this.lblLossTolerance.Size = new System.Drawing.Size(76, 13);
             this.lblLossTolerance.TabIndex = 21;
@@ -316,7 +370,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 128);
+            this.label1.Location = new System.Drawing.Point(11, 153);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 19;
@@ -349,13 +403,6 @@
             this.btnStartBot.Text = "Start bot";
             this.btnStartBot.UseVisualStyleBackColor = true;
             this.btnStartBot.Click += new System.EventHandler(this.btnStartBot_Click);
-            // 
-            // txtBotMultiplicator
-            // 
-            this.txtBotMultiplicator.Location = new System.Drawing.Point(93, 125);
-            this.txtBotMultiplicator.Name = "txtBotMultiplicator";
-            this.txtBotMultiplicator.Size = new System.Drawing.Size(82, 20);
-            this.txtBotMultiplicator.TabIndex = 5;
             // 
             // groupBox2
             // 
@@ -423,7 +470,7 @@
             this.tabBinance.Location = new System.Drawing.Point(23, 4);
             this.tabBinance.Name = "tabBinance";
             this.tabBinance.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBinance.Size = new System.Drawing.Size(393, 427);
+            this.tabBinance.Size = new System.Drawing.Size(465, 427);
             this.tabBinance.TabIndex = 1;
             this.tabBinance.Text = "Binance";
             this.tabBinance.UseVisualStyleBackColor = true;
@@ -432,7 +479,7 @@
             // 
             this.groupBox3.BackColor = System.Drawing.Color.AliceBlue;
             this.groupBox3.Controls.Add(this.txtLogs);
-            this.groupBox3.Location = new System.Drawing.Point(971, 12);
+            this.groupBox3.Location = new System.Drawing.Point(1043, 16);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(385, 435);
             this.groupBox3.TabIndex = 9;
@@ -448,17 +495,17 @@
             this.txtLogs.Size = new System.Drawing.Size(373, 410);
             this.txtLogs.TabIndex = 0;
             // 
-            // gbTrade
+            // grbTrade
             // 
-            this.gbTrade.BackColor = System.Drawing.Color.AliceBlue;
-            this.gbTrade.Controls.Add(this.gbBuy);
-            this.gbTrade.Controls.Add(this.gbSell);
-            this.gbTrade.Location = new System.Drawing.Point(438, 12);
-            this.gbTrade.Name = "gbTrade";
-            this.gbTrade.Size = new System.Drawing.Size(527, 283);
-            this.gbTrade.TabIndex = 6;
-            this.gbTrade.TabStop = false;
-            this.gbTrade.Text = "Trade";
+            this.grbTrade.BackColor = System.Drawing.Color.AliceBlue;
+            this.grbTrade.Controls.Add(this.gbBuy);
+            this.grbTrade.Controls.Add(this.gbSell);
+            this.grbTrade.Location = new System.Drawing.Point(510, 12);
+            this.grbTrade.Name = "grbTrade";
+            this.grbTrade.Size = new System.Drawing.Size(527, 283);
+            this.grbTrade.TabIndex = 6;
+            this.grbTrade.TabStop = false;
+            this.grbTrade.Text = "Trade";
             // 
             // gbBuy
             // 
@@ -882,13 +929,21 @@
             this.highestProfitDataGridViewTextBoxColumn,
             this.highestProfitDiffDataGridViewTextBoxColumn,
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn,
-            this.lastTickerDataGridViewTextBoxColumn});
+            this.timeBuyDataGridViewTextBoxColumn,
+            this.lastTickerDataGridViewTextBoxColumn,
+            this.Action});
             this.dgvCurrentTrades.DataSource = this.flatTradeModelBindingSource;
             this.dgvCurrentTrades.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvCurrentTrades.Location = new System.Drawing.Point(35, 453);
+            this.dgvCurrentTrades.Location = new System.Drawing.Point(35, 487);
             this.dgvCurrentTrades.Name = "dgvCurrentTrades";
-            this.dgvCurrentTrades.Size = new System.Drawing.Size(1321, 115);
+            this.dgvCurrentTrades.Size = new System.Drawing.Size(1321, 81);
             this.dgvCurrentTrades.TabIndex = 3;
+            this.dgvCurrentTrades.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCurrentTrades_CellContentClick_1);
+            // 
+            // Action
+            // 
+            this.Action.HeaderText = "Action";
+            this.Action.Name = "Action";
             // 
             // dgvClosedTrades
             // 
@@ -913,37 +968,45 @@
             this.highestProfitDataGridViewTextBoxColumn1,
             this.highestProfitDiffDataGridViewTextBoxColumn1,
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn1,
+            this.timeBuyDataGridViewTextBoxColumn1,
             this.lastTickerDataGridViewTextBoxColumn1});
             this.dgvClosedTrades.DataSource = this.flatTradeModelBindingSource;
             this.dgvClosedTrades.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvClosedTrades.Location = new System.Drawing.Point(35, 574);
             this.dgvClosedTrades.Name = "dgvClosedTrades";
-            this.dgvClosedTrades.Size = new System.Drawing.Size(1321, 169);
+            this.dgvClosedTrades.Size = new System.Drawing.Size(1237, 169);
             this.dgvClosedTrades.TabIndex = 4;
-            // 
-            // balanceModelBindingSource
-            // 
-            this.balanceModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.BalanceModel);
             // 
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.AliceBlue;
             this.groupBox4.Controls.Add(this.Total);
-            this.groupBox4.Location = new System.Drawing.Point(442, 301);
+            this.groupBox4.Location = new System.Drawing.Point(515, 300);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(522, 145);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "groupBox4";
+            this.groupBox4.Text = "Stats";
             // 
             // Total
             // 
             this.Total.AutoSize = true;
             this.Total.Location = new System.Drawing.Point(21, 28);
             this.Total.Name = "Total";
-            this.Total.Size = new System.Drawing.Size(35, 13);
+            this.Total.Size = new System.Drawing.Size(58, 13);
             this.Total.TabIndex = 0;
-            this.Total.Text = "label3";
+            this.Total.Text = "Total Profit";
+            // 
+            // balanceModelBindingSource
+            // 
+            this.balanceModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.BalanceModel);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(169, 29);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(71, 20);
+            this.textBox1.TabIndex = 30;
             // 
             // currencyPairDataGridViewTextBoxColumn1
             // 
@@ -1016,6 +1079,12 @@
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.DataPropertyName = "ToleranceProfitHighDiff";
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.HeaderText = "ToleranceProfitHighDiff";
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.Name = "toleranceProfitHighDiffDataGridViewTextBoxColumn1";
+            // 
+            // timeBuyDataGridViewTextBoxColumn1
+            // 
+            this.timeBuyDataGridViewTextBoxColumn1.DataPropertyName = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn1.HeaderText = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn1.Name = "timeBuyDataGridViewTextBoxColumn1";
             // 
             // lastTickerDataGridViewTextBoxColumn1
             // 
@@ -1099,6 +1168,12 @@
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn.HeaderText = "ToleranceProfitHighDiff";
             this.toleranceProfitHighDiffDataGridViewTextBoxColumn.Name = "toleranceProfitHighDiffDataGridViewTextBoxColumn";
             // 
+            // timeBuyDataGridViewTextBoxColumn
+            // 
+            this.timeBuyDataGridViewTextBoxColumn.DataPropertyName = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn.HeaderText = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn.Name = "timeBuyDataGridViewTextBoxColumn";
+            // 
             // lastTickerDataGridViewTextBoxColumn
             // 
             this.lastTickerDataGridViewTextBoxColumn.DataPropertyName = "LastTicker";
@@ -1109,35 +1184,37 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1368, 753);
+            this.ClientSize = new System.Drawing.Size(1440, 753);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.dgvClosedTrades);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.dgvCurrentTrades);
             this.Controls.Add(this.tabsExchanges);
-            this.Controls.Add(this.gbTrade);
+            this.Controls.Add(this.grbTrade);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.tabsExchanges.ResumeLayout(false);
             this.tabPoloniex.ResumeLayout(false);
             this.tabsMarkets.ResumeLayout(false);
             this.tabUsdt.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grbCoinSelectedBalances.ResumeLayout(false);
+            this.grbCoinSelectedBalances.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbMultiplicator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trbTolerance)).EndInit();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvBalances)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.gbTrade.ResumeLayout(false);
+            this.grbTrade.ResumeLayout(false);
             this.gbBuy.ResumeLayout(false);
             this.gbBuy.PerformLayout();
             this.gbSell.ResumeLayout(false);
             this.gbSell.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCurrentTrades)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClosedTrades)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.balanceModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.flatTradeModelBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -1197,9 +1274,8 @@
         private System.Windows.Forms.Label lblBalanceBuy;
         private System.Windows.Forms.Label lblBalanceSell;
         private System.Windows.Forms.Label lblBalanceTitleSell;
-        private System.Windows.Forms.GroupBox gbTrade;
-        private System.Windows.Forms.TextBox txtBotMultiplicator;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grbTrade;
+        private System.Windows.Forms.GroupBox grbCoinSelectedBalances;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblBalancesTitleQuote;
         private System.Windows.Forms.Label lblBalancesTitleBase;
@@ -1214,23 +1290,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn quoteOnOrdersDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn uSDTValueDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource balanceModelBindingSource;
-        private System.Windows.Forms.TextBox txtBotLossTolerance;
         private System.Windows.Forms.Label lblLossTolerance;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtBotAmount;
-        private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceMultiplicatorDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn amountDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn usdtValueDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn priceLastDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn profitDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDiffDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn toleranceProfitHighDiffDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lastTickerDataGridViewTextBoxColumn;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label Total;
         private System.Windows.Forms.BindingSource flatTradeModelBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn1;
@@ -1244,9 +1308,29 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDiffDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn toleranceProfitHighDiffDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastTickerDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label Total;
+        private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceMultiplicatorDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn amountDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn usdtValueDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceLastDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn profitDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDiffDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn toleranceProfitHighDiffDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lastTickerDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewButtonColumn Action;
+        private System.Windows.Forms.TrackBar trbTolerance;
+        private System.Windows.Forms.Label lblValueMultiplicator;
+        private System.Windows.Forms.TrackBar trbMultiplicator;
+        private System.Windows.Forms.Label lblValueTolerance;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

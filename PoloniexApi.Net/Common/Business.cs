@@ -97,6 +97,16 @@ namespace Jojatekok.PoloniexAPI
             return TC.GetTrades(currencyPair);
         }
 
+        public IList<TradingTools.ITrade> GetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        {
+            return TC.GetTrades(currencyPair, startTime, endTime);
+        }
+
+        public IList<MarketTools.ITrade> MCGetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        {
+            return MC.MCGetTrades(currencyPair, startTime, endTime);
+        }
+
         public IOrderBook GetOpenOrders(CurrencyPair currencyPair, uint depth)
         {
             return MC.GetOpenOrders(currencyPair, depth);
@@ -195,10 +205,10 @@ namespace Jojatekok.PoloniexAPI
 
             System.Media.SystemSounds.Exclamation.Play();
 
-            PushMessage("BOUGHT!",
-                $"Currency: {currencyPair}\\n" +
-                $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
-                $"At: {bestPricePerCoin}");
+            //PushMessage("BOUGHT!",
+            //    $"Currency: {currencyPair}\\n" +
+            //    $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
+            //    $"At: {bestPricePerCoin}");
 
             order.CurrencyPair = currencyPair;
             order.OrderType = OrderType.Buy;
@@ -316,11 +326,11 @@ namespace Jojatekok.PoloniexAPI
             bestPricePerCoin = FindBestPrice(currencyPair, OrderType.Sell);
             amountQuote = USDT;
 
-            PushMessage("SOLD!",
-                $"Currency: {currencyPair}\\n" +
-                $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
-                $"At: {bestPricePerCoin}\\n" +
-                $"Profit: {string.Format("{0:0.00}%", 0 * 100)}");
+            //PushMessage("SOLD!",
+            //    $"Currency: {currencyPair}\\n" +
+            //    $"USDT: {string.Format("{0:0.00}$", USDT)}\\n" +
+            //    $"At: {bestPricePerCoin}\\n" +
+            //    $"Profit: {string.Format("{0:0.00}%", 0 * 100)}");
 
             order.CurrencyPair = currencyPair;
             order.OrderType = OrderType.Buy;

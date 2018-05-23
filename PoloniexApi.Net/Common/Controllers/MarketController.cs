@@ -128,5 +128,10 @@ namespace Jojatekok.PoloniexAPI
 
             return test;
         }
+
+        public IList<ITrade> MCGetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        {
+            return PoloniexClient.Markets.GetTrades(currencyPair, startTime, endTime);
+        }
     }
 }

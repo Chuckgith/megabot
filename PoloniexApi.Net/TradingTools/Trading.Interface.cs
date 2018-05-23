@@ -33,7 +33,6 @@ namespace Jojatekok.PoloniexAPI
         /// <param name="amountQuote">The amount of quote you want to trade.</param>
         Task<ulong> PostOrderAsync(CurrencyPair currencyPair, OrderType type, double pricePerCoin, double amountQuote);
         ulong PostOrder(CurrencyPair currencyPair, OrderType type, double pricePerCoin, double amountQuote);
-        AllTradeHistory GetAllTrades();
 
         /// <summary>
         ///     <para>Cancels an open order identified by the order ID.</para>
