@@ -384,8 +384,9 @@ namespace FormConsole
 
             lbCoins.SelectedIndex = lbCoins.FindStringExact("usdt_btc");
 
+            trbToleranceBuy.Value = 2;
             trbTolerance.Value = 4;
-            trbMultiplicator.Value = 0;
+            trbMultiplicator.Value = 4;
 
             if (_balances != null) //Si existe, alors dispose objet existant (pour sortir de la boucle)
                 _balances.Dispose();
@@ -442,10 +443,10 @@ namespace FormConsole
                 Multiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString())
             };
 
-            AddTrade(trade);
+            AddBot(trade);
         }
 
-        private void AddTrade(TradeModel trade)
+        private void AddBot(TradeModel trade)
         {
             if (!_blTrades.Select(x => x.CurrencyPair).Contains(trade.CurrencyPair))
             {
@@ -455,7 +456,7 @@ namespace FormConsole
                 _bsTrades = new BindingSource(_blTrades, null);
                 dgvCurrentTrades.DataSource = _bsTrades;
 
-                UpdateTrades(trade);
+                UpdateCurrentTrades(trade);
 
                 _signal = new Signal(trade.CurrencyPair);
                 _subsSignals.Add(trade.CurrencyPair, _signal.DataSource
@@ -513,7 +514,7 @@ namespace FormConsole
             {
                 _subsTickers.Add(trade.CurrencyPair, (_ticker.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                .Subscribe(x => UpdateTrades(trade, x))));
+                .Subscribe(x => UpdateCurrentTrades(trade, x))));
             }
         }
 
@@ -540,10 +541,10 @@ namespace FormConsole
             AddClosedTrade(trade);
 
             trade.Status = EnumStatus.WAITING;
-            UpdateTrades(trade);
+            UpdateCurrentTrades(trade);
         }
 
-        private void UpdateTrades(TradeModel trade, TickerModel ticker = null)
+        private void UpdateCurrentTrades(TradeModel trade, TickerModel ticker = null)
         {
             trade.Ticker = ticker;
             FlatTradeModel flatTrade = new FlatTradeModel(trade);
@@ -644,9 +645,9 @@ namespace FormConsole
 
             trade.ToleranceProfitHighDiff = trade.Tolerance + (ticker.HighestProfit * trade.Multiplicator);
 
-            trade.ToleranceProfitHighDiff = trade.ToleranceProfitHighDiff > 0 ? 0 : trade.ToleranceProfitHighDiff;
+            trade.ToleranceProfitHighDiff = trade.ToleranceProfitHighDiff > trade.Tolerance / 4 ? trade.Tolerance / 4 : trade.ToleranceProfitHighDiff;
 
-            if (//ticker.HighestProfitDiff < -0.3 &&
+            if (ticker.Profit < double.Parse(lblValueToleranceBuy.Text) ||
                 ticker.HighestProfitDiff < trade.ToleranceProfitHighDiff)
             {
                 System.Media.SystemSounds.Exclamation.Play();
@@ -871,7 +872,7 @@ namespace FormConsole
                 }
                 else //if(trade.Action == "SELL")
                 {
-                    //trade.Status = EnumStatus.BOUGHT;
+                    trade.Status = EnumStatus.BOUGHT;
                     trade.PricePaid = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "PricePaid").ToString());
                     trade.ToleranceProfitHighDiff = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "ToleranceProfitHighDiff").ToString());
                     //trade.TimeBuy = DateTime.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "TimeBuy").ToString());
@@ -897,6 +898,14 @@ namespace FormConsole
             }
         }
 
+        private void trbToleranceBuy_ValueChanged(object sender, System.EventArgs e)
+        {
+            double toleranceBuy = 0;
+            toleranceBuy = trbToleranceBuy.Value * -0.25;
+
+            lblValueToleranceBuy.Text = toleranceBuy.ToString();
+        }
+
         private void trbTolerance_ValueChanged(object sender, System.EventArgs e)
         {
             double tolerance = 0;
@@ -904,10 +913,7 @@ namespace FormConsole
 
             lblValueTolerance.Text = tolerance.ToString();
 
-            if (lblValueMultiplicator.Text == "0")
-                label3.Text = string.Empty;
-            else
-                label3.Text = $"(auto sell at {Math.Abs(decimal.Parse(lblValueTolerance.Text.ToString()) / decimal.Parse(lblValueMultiplicator.Text.ToString())).ToString()}%)";
+            DisplayAutoSell();
         }
 
         private void trbMultiplicator_ValueChanged(object sender, System.EventArgs e)
@@ -917,10 +923,17 @@ namespace FormConsole
 
             lblValueMultiplicator.Text = multiplicator.ToString();
 
+            DisplayAutoSell();
+        }
+
+        private void DisplayAutoSell()
+        {
             if (lblValueMultiplicator.Text == "0")
                 label3.Text = string.Empty;
             else
-                label3.Text = $"(auto sell at {Math.Abs(decimal.Parse(lblValueTolerance.Text.ToString()) / decimal.Parse(lblValueMultiplicator.Text.ToString())).ToString()}%)";
+                label3.Text = $"(auto sell at " +
+                    $"{(Math.Abs(decimal.Parse(lblValueTolerance.Text) / decimal.Parse(lblValueMultiplicator.Text))):0.00}%, " +
+                    $"gap {(decimal.Parse(lblValueTolerance.Text) / 4):0.00}%)";
         }
     }
 }

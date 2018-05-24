@@ -38,6 +38,11 @@
             this.tabEth = new System.Windows.Forms.TabPage();
             this.tabXmr = new System.Windows.Forms.TabPage();
             this.grbCoinSelectedBalances = new System.Windows.Forms.GroupBox();
+            this.lblValueToleranceBuy = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.trbToleranceBuy = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblValueMultiplicator = new System.Windows.Forms.Label();
             this.trbMultiplicator = new System.Windows.Forms.TrackBar();
@@ -106,9 +111,9 @@
             this.Action = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dgvClosedTrades = new System.Windows.Forms.DataGridView();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.Total = new System.Windows.Forms.Label();
             this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.currencyPairDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lossToleranceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -143,6 +148,7 @@
             this.tabsMarkets.SuspendLayout();
             this.tabUsdt.SuspendLayout();
             this.grbCoinSelectedBalances.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbToleranceBuy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbMultiplicator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbTolerance)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -167,7 +173,7 @@
             this.tabsExchanges.Multiline = true;
             this.tabsExchanges.Name = "tabsExchanges";
             this.tabsExchanges.SelectedIndex = 0;
-            this.tabsExchanges.Size = new System.Drawing.Size(492, 435);
+            this.tabsExchanges.Size = new System.Drawing.Size(512, 433);
             this.tabsExchanges.TabIndex = 0;
             // 
             // tabPoloniex
@@ -178,7 +184,7 @@
             this.tabPoloniex.Location = new System.Drawing.Point(23, 4);
             this.tabPoloniex.Name = "tabPoloniex";
             this.tabPoloniex.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPoloniex.Size = new System.Drawing.Size(465, 427);
+            this.tabPoloniex.Size = new System.Drawing.Size(485, 425);
             this.tabPoloniex.TabIndex = 0;
             this.tabPoloniex.Text = "Poloniex";
             this.tabPoloniex.UseVisualStyleBackColor = true;
@@ -189,10 +195,10 @@
             this.tabsMarkets.Controls.Add(this.tabBtc);
             this.tabsMarkets.Controls.Add(this.tabEth);
             this.tabsMarkets.Controls.Add(this.tabXmr);
-            this.tabsMarkets.Location = new System.Drawing.Point(6, 179);
+            this.tabsMarkets.Location = new System.Drawing.Point(6, 128);
             this.tabsMarkets.Name = "tabsMarkets";
             this.tabsMarkets.SelectedIndex = 0;
-            this.tabsMarkets.Size = new System.Drawing.Size(189, 240);
+            this.tabsMarkets.Size = new System.Drawing.Size(189, 291);
             this.tabsMarkets.TabIndex = 0;
             // 
             // tabUsdt
@@ -202,7 +208,7 @@
             this.tabUsdt.Location = new System.Drawing.Point(4, 22);
             this.tabUsdt.Name = "tabUsdt";
             this.tabUsdt.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUsdt.Size = new System.Drawing.Size(181, 214);
+            this.tabUsdt.Size = new System.Drawing.Size(181, 265);
             this.tabUsdt.TabIndex = 0;
             this.tabUsdt.Text = "USDT";
             // 
@@ -220,7 +226,7 @@
             this.tabBtc.Location = new System.Drawing.Point(4, 22);
             this.tabBtc.Name = "tabBtc";
             this.tabBtc.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBtc.Size = new System.Drawing.Size(181, 214);
+            this.tabBtc.Size = new System.Drawing.Size(181, 265);
             this.tabBtc.TabIndex = 1;
             this.tabBtc.Text = "BTC";
             this.tabBtc.UseVisualStyleBackColor = true;
@@ -230,7 +236,7 @@
             this.tabEth.Location = new System.Drawing.Point(4, 22);
             this.tabEth.Name = "tabEth";
             this.tabEth.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEth.Size = new System.Drawing.Size(181, 214);
+            this.tabEth.Size = new System.Drawing.Size(181, 265);
             this.tabEth.TabIndex = 2;
             this.tabEth.Text = "ETH";
             this.tabEth.UseVisualStyleBackColor = true;
@@ -240,7 +246,7 @@
             this.tabXmr.Location = new System.Drawing.Point(4, 22);
             this.tabXmr.Name = "tabXmr";
             this.tabXmr.Padding = new System.Windows.Forms.Padding(3);
-            this.tabXmr.Size = new System.Drawing.Size(181, 214);
+            this.tabXmr.Size = new System.Drawing.Size(181, 265);
             this.tabXmr.TabIndex = 3;
             this.tabXmr.Text = "XMR";
             this.tabXmr.UseVisualStyleBackColor = true;
@@ -248,6 +254,10 @@
             // grbCoinSelectedBalances
             // 
             this.grbCoinSelectedBalances.BackColor = System.Drawing.Color.AliceBlue;
+            this.grbCoinSelectedBalances.Controls.Add(this.lblValueToleranceBuy);
+            this.grbCoinSelectedBalances.Controls.Add(this.label6);
+            this.grbCoinSelectedBalances.Controls.Add(this.trbToleranceBuy);
+            this.grbCoinSelectedBalances.Controls.Add(this.label4);
             this.grbCoinSelectedBalances.Controls.Add(this.textBox1);
             this.grbCoinSelectedBalances.Controls.Add(this.label3);
             this.grbCoinSelectedBalances.Controls.Add(this.lblValueMultiplicator);
@@ -263,17 +273,62 @@
             this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesTitleQuote);
             this.grbCoinSelectedBalances.Controls.Add(this.lblBalancesTitleBase);
             this.grbCoinSelectedBalances.Controls.Add(this.btnStartBot);
-            this.grbCoinSelectedBalances.Location = new System.Drawing.Point(197, 179);
+            this.grbCoinSelectedBalances.Location = new System.Drawing.Point(197, 128);
             this.grbCoinSelectedBalances.Name = "grbCoinSelectedBalances";
-            this.grbCoinSelectedBalances.Size = new System.Drawing.Size(262, 240);
+            this.grbCoinSelectedBalances.Size = new System.Drawing.Size(282, 291);
             this.grbCoinSelectedBalances.TabIndex = 6;
             this.grbCoinSelectedBalances.TabStop = false;
             this.grbCoinSelectedBalances.Text = "Balances";
             // 
+            // lblValueToleranceBuy
+            // 
+            this.lblValueToleranceBuy.AutoSize = true;
+            this.lblValueToleranceBuy.Location = new System.Drawing.Point(121, 89);
+            this.lblValueToleranceBuy.Name = "lblValueToleranceBuy";
+            this.lblValueToleranceBuy.Size = new System.Drawing.Size(13, 13);
+            this.lblValueToleranceBuy.TabIndex = 34;
+            this.lblValueToleranceBuy.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 89);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(108, 13);
+            this.label6.TabIndex = 33;
+            this.label6.Text = "Loss tolerance of buy";
+            // 
+            // trbToleranceBuy
+            // 
+            this.trbToleranceBuy.Location = new System.Drawing.Point(4, 104);
+            this.trbToleranceBuy.Maximum = 40;
+            this.trbToleranceBuy.Minimum = 1;
+            this.trbToleranceBuy.Name = "trbToleranceBuy";
+            this.trbToleranceBuy.Size = new System.Drawing.Size(272, 45);
+            this.trbToleranceBuy.TabIndex = 32;
+            this.trbToleranceBuy.Value = 1;
+            this.trbToleranceBuy.ValueChanged += new System.EventHandler(this.trbToleranceBuy_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(185, 50);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(78, 13);
+            this.label4.TabIndex = 31;
+            this.label4.Text = "test order book";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(197, 66);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(57, 20);
+            this.textBox1.TabIndex = 30;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(80, 153);
+            this.label3.Location = new System.Drawing.Point(101, 203);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(21, 13);
             this.label3.TabIndex = 29;
@@ -282,7 +337,7 @@
             // lblValueMultiplicator
             // 
             this.lblValueMultiplicator.AutoSize = true;
-            this.lblValueMultiplicator.Location = new System.Drawing.Point(176, 173);
+            this.lblValueMultiplicator.Location = new System.Drawing.Point(74, 203);
             this.lblValueMultiplicator.Name = "lblValueMultiplicator";
             this.lblValueMultiplicator.Size = new System.Drawing.Size(13, 13);
             this.lblValueMultiplicator.TabIndex = 28;
@@ -290,18 +345,18 @@
             // 
             // trbMultiplicator
             // 
-            this.trbMultiplicator.Location = new System.Drawing.Point(6, 166);
-            this.trbMultiplicator.Maximum = 6;
+            this.trbMultiplicator.Location = new System.Drawing.Point(6, 216);
             this.trbMultiplicator.Name = "trbMultiplicator";
-            this.trbMultiplicator.Size = new System.Drawing.Size(169, 45);
+            this.trbMultiplicator.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trbMultiplicator.Size = new System.Drawing.Size(270, 45);
             this.trbMultiplicator.TabIndex = 27;
-            this.trbMultiplicator.Value = 1;
+            this.trbMultiplicator.Value = 10;
             this.trbMultiplicator.ValueChanged += new System.EventHandler(this.trbMultiplicator_ValueChanged);
             // 
             // lblValueTolerance
             // 
             this.lblValueTolerance.AutoSize = true;
-            this.lblValueTolerance.Location = new System.Drawing.Point(176, 116);
+            this.lblValueTolerance.Location = new System.Drawing.Point(88, 147);
             this.lblValueTolerance.Name = "lblValueTolerance";
             this.lblValueTolerance.Size = new System.Drawing.Size(13, 13);
             this.lblValueTolerance.TabIndex = 26;
@@ -309,11 +364,11 @@
             // 
             // trbTolerance
             // 
-            this.trbTolerance.Location = new System.Drawing.Point(4, 110);
+            this.trbTolerance.Location = new System.Drawing.Point(4, 160);
             this.trbTolerance.Maximum = 40;
             this.trbTolerance.Minimum = 1;
             this.trbTolerance.Name = "trbTolerance";
-            this.trbTolerance.Size = new System.Drawing.Size(169, 45);
+            this.trbTolerance.Size = new System.Drawing.Size(272, 45);
             this.trbTolerance.TabIndex = 25;
             this.trbTolerance.Value = 1;
             this.trbTolerance.ValueChanged += new System.EventHandler(this.trbTolerance_ValueChanged);
@@ -321,7 +376,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 69);
+            this.label2.Location = new System.Drawing.Point(11, 50);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 24;
@@ -329,7 +384,7 @@
             // 
             // txtBotAmount
             // 
-            this.txtBotAmount.Location = new System.Drawing.Point(91, 66);
+            this.txtBotAmount.Location = new System.Drawing.Point(60, 47);
             this.txtBotAmount.Name = "txtBotAmount";
             this.txtBotAmount.Size = new System.Drawing.Size(82, 20);
             this.txtBotAmount.TabIndex = 23;
@@ -338,7 +393,7 @@
             // lblLossTolerance
             // 
             this.lblLossTolerance.AutoSize = true;
-            this.lblLossTolerance.Location = new System.Drawing.Point(11, 97);
+            this.lblLossTolerance.Location = new System.Drawing.Point(11, 147);
             this.lblLossTolerance.Name = "lblLossTolerance";
             this.lblLossTolerance.Size = new System.Drawing.Size(76, 13);
             this.lblLossTolerance.TabIndex = 21;
@@ -349,7 +404,7 @@
             this.lblBalancesQuote.AutoSize = true;
             this.lblBalancesQuote.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblBalancesQuote.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBalancesQuote.Location = new System.Drawing.Point(90, 43);
+            this.lblBalancesQuote.Location = new System.Drawing.Point(195, 20);
             this.lblBalancesQuote.Name = "lblBalancesQuote";
             this.lblBalancesQuote.Size = new System.Drawing.Size(14, 15);
             this.lblBalancesQuote.TabIndex = 20;
@@ -360,7 +415,7 @@
             this.lblBalancesBase.AutoSize = true;
             this.lblBalancesBase.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblBalancesBase.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBalancesBase.Location = new System.Drawing.Point(90, 20);
+            this.lblBalancesBase.Location = new System.Drawing.Point(57, 20);
             this.lblBalancesBase.Name = "lblBalancesBase";
             this.lblBalancesBase.Size = new System.Drawing.Size(14, 15);
             this.lblBalancesBase.TabIndex = 19;
@@ -370,7 +425,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 153);
+            this.label1.Location = new System.Drawing.Point(11, 203);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 19;
@@ -379,7 +434,7 @@
             // lblBalancesTitleQuote
             // 
             this.lblBalancesTitleQuote.AutoSize = true;
-            this.lblBalancesTitleQuote.Location = new System.Drawing.Point(11, 45);
+            this.lblBalancesTitleQuote.Location = new System.Drawing.Point(147, 22);
             this.lblBalancesTitleQuote.Name = "lblBalancesTitleQuote";
             this.lblBalancesTitleQuote.Size = new System.Drawing.Size(39, 13);
             this.lblBalancesTitleQuote.TabIndex = 7;
@@ -396,7 +451,7 @@
             // 
             // btnStartBot
             // 
-            this.btnStartBot.Location = new System.Drawing.Point(69, 211);
+            this.btnStartBot.Location = new System.Drawing.Point(91, 262);
             this.btnStartBot.Name = "btnStartBot";
             this.btnStartBot.Size = new System.Drawing.Size(106, 23);
             this.btnStartBot.TabIndex = 3;
@@ -410,7 +465,7 @@
             this.groupBox2.Controls.Add(this.dgvBalances);
             this.groupBox2.Location = new System.Drawing.Point(6, 8);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(380, 165);
+            this.groupBox2.Size = new System.Drawing.Size(473, 114);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Balances";
@@ -434,7 +489,7 @@
             this.dgvBalances.MultiSelect = false;
             this.dgvBalances.Name = "dgvBalances";
             this.dgvBalances.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvBalances.Size = new System.Drawing.Size(368, 136);
+            this.dgvBalances.Size = new System.Drawing.Size(461, 82);
             this.dgvBalances.TabIndex = 2;
             // 
             // typeDataGridViewTextBoxColumn
@@ -470,7 +525,7 @@
             this.tabBinance.Location = new System.Drawing.Point(23, 4);
             this.tabBinance.Name = "tabBinance";
             this.tabBinance.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBinance.Size = new System.Drawing.Size(465, 427);
+            this.tabBinance.Size = new System.Drawing.Size(485, 425);
             this.tabBinance.TabIndex = 1;
             this.tabBinance.Text = "Binance";
             this.tabBinance.UseVisualStyleBackColor = true;
@@ -479,9 +534,9 @@
             // 
             this.groupBox3.BackColor = System.Drawing.Color.AliceBlue;
             this.groupBox3.Controls.Add(this.txtLogs);
-            this.groupBox3.Location = new System.Drawing.Point(1043, 16);
+            this.groupBox3.Location = new System.Drawing.Point(1063, 16);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(385, 435);
+            this.groupBox3.Size = new System.Drawing.Size(365, 429);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Logs";
@@ -492,7 +547,7 @@
             this.txtLogs.Multiline = true;
             this.txtLogs.Name = "txtLogs";
             this.txtLogs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLogs.Size = new System.Drawing.Size(373, 410);
+            this.txtLogs.Size = new System.Drawing.Size(353, 400);
             this.txtLogs.TabIndex = 0;
             // 
             // grbTrade
@@ -500,7 +555,7 @@
             this.grbTrade.BackColor = System.Drawing.Color.AliceBlue;
             this.grbTrade.Controls.Add(this.gbBuy);
             this.grbTrade.Controls.Add(this.gbSell);
-            this.grbTrade.Location = new System.Drawing.Point(510, 12);
+            this.grbTrade.Location = new System.Drawing.Point(530, 12);
             this.grbTrade.Name = "grbTrade";
             this.grbTrade.Size = new System.Drawing.Size(527, 283);
             this.grbTrade.TabIndex = 6;
@@ -934,9 +989,9 @@
             this.Action});
             this.dgvCurrentTrades.DataSource = this.flatTradeModelBindingSource;
             this.dgvCurrentTrades.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvCurrentTrades.Location = new System.Drawing.Point(35, 487);
+            this.dgvCurrentTrades.Location = new System.Drawing.Point(35, 451);
             this.dgvCurrentTrades.Name = "dgvCurrentTrades";
-            this.dgvCurrentTrades.Size = new System.Drawing.Size(1321, 81);
+            this.dgvCurrentTrades.Size = new System.Drawing.Size(1321, 117);
             this.dgvCurrentTrades.TabIndex = 3;
             this.dgvCurrentTrades.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCurrentTrades_CellContentClick_1);
             // 
@@ -980,18 +1035,28 @@
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.AliceBlue;
+            this.groupBox4.Controls.Add(this.label7);
             this.groupBox4.Controls.Add(this.Total);
-            this.groupBox4.Location = new System.Drawing.Point(515, 300);
+            this.groupBox4.Location = new System.Drawing.Point(530, 300);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(522, 145);
+            this.groupBox4.Size = new System.Drawing.Size(527, 145);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Stats";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(17, 25);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(61, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Total Profit:";
+            // 
             // Total
             // 
             this.Total.AutoSize = true;
-            this.Total.Location = new System.Drawing.Point(21, 28);
+            this.Total.Location = new System.Drawing.Point(81, 25);
             this.Total.Name = "Total";
             this.Total.Size = new System.Drawing.Size(58, 13);
             this.Total.TabIndex = 0;
@@ -1000,13 +1065,6 @@
             // balanceModelBindingSource
             // 
             this.balanceModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.BalanceModel);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(169, 29);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(71, 20);
-            this.textBox1.TabIndex = 30;
             // 
             // currencyPairDataGridViewTextBoxColumn1
             // 
@@ -1199,6 +1257,7 @@
             this.tabUsdt.ResumeLayout(false);
             this.grbCoinSelectedBalances.ResumeLayout(false);
             this.grbCoinSelectedBalances.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbToleranceBuy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbMultiplicator)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbTolerance)).EndInit();
             this.groupBox2.ResumeLayout(false);
@@ -1331,6 +1390,11 @@
         private System.Windows.Forms.Label lblValueTolerance;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblValueToleranceBuy;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TrackBar trbToleranceBuy;
+        private System.Windows.Forms.Label label7;
     }
 }
 
