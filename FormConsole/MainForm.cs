@@ -37,11 +37,11 @@ namespace FormConsole
         Ticker _ticker;
         IDictionary<CurrencyPair, IDisposable> _subsTickers = new Dictionary<CurrencyPair, IDisposable>();
 
-        BindingList<FlatTradeModel> _blTrades = new BindingList<FlatTradeModel>();
-        BindingSource _bsTrades = null;
+        BindingList<FlatTradeModel> _blCurrentTrades = new BindingList<FlatTradeModel>();
+        //BindingSource _bsTrades = null;
 
         BindingList<FlatTradeModel> _blClosedTrades = new BindingList<FlatTradeModel>();
-        BindingSource _bsClosedTrades = null;
+        //BindingSource _bsClosedTrades = null;
 
         #region Properties
 
@@ -400,7 +400,10 @@ namespace FormConsole
             //IList<Jojatekok.PoloniexAPI.TradingTools.ITrade> trades = BIZ.GetTrades(CurrencyPair);//, DateTime.Now.AddHours(3).AddMinutes(-10), DateTime.Now.AddHours(3));
             //IOrderBook orders = BIZ.GetOpenOrders(CurrencyPair, 20);
 
-            Task.Factory.StartNew(() => GetOrderBook());
+            //Task.Factory.StartNew(() => GetOrderBook());
+
+            dgvCurrentTrades.DataSource = _blCurrentTrades;
+            dgvClosedTrades.DataSource = _blClosedTrades;
         }
 
         private void GetOrderBook()
@@ -440,7 +443,8 @@ namespace FormConsole
                 Status = EnumStatus.WAITING,
                 Amount = GetBotAmount(),
                 Tolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
-                Multiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString())
+                Multiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString()),
+                Action = "BUY"
             };
 
             AddBot(trade);
@@ -448,15 +452,12 @@ namespace FormConsole
 
         private void AddBot(TradeModel trade)
         {
-            if (!_blTrades.Select(x => x.CurrencyPair).Contains(trade.CurrencyPair))
+            if (!_blCurrentTrades.Select(x => x.CurrencyPair).Contains(trade.CurrencyPair))
             {
                 FlatTradeModel flatTrade = new FlatTradeModel(trade);
+                _blCurrentTrades.Add(flatTrade);
 
-                _blTrades.Add(flatTrade);
-                _bsTrades = new BindingSource(_blTrades, null);
-                dgvCurrentTrades.DataSource = _bsTrades;
-
-                UpdateCurrentTrades(trade);
+                //UpdateCurrentTrades(trade);
 
                 _signal = new Signal(trade.CurrencyPair);
                 _subsSignals.Add(trade.CurrencyPair, _signal.DataSource
@@ -507,6 +508,7 @@ namespace FormConsole
             trade.PricePaid = order.PricePerCoin;
             trade.ToleranceProfitHighDiff = trade.Tolerance;
             trade.TimeBuy = DateTime.Now;
+            trade.Action = "SELL";
 
             _ticker = new Ticker(trade.CurrencyPair, trade.Amount, trade.PricePaid, 0);
 
@@ -535,6 +537,7 @@ namespace FormConsole
 
             txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => OK SOLD ({elapsedTime / 1000} secs){Environment.NewLine}");
             trade.Status = EnumStatus.SOLD;
+            trade.Action = "BUY";
 
             DisposeSubscribeTicker(trade);
 
@@ -549,22 +552,35 @@ namespace FormConsole
             trade.Ticker = ticker;
             FlatTradeModel flatTrade = new FlatTradeModel(trade);
 
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().Status = flatTrade.Status;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().UsdtValue = flatTrade.UsdtValue;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().PricePaid = flatTrade.PricePaid;            
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().PriceLast = flatTrade.PriceLast;            
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().Profit = flatTrade.Profit;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().HighestProfit = flatTrade.HighestProfit;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().HPDiff = flatTrade.HPDiff;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().ToleranceProfitHighDiff = flatTrade.ToleranceProfitHighDiff;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().TimeBuy = flatTrade.TimeBuy;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().LastTicker = flatTrade.LastTicker;
+            _blCurrentTrades.Where(x => object.ReferenceEquals(x.CurrencyPair, trade.CurrencyPair)).First().Action = flatTrade.Action;
+            dgvCurrentTrades.Refresh();
+
+            //DataGridHelper.SetCell(row.Cells, "Status", flatTrade.Status);
+            //DataGridHelper.SetCell(row.Cells, "PricePaid", flatTrade.PricePaid);
+            //DataGridHelper.SetCell(row.Cells, "UsdtValue", flatTrade.UsdtValue);
+            //DataGridHelper.SetCell(row.Cells, "PriceLast", flatTrade.PriceLast);
+            //DataGridHelper.SetCell(row.Cells, "Profit", flatTrade.Profit);
+            //DataGridHelper.SetCell(row.Cells, "HighestProfit", flatTrade.HighestProfit);
+            //DataGridHelper.SetCell(row.Cells, "HPDiff", flatTrade.HPDiff);
+            //DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", flatTrade.ToleranceProfitHighDiff);
+            //DataGridHelper.SetCell(row.Cells, "TimeBuy", flatTrade.TimeBuy);
+            //DataGridHelper.SetCell(row.Cells, "LastTicker", flatTrade.LastTicker);
+            //DataGridHelper.SetCell(row.Cells, "Action", flatTrade.Action);
+
             foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
             {
-                if (object.Equals(DataGridHelper.GetCell(row.Cells, "CurrencyPair"), trade.CurrencyPair))
+                if (object.ReferenceEquals(DataGridHelper.GetCell(row.Cells, "Trade"), trade))
                 {
-                    DataGridHelper.SetCell(row.Cells, "Status", flatTrade.Status);
-                    DataGridHelper.SetCell(row.Cells, "PricePaid", flatTrade.PricePaid);
-                    DataGridHelper.SetCell(row.Cells, "UsdtValue", flatTrade.UsdtValue);
-                    DataGridHelper.SetCell(row.Cells, "PriceLast", flatTrade.PriceLast);
-                    DataGridHelper.SetCell(row.Cells, "Profit", flatTrade.Profit);
-                    DataGridHelper.SetCell(row.Cells, "HighestProfit", flatTrade.HighestProfit);
-                    DataGridHelper.SetCell(row.Cells, "HighestProfitDiff", flatTrade.HighestProfitDiff);
-                    DataGridHelper.SetCell(row.Cells, "ToleranceProfitHighDiff", flatTrade.ToleranceProfitHighDiff);
-                    DataGridHelper.SetCell(row.Cells, "TimeBuy", flatTrade.TimeBuy);
-                    DataGridHelper.SetCell(row.Cells, "LastTicker", flatTrade.LastTicker);
-                    DataGridHelper.SetCell(row.Cells, "Action", flatTrade.Action);
-
                     SetColor(trade, row);
                 }
             }
@@ -581,6 +597,9 @@ namespace FormConsole
         {
             double total = 0;
 
+            //total += _blCurrentTrades.Where(x => x.Trade.Ticker != null).Sum(x => x.Trade.Ticker.Profit);
+            //total += _blClosedTrades.Where(x => x.Trade.Ticker != null).Sum(x => x.Trade.Ticker.Profit);
+
             foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
             {
                 if (DataGridHelper.GetCell(row.Cells, "Profit") != null && DataGridHelper.GetCell(row.Cells, "Profit").ToString() != string.Empty)
@@ -593,29 +612,20 @@ namespace FormConsole
                     total = total + double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
             }
 
-            Total.Text = total.ToString();
+            Total.Text = total.ToString("0.0000");
         }
 
         private void AddClosedTrade(TradeModel trade)
         {
-            FlatTradeModel tradeClosed = new FlatTradeModel(trade);
-
-            _blClosedTrades.Add(tradeClosed);
-            _bsClosedTrades = new BindingSource(_blClosedTrades, null);
-            dgvClosedTrades.DataSource = _bsClosedTrades;
+            FlatTradeModel closedTrades = new FlatTradeModel(trade);
+            _blClosedTrades.Add(closedTrades);
 
             foreach (DataGridViewRow row in dgvClosedTrades.Rows)
             {
-                double profit = double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
-
-                if (profit >= 5)
-                    row.DefaultCellStyle.BackColor = Color.MediumPurple;
-                else if (profit >= 1)
-                    row.DefaultCellStyle.BackColor = Color.Lime;
-                else if (profit >= 0)
-                    row.DefaultCellStyle.BackColor = Color.LightGreen;
-                else
-                    row.DefaultCellStyle.BackColor = Color.LightPink;
+                if (object.ReferenceEquals(DataGridHelper.GetCell(row.Cells, "Trade"), trade))
+                {
+                    SetColor(trade, row);
+                }
             }
         }
 
@@ -648,7 +658,7 @@ namespace FormConsole
             trade.ToleranceProfitHighDiff = trade.ToleranceProfitHighDiff > trade.Tolerance / 4 ? trade.Tolerance / 4 : trade.ToleranceProfitHighDiff;
 
             if (ticker.Profit < double.Parse(lblValueToleranceBuy.Text) ||
-                ticker.HighestProfitDiff < trade.ToleranceProfitHighDiff)
+                ticker.HPDiff < trade.ToleranceProfitHighDiff)
             {
                 System.Media.SystemSounds.Exclamation.Play();
                 return true;
@@ -854,39 +864,13 @@ namespace FormConsole
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                TradeModel trade = new TradeModel()
-                {
-                    CurrencyPair = (CurrencyPair)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "CurrencyPair"),
-                    Status = (EnumStatus)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Status"),
-                    Tolerance = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "LossTolerance").ToString()),
-                    Multiplicator = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "LossToleranceMultiplicator").ToString()),
-                    Amount = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Amount").ToString()),
-                    Action = DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Action").ToString(),
-                };
+                TradeModel trade = (TradeModel)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Trade");
 
-                OrderType orderType;
+                OrderType orderType = OrderType.Buy;
                 if (trade.Action == "BUY")
-                {
-                    //trade.Status = EnumStatus.SOLD;
                     orderType = OrderType.Buy;
-                }
-                else //if(trade.Action == "SELL")
-                {
-                    trade.Status = EnumStatus.BOUGHT;
-                    trade.PricePaid = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "PricePaid").ToString());
-                    trade.ToleranceProfitHighDiff = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "ToleranceProfitHighDiff").ToString());
-                    //trade.TimeBuy = DateTime.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "TimeBuy").ToString());
-                    trade.Ticker = new TickerModel()
-                    {
-                        UsdtValue = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "UsdtValue").ToString()),
-                        PriceLast = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "PriceLast").ToString()),
-                        Profit = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Profit").ToString()),
-                        HighestProfit = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "HighestProfit").ToString()),
-                        //HighestProfitDiff = double.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "HighestProfitDiff").ToString()),
-                        //LastTicker = DateTime.Parse(DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "LastTicker").ToString())
-                    };
+                else if(trade.Action == "SELL")
                     orderType = OrderType.Sell;
-                }
 
                 SignalModel signal = new SignalModel()
                 {

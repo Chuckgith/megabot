@@ -14,7 +14,7 @@ namespace FormConsole
         public double HighestPrice { get; set; }
         public double Profit { get; set; }
         public double HighestProfit { get; set; }
-        public double HighestProfitDiff { get; set; }      
+        public double HPDiff { get; set; }      
         public double BaseCurrencyTotal { get; set; }
         public double UsdtValue { get; set; }
         public DateTime LastTicker { get; set; }

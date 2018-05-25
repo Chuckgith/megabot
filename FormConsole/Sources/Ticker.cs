@@ -127,7 +127,7 @@ namespace FormConsole.Sources
                                 HighestPrice = highestPrice,
                                 Profit = profit,
                                 HighestProfit = highestProfit,
-                                HighestProfitDiff = highestProfitDiff,
+                                HPDiff = highestProfitDiff,
                                 BaseCurrencyTotal = baseCurrencyTotal,
                                 UsdtValue = usdtValue,
                                 LastTicker = DateTime.Now
