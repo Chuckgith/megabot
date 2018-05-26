@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecuteOrder.cs" />
+    <Compile Include="Models\BotModel.cs" />
     <Compile Include="Models\TradeModel.cs" />
     <Compile Include="Models\FlatTradeModel.cs" />
     <Compile Include="Models\SignalModel.cs" />

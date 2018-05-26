@@ -7,49 +7,76 @@ using System.Text;
 
 namespace FormConsole
 {
-    public class FlatTradeModel
+    public class FlatTradeModel : TradeModel
     {
-        public CurrencyPair CurrencyPair { get; set; }
-        public EnumStatus Status { get; set; }        
-        public string Tolerance { get; set; }
-        public string Multiplicator { get; set; }
-        public string Amount { get; set; }
+        public string CurrencyPair { get { return Bot.CurrencyPair.ToString(); } }
+        public string Status { get { return Bot.Status.ToString(); } }
+        public string Tolerance { get { return Bot.Tolerance.ToString(); } }
+        public string Multiplicator { get { return Bot.Multiplicator.ToString(); } }
+        public string Amount { get { return Bot.Amount.ToString(); } }
 
-        public string UsdtValue { get; set; }
-        public string PricePaid { get; set; }        
-        public string PriceLast { get; set; }
-        public string Profit { get; set; }
-        public string HighestProfit { get; set; }
-        public string HPDiff { get; set; }
-        public string ToleranceProfitHighDiff { get; set; }
-        public string TimeBuy { get; set; }
-        public string LastTicker { get; set; }
-        public string Action { get; set; }
+        public string UsdtValue { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.00}", Ticker.UsdtValue); } }
 
+        public string PricePaid { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.00000000}", Bot.PricePaid); } }
+
+        public string PriceLast { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.00000000}", Ticker.PriceLast); } }
+
+        public string Profit { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.0000}", Ticker.Profit); } }
+
+        public string HighestProfit { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.0000}", Ticker.HighestProfit); } }
+
+        public string HPDiff { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.0000}", Ticker.HPDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", Ticker.HPDiff)); } }
+
+        public string ToleranceProfitHighDiff { get {
+            if (Ticker == null) return string.Empty;
+            return string.Format("{0:0.00}", Bot.ToleranceProfitHighDiff); } }
+
+        public string TimeBuy { get {
+            if (Ticker == null) return string.Empty;
+            return $"{Bot.TimeBuy:dd/MM HH:mm:ss}"; } }
+        
+        public string LastTicker { get {
+            if (Ticker == null) return string.Empty;
+            return $"{Ticker.LastTicker:dd/MM HH:mm:ss}"; } }
+
+        public string Action { get { return Bot.Action.ToString(); } }
         public TradeModel Trade { get; set; }
 
         public FlatTradeModel(TradeModel trade)
         {
-            CurrencyPair = trade.CurrencyPair;
-            Status = trade.Status;            
-            Tolerance = trade.Tolerance.ToString();
-            Multiplicator = trade.Multiplicator.ToString();
-            Amount = trade.Amount.ToString();
-            Action = trade.Action;
             Trade = trade;
+            
+            Bot.CurrencyPair = trade.Bot.CurrencyPair;
+            Bot.Status = trade.Bot.Status;
+            Bot.Tolerance = trade.Bot.Tolerance;
+            Bot.Multiplicator = trade.Bot.Multiplicator;
+            Bot.Amount = trade.Bot.Amount;
+            Bot.Action = trade.Bot.Action;
 
-            if (trade.Ticker != null)
-            {
-                UsdtValue = string.Format("{0:0.00}", trade.Ticker.UsdtValue);
-                PricePaid = string.Format("{0:0.00000000}", trade.PricePaid);
-                PriceLast = string.Format("{0:0.00000000}", trade.Ticker.PriceLast);
-                Profit = string.Format("{0:0.0000}", trade.Ticker.Profit);
-                HighestProfit = string.Format("{0:0.0000}", trade.Ticker.HighestProfit);
-                HPDiff = string.Format("{0:0.0000}", trade.Ticker.HPDiff == 0 ? "NEW HIGH" : string.Format("{0:0.0000}", trade.Ticker.HPDiff));
-                ToleranceProfitHighDiff = string.Format("{0:0.00}", trade.ToleranceProfitHighDiff);
-                TimeBuy = $"{trade.TimeBuy:dd/MM HH:mm:ss}";
-                LastTicker = $"{trade.Ticker.LastTicker:dd/MM HH:mm:ss}";
-            }
+            //if (trade.Ticker != null)
+            //{
+            //    Ticker.UsdtValue = trade.Ticker.UsdtValue;
+            //    Bot.PricePaid = trade.Bot.PricePaid;
+            //    Ticker.PriceLast = trade.Ticker.PriceLast;
+            //    Ticker.Profit = trade.Ticker.Profit;
+            //    Ticker.HighestProfit = trade.Ticker.HighestProfit;
+            //    Ticker.HPDiff = trade.Ticker.HPDiff;
+            //    Bot.ToleranceProfitHighDiff = trade.Bot.ToleranceProfitHighDiff;
+            //    Bot.TimeBuy = trade.Bot.TimeBuy;
+            //    Ticker.LastTicker = trade.Ticker.LastTicker;
+            //}
         }
     }
 }
