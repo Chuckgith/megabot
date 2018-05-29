@@ -392,6 +392,7 @@ namespace FormConsole
             _balances = new Balances(currencyPair.BaseCurrency);
             _subsBalances = _balances.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                .Take(1)
                 .Subscribe(x => DisplayBalances(x));
 
             //IList<Jojatekok.PoloniexAPI.TradingTools.ITrade> trades = BIZ.GetTrades(CurrencyPair);//, DateTime.Now.AddHours(3).AddMinutes(-10), DateTime.Now.AddHours(3));
@@ -434,34 +435,34 @@ namespace FormConsole
 
         private void AddBot(TradeModel trade)
         {
-            if (!_blCurrentTrades.Select(x => x.Bot.CurrencyPair).Contains(trade.Bot.CurrencyPair))
+            if (!_blCurrentTrades.Select(x => x.CurrencyPair).Contains(trade.CurrencyPair.ToString()))
             {
                 FlatTradeModel flatTrade = new FlatTradeModel(trade);
                 _blCurrentTrades.Add(flatTrade);
 
-                _signal = new Signal(trade.Bot.CurrencyPair);
-                _subsSignals.Add(trade.Bot.CurrencyPair, _signal.DataSource
+                _signal = new Signal(trade.CurrencyPair);
+                _subsSignals.Add(trade.CurrencyPair, _signal.DataSource
                     .ObserveOn(WindowsFormsSynchronizationContext.Current)
                     .Subscribe(x => AnalyseSignal(trade, x)));
             }
             else
-                txtLogs.AppendText($"Bot {trade.Bot.CurrencyPair} => Already running{Environment.NewLine}");
+                txtLogs.AppendText($"Bot {trade.CurrencyPair} => Already running{Environment.NewLine}");
         }
 
         private void AnalyseSignal(TradeModel trade, SignalModel signal)
         {
             if (signal.OrderType == OrderType.Buy)
             {
-                if (trade.Bot.Status == EnumStatus.WAITING)
+                if (trade.Status == EnumStatus.WAITING)
                     PerformBuy(trade);
-                else if (trade.Bot.Status == EnumStatus.BOUGHT)
+                else if (trade.Status == EnumStatus.BOUGHT)
                     txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} => BUY - Already bought{Environment.NewLine}");
             }
             else if (signal.OrderType == OrderType.Sell)
             {
-                if (trade.Bot.Status == EnumStatus.BOUGHT)
+                if (trade.Status == EnumStatus.BOUGHT)
                     PerformSell(trade, true);
-                else if (trade.Bot.Status == EnumStatus.WAITING)
+                else if (trade.Status == EnumStatus.WAITING)
                     txtLogs.AppendText($"{DateTime.Now} - {signal.CurrencyPair} => SELL - Already sold{Environment.NewLine}");
             }
         }
@@ -472,30 +473,31 @@ namespace FormConsole
             var stopwatch = new Stopwatch();
             long elapsedTime = 0;
 
-            txtLogs.AppendText($"{DateTime.Now} - {trade.Bot.CurrencyPair} => BUY ...{Environment.NewLine}");
-            trade.Bot.Status = EnumStatus.BUYING;
+            txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => BUY ...{Environment.NewLine}");
+            trade.Status = EnumStatus.BUYING;
+            dgvCurrentTrades.Refresh();
             //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, trade.Bot.CurrencyPair, trade.Bot.Amount);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, trade.CurrencyPair, 0);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
-            txtLogs.AppendText($"{DateTime.Now} - {trade.Bot.CurrencyPair} => OK BOUGHT ({elapsedTime / 1000} secs){Environment.NewLine}");
-            trade.Bot.Status = EnumStatus.BOUGHT;
-            trade.Bot.PricePaid = order.PricePerCoin;
-            trade.Bot.ToleranceProfitHighDiff = trade.Bot.Tolerance;
-            trade.Bot.TimeBuy = DateTime.Now;
-            trade.Bot.Action = "SELL";
+            txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => OK BOUGHT ({elapsedTime / 1000} secs){Environment.NewLine}");
+            trade.Status = EnumStatus.BOUGHT;
+            trade.PricePaid = order.PricePerCoin;
+            trade.TolAjusted = trade.Tolerance;
+            trade.TimeBuy = DateTime.Now;
+            trade.Action = "SELL";
 
             //UpdateCurrentTrades(trade);
             dgvCurrentTrades.Refresh();
 
-            _ticker = new Ticker(trade.Bot.CurrencyPair, trade.Bot.Amount, trade.Bot.PricePaid, 0);
+            _ticker = new Ticker(trade.CurrencyPair, trade.Amount, trade.PricePaid, 0);
 
-            if (!_subsTickers.TryGetValue(trade.Bot.CurrencyPair, out IDisposable subscribe))
+            if (!_subsTickers.TryGetValue(trade.CurrencyPair, out IDisposable subscribe))
             {
-                _subsTickers.Add(trade.Bot.CurrencyPair, (_ticker.DataSource
+                _subsTickers.Add(trade.CurrencyPair, (_ticker.DataSource
                 .ObserveOn(WindowsFormsSynchronizationContext.Current)
                 .Subscribe(x =>
                 {
@@ -511,51 +513,33 @@ namespace FormConsole
             var stopwatch = new Stopwatch();
             long elapsedTime = 0;
 
-            txtLogs.AppendText($"{DateTime.Now} - {trade.Bot.CurrencyPair} => SELL {(fromSignal ? "(signal)" : "(tol)")} ...{Environment.NewLine}");
-            trade.Bot.Status = EnumStatus.SELLING;
+            txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => SELL {(fromSignal ? "(signal)" : "(tol)")} ...{Environment.NewLine}");
+            trade.Status = EnumStatus.SELLING;
+            dgvCurrentTrades.Refresh();
             //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, trade.Bot.CurrencyPair, trade.Bot.Amount);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, trade.CurrencyPair, trade.Amount);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
-            txtLogs.AppendText($"{DateTime.Now} - {trade.Bot.CurrencyPair} => OK SOLD ({elapsedTime / 1000} secs){Environment.NewLine}");
-            trade.Bot.Status = EnumStatus.SOLD;
-            trade.Bot.Action = "BUY";
-            
+            txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => OK SOLD ({elapsedTime / 1000} secs){Environment.NewLine}");
+            trade.Status = EnumStatus.SOLD;
+            trade.Action = "BUY";            
 
             DisposeSubscribeTicker(trade);
             AddClosedTrade(trade);
             trade.Ticker = null;
-            trade.Bot.Status = EnumStatus.WAITING;
-            UpdateCurrentTrades(trade);
+            trade.Status = EnumStatus.WAITING;
+            dgvCurrentTrades.Refresh();
+            //UpdateCurrentTrades(trade);
         }
 
         private void UpdateCurrentTrades(TradeModel trade)
         {
-            //trade.Ticker = ticker;
-
             FlatTradeModel flatTrade = _blCurrentTrades.Where(x => object.ReferenceEquals(x.Trade, trade)).First();
 
             flatTrade.Trade = trade;
-            flatTrade.Bot = trade.Bot;
-            flatTrade.Ticker = trade.Ticker;
-            //flatTrade.Bot.Status = trade.Bot.Status;            
-            //flatTrade.Bot.Action = trade.Bot.Action;
-
-            //if (flatTrade.Ticker != null)
-            //{
-            //    flatTrade.Bot.PricePaid = trade.Bot.PricePaid;
-            //    flatTrade.Bot.ToleranceProfitHighDiff = trade.Bot.ToleranceProfitHighDiff;
-            //    flatTrade.Bot.TimeBuy = trade.Bot.TimeBuy;
-            //    flatTrade.Ticker.UsdtValue = trade.Ticker.UsdtValue;
-            //    flatTrade.Ticker.PriceLast = trade.Ticker.PriceLast;
-            //    flatTrade.Ticker.Profit = trade.Ticker.Profit;
-            //    flatTrade.Ticker.HighestProfit = trade.Ticker.HighestProfit;
-            //    flatTrade.Ticker.HPDiff = trade.Ticker.HPDiff;
-            //    flatTrade.Ticker.LastTicker = trade.Ticker.LastTicker;
-            //}
 
             dgvCurrentTrades.Refresh();
 
@@ -571,28 +555,15 @@ namespace FormConsole
         {
             double total = 0;
 
-            total += _blCurrentTrades.Where(x => x.Ticker != null).Sum(x => x.Ticker.Profit);
-            total += _blClosedTrades.Where(x => x.Ticker != null).Sum(x => x.Ticker.Profit);
+            total += _blCurrentTrades.Where(x => x.Trade.Ticker != null).Sum(x => x.Trade.Ticker.Profit);
+            total += _blClosedTrades.Where(x => x.Trade.Ticker != null).Sum(x => x.Trade.Ticker.Profit);
 
-            //foreach (DataGridViewRow row in dgvCurrentTrades.Rows)
-            //{
-            //    if (DataGridHelper.GetCell(row.Cells, "Profit") != null && DataGridHelper.GetCell(row.Cells, "Profit").ToString() != string.Empty)
-            //        total = total + double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
-            //}
-
-            //foreach (DataGridViewRow row in dgvClosedTrades.Rows)
-            //{
-            //    if (DataGridHelper.GetCell(row.Cells, "Profit") != null && DataGridHelper.GetCell(row.Cells, "Profit").ToString() != string.Empty)
-            //        total += double.Parse(DataGridHelper.GetCell(row.Cells, "Profit").ToString());
-            //}
-
-            Total.Text = total.ToString("0.0000");
+            lblValueTotal.Text = total.ToString("0.0000");
         }
 
         private void AddClosedTrade(TradeModel trade)
         {
             FlatTradeModel flatTrade = new FlatTradeModel(trade);
-            flatTrade.Ticker = trade.Ticker;
             _blClosedTrades.Add(flatTrade);
         }
 
@@ -620,12 +591,12 @@ namespace FormConsole
             if (trade.Ticker == null)
                 return false;
 
-            trade.Bot.ToleranceProfitHighDiff = trade.Bot.Tolerance + (trade.Ticker.HighestProfit * trade.Bot.Multiplicator);
+            trade.TolAjusted = trade.Tolerance + (trade.Ticker.HighestProfit * trade.Multiplicator);
 
-            trade.Bot.ToleranceProfitHighDiff = trade.Bot.ToleranceProfitHighDiff > trade.Bot.Tolerance / 4 ? trade.Bot.Tolerance / 4 : trade.Bot.ToleranceProfitHighDiff;
+            trade.TolAjusted = trade.TolAjusted > trade.Tolerance / 4 ? trade.Tolerance / 4 : trade.TolAjusted;
 
             if (trade.Ticker.Profit < double.Parse(lblValueToleranceBuy.Text) ||
-                trade.Ticker.HPDiff < trade.Bot.ToleranceProfitHighDiff)
+                trade.Ticker.HPDiff < trade.TolAjusted)
             {
                 System.Media.SystemSounds.Exclamation.Play();
                 return true;
@@ -672,9 +643,9 @@ namespace FormConsole
 
         private void DisposeSubscribeTicker(TradeModel trade)
         {
-            if (_subsTickers.TryGetValue(trade.Bot.CurrencyPair, out IDisposable subscribe))
+            if (_subsTickers.TryGetValue(trade.CurrencyPair, out IDisposable subscribe))
             {
-                _subsTickers.Remove(trade.Bot.CurrencyPair);
+                _subsTickers.Remove(trade.CurrencyPair);
                 subscribe.Dispose();
             }
         }
@@ -695,7 +666,7 @@ namespace FormConsole
 
             IList<BalanceModel> balances = BIZ.GetBalances();
             BalancesBase = BalanceBuy = GetBuyBalance(balances).ToString();
-            BotAmount = "20";
+            //BotAmount = GetBotAmount().ToString();
             BalancesQuote = BalanceSell = GetSellBalance(balances).ToString();
 
             IDictionary<CurrencyPair, IMarketData> markets = BIZ.GetSummary();
@@ -714,16 +685,14 @@ namespace FormConsole
         private void btnStartBot_Click(object sender, EventArgs e)
         {
             TradeModel trade = new TradeModel()
-            {
-                Bot = new BotModel()
-                {
-                    CurrencyPair = CurrencyPair,
-                    Status = EnumStatus.WAITING,
-                    Amount = GetBotAmount(),
-                    Tolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
-                    Multiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString()),
-                    Action = "BUY"
-                }
+            {                
+                CurrencyPair = CurrencyPair,
+                Status = EnumStatus.WAITING,
+                Amount = GetBotAmount(),
+                ToleranceBuy = double.Parse(lblValueToleranceBuy.Text),
+                Tolerance = double.Parse(Utilities.TryParseDouble(BotLosstolerance).ToString()),
+                Multiplicator = double.Parse(Utilities.TryParseDouble(BotMultiplicator).ToString()),
+                Action = "BUY"
             };
 
             AddBot(trade);
@@ -739,14 +708,14 @@ namespace FormConsole
                 TradeModel trade = (TradeModel)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Trade");
 
                 OrderType orderType = OrderType.Buy;
-                if (trade.Bot.Action == "BUY")
+                if (trade.Action == "BUY")
                     orderType = OrderType.Buy;
-                else if (trade.Bot.Action == "SELL")
+                else if (trade.Action == "SELL")
                     orderType = OrderType.Sell;
 
                 SignalModel signal = new SignalModel()
                 {
-                    CurrencyPair = trade.Bot.CurrencyPair,
+                    CurrencyPair = trade.CurrencyPair,
                     OrderType = orderType
                 };
 

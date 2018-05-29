@@ -12,6 +12,7 @@ namespace FormConsole
     static class ExecuteOrder
     {
         static Business BIZ = new Business();
+        static bool REAL_TRADE = true;
 
         public static OrderModel ExecuteBuySell(OrderType orderType, CurrencyPair currencyPair, double amount)
         {
@@ -33,7 +34,7 @@ namespace FormConsole
         {
             OrderModel order = new OrderModel();
 
-            order = BIZ.PostBestBuyOrder(currencyPair, false, amount);
+            order = BIZ.PostBestBuyOrder(currencyPair, REAL_TRADE, amount);
 
             return order;
         }
@@ -42,7 +43,7 @@ namespace FormConsole
         {
             OrderModel order = new OrderModel();
 
-            order = BIZ.PostBestSellOrder(currencyPair, false, amount);
+            order = BIZ.PostBestSellOrder(currencyPair, REAL_TRADE, amount);
 
             return order;
         }

@@ -110,9 +110,8 @@
             this.dgvCurrentTrades = new System.Windows.Forms.DataGridView();
             this.dgvClosedTrades = new System.Windows.Forms.DataGridView();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.Total = new System.Windows.Forms.Label();
-            this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lblTitleTotal = new System.Windows.Forms.Label();
+            this.lblValueTotal = new System.Windows.Forms.Label();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -139,42 +138,42 @@
             this.dataGridViewTextBoxColumn27 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn28 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn29 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.balanceModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ToleranceBuy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flatTradeModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.currencyPairDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toleranceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.multiplicatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.amountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pricePaidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timeBuyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usdtValueDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pricePaidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceLastDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.profitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.highestProfitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hPDiffDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TolAjustedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeBuyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastTickerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.actionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewButtonColumn();
             this.tradeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.botDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tickerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.currencyPairDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toleranceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.multiplicatorDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.amountDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pricePaidDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timeBuyDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usdtValueDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pricePaidDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceLastDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.profitDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.highestProfitDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hPDiffDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TolAjustedDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timeBuyDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastTickerDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tradeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.botDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tickerDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Action = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabsExchanges.SuspendLayout();
             this.tabPoloniex.SuspendLayout();
             this.tabsMarkets.SuspendLayout();
@@ -1006,22 +1005,21 @@
             this.dgvCurrentTrades.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.currencyPairDataGridViewTextBoxColumn,
             this.statusDataGridViewTextBoxColumn,
+            this.ToleranceBuy,
             this.toleranceDataGridViewTextBoxColumn,
             this.multiplicatorDataGridViewTextBoxColumn,
             this.amountDataGridViewTextBoxColumn,
-            this.pricePaidDataGridViewTextBoxColumn,
-            this.timeBuyDataGridViewTextBoxColumn,
             this.usdtValueDataGridViewTextBoxColumn1,
+            this.pricePaidDataGridViewTextBoxColumn,
             this.priceLastDataGridViewTextBoxColumn,
             this.profitDataGridViewTextBoxColumn,
             this.highestProfitDataGridViewTextBoxColumn,
             this.hPDiffDataGridViewTextBoxColumn,
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn,
+            this.TolAjustedDataGridViewTextBoxColumn,
+            this.timeBuyDataGridViewTextBoxColumn,
             this.lastTickerDataGridViewTextBoxColumn,
             this.actionDataGridViewTextBoxColumn,
-            this.tradeDataGridViewTextBoxColumn,
-            this.botDataGridViewTextBoxColumn,
-            this.tickerDataGridViewTextBoxColumn});
+            this.tradeDataGridViewTextBoxColumn});
             this.dgvCurrentTrades.DataSource = this.flatTradeModelBindingSource;
             this.dgvCurrentTrades.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvCurrentTrades.Location = new System.Drawing.Point(35, 451);
@@ -1044,34 +1042,34 @@
             this.dgvClosedTrades.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.currencyPairDataGridViewTextBoxColumn1,
             this.statusDataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn10,
             this.toleranceDataGridViewTextBoxColumn1,
             this.multiplicatorDataGridViewTextBoxColumn1,
             this.amountDataGridViewTextBoxColumn1,
-            this.pricePaidDataGridViewTextBoxColumn1,
-            this.timeBuyDataGridViewTextBoxColumn1,
             this.usdtValueDataGridViewTextBoxColumn2,
+            this.pricePaidDataGridViewTextBoxColumn1,
             this.priceLastDataGridViewTextBoxColumn1,
             this.profitDataGridViewTextBoxColumn1,
             this.highestProfitDataGridViewTextBoxColumn1,
             this.hPDiffDataGridViewTextBoxColumn1,
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1,
+            this.TolAjustedDataGridViewTextBoxColumn1,
+            this.timeBuyDataGridViewTextBoxColumn1,
             this.lastTickerDataGridViewTextBoxColumn1,
             this.tradeDataGridViewTextBoxColumn1,
-            this.botDataGridViewTextBoxColumn1,
-            this.tickerDataGridViewTextBoxColumn1});
+            this.Action});
             this.dgvClosedTrades.DataSource = this.flatTradeModelBindingSource;
             this.dgvClosedTrades.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvClosedTrades.Location = new System.Drawing.Point(35, 574);
             this.dgvClosedTrades.Name = "dgvClosedTrades";
-            this.dgvClosedTrades.Size = new System.Drawing.Size(1302, 169);
+            this.dgvClosedTrades.Size = new System.Drawing.Size(1393, 169);
             this.dgvClosedTrades.TabIndex = 4;
             this.dgvClosedTrades.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvClosedTrades_RowsAdded);
             // 
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.AliceBlue;
-            this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Controls.Add(this.Total);
+            this.groupBox4.Controls.Add(this.lblTitleTotal);
+            this.groupBox4.Controls.Add(this.lblValueTotal);
             this.groupBox4.Location = new System.Drawing.Point(530, 300);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(527, 145);
@@ -1079,27 +1077,23 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Stats";
             // 
-            // label7
+            // lblTitleTotal
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(17, 25);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(61, 13);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "Total Profit:";
+            this.lblTitleTotal.AutoSize = true;
+            this.lblTitleTotal.Location = new System.Drawing.Point(17, 25);
+            this.lblTitleTotal.Name = "lblTitleTotal";
+            this.lblTitleTotal.Size = new System.Drawing.Size(61, 13);
+            this.lblTitleTotal.TabIndex = 1;
+            this.lblTitleTotal.Text = "Total Profit:";
             // 
-            // Total
+            // lblValueTotal
             // 
-            this.Total.AutoSize = true;
-            this.Total.Location = new System.Drawing.Point(81, 25);
-            this.Total.Name = "Total";
-            this.Total.Size = new System.Drawing.Size(58, 13);
-            this.Total.TabIndex = 0;
-            this.Total.Text = "Total Profit";
-            // 
-            // balanceModelBindingSource
-            // 
-            this.balanceModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.BalanceModel);
+            this.lblValueTotal.AutoSize = true;
+            this.lblValueTotal.Location = new System.Drawing.Point(81, 25);
+            this.lblValueTotal.Name = "lblValueTotal";
+            this.lblValueTotal.Size = new System.Drawing.Size(13, 13);
+            this.lblValueTotal.TabIndex = 0;
+            this.lblValueTotal.Text = "0";
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -1283,6 +1277,17 @@
             this.dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
             this.dataGridViewTextBoxColumn29.Visible = false;
             // 
+            // balanceModelBindingSource
+            // 
+            this.balanceModelBindingSource.DataSource = typeof(Jojatekok.PoloniexAPI.BalanceModel);
+            // 
+            // ToleranceBuy
+            // 
+            this.ToleranceBuy.DataPropertyName = "ToleranceBuy";
+            this.ToleranceBuy.HeaderText = "ToleranceBuy";
+            this.ToleranceBuy.Name = "ToleranceBuy";
+            this.ToleranceBuy.ReadOnly = true;
+            // 
             // flatTradeModelBindingSource
             // 
             this.flatTradeModelBindingSource.DataSource = typeof(FormConsole.FlatTradeModel);
@@ -1322,26 +1327,19 @@
             this.amountDataGridViewTextBoxColumn.Name = "amountDataGridViewTextBoxColumn";
             this.amountDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // pricePaidDataGridViewTextBoxColumn
-            // 
-            this.pricePaidDataGridViewTextBoxColumn.DataPropertyName = "PricePaid";
-            this.pricePaidDataGridViewTextBoxColumn.HeaderText = "PricePaid";
-            this.pricePaidDataGridViewTextBoxColumn.Name = "pricePaidDataGridViewTextBoxColumn";
-            this.pricePaidDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // timeBuyDataGridViewTextBoxColumn
-            // 
-            this.timeBuyDataGridViewTextBoxColumn.DataPropertyName = "TimeBuy";
-            this.timeBuyDataGridViewTextBoxColumn.HeaderText = "TimeBuy";
-            this.timeBuyDataGridViewTextBoxColumn.Name = "timeBuyDataGridViewTextBoxColumn";
-            this.timeBuyDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // usdtValueDataGridViewTextBoxColumn1
             // 
             this.usdtValueDataGridViewTextBoxColumn1.DataPropertyName = "UsdtValue";
             this.usdtValueDataGridViewTextBoxColumn1.HeaderText = "UsdtValue";
             this.usdtValueDataGridViewTextBoxColumn1.Name = "usdtValueDataGridViewTextBoxColumn1";
             this.usdtValueDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // pricePaidDataGridViewTextBoxColumn
+            // 
+            this.pricePaidDataGridViewTextBoxColumn.DataPropertyName = "PricePaid";
+            this.pricePaidDataGridViewTextBoxColumn.HeaderText = "PricePaid";
+            this.pricePaidDataGridViewTextBoxColumn.Name = "pricePaidDataGridViewTextBoxColumn";
+            this.pricePaidDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // priceLastDataGridViewTextBoxColumn
             // 
@@ -1371,12 +1369,19 @@
             this.hPDiffDataGridViewTextBoxColumn.Name = "hPDiffDataGridViewTextBoxColumn";
             this.hPDiffDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // toleranceProfitHighDiffDataGridViewTextBoxColumn
+            // TolAjustedDataGridViewTextBoxColumn
             // 
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn.DataPropertyName = "ToleranceProfitHighDiff";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn.HeaderText = "ToleranceProfitHighDiff";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn.Name = "toleranceProfitHighDiffDataGridViewTextBoxColumn";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn.ReadOnly = true;
+            this.TolAjustedDataGridViewTextBoxColumn.DataPropertyName = "TolAjusted";
+            this.TolAjustedDataGridViewTextBoxColumn.HeaderText = "TolAjusted";
+            this.TolAjustedDataGridViewTextBoxColumn.Name = "TolAjustedDataGridViewTextBoxColumn";
+            this.TolAjustedDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // timeBuyDataGridViewTextBoxColumn
+            // 
+            this.timeBuyDataGridViewTextBoxColumn.DataPropertyName = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn.HeaderText = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn.Name = "timeBuyDataGridViewTextBoxColumn";
+            this.timeBuyDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // lastTickerDataGridViewTextBoxColumn
             // 
@@ -1401,20 +1406,6 @@
             this.tradeDataGridViewTextBoxColumn.Name = "tradeDataGridViewTextBoxColumn";
             this.tradeDataGridViewTextBoxColumn.Visible = false;
             // 
-            // botDataGridViewTextBoxColumn
-            // 
-            this.botDataGridViewTextBoxColumn.DataPropertyName = "Bot";
-            this.botDataGridViewTextBoxColumn.HeaderText = "Bot";
-            this.botDataGridViewTextBoxColumn.Name = "botDataGridViewTextBoxColumn";
-            this.botDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // tickerDataGridViewTextBoxColumn
-            // 
-            this.tickerDataGridViewTextBoxColumn.DataPropertyName = "Ticker";
-            this.tickerDataGridViewTextBoxColumn.HeaderText = "Ticker";
-            this.tickerDataGridViewTextBoxColumn.Name = "tickerDataGridViewTextBoxColumn";
-            this.tickerDataGridViewTextBoxColumn.Visible = false;
-            // 
             // currencyPairDataGridViewTextBoxColumn1
             // 
             this.currencyPairDataGridViewTextBoxColumn1.DataPropertyName = "CurrencyPair";
@@ -1428,6 +1419,13 @@
             this.statusDataGridViewTextBoxColumn1.HeaderText = "Status";
             this.statusDataGridViewTextBoxColumn1.Name = "statusDataGridViewTextBoxColumn1";
             this.statusDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            this.dataGridViewTextBoxColumn10.DataPropertyName = "ToleranceBuy";
+            this.dataGridViewTextBoxColumn10.HeaderText = "ToleranceBuy";
+            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            this.dataGridViewTextBoxColumn10.ReadOnly = true;
             // 
             // toleranceDataGridViewTextBoxColumn1
             // 
@@ -1450,26 +1448,19 @@
             this.amountDataGridViewTextBoxColumn1.Name = "amountDataGridViewTextBoxColumn1";
             this.amountDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
-            // pricePaidDataGridViewTextBoxColumn1
-            // 
-            this.pricePaidDataGridViewTextBoxColumn1.DataPropertyName = "PricePaid";
-            this.pricePaidDataGridViewTextBoxColumn1.HeaderText = "PricePaid";
-            this.pricePaidDataGridViewTextBoxColumn1.Name = "pricePaidDataGridViewTextBoxColumn1";
-            this.pricePaidDataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
-            // timeBuyDataGridViewTextBoxColumn1
-            // 
-            this.timeBuyDataGridViewTextBoxColumn1.DataPropertyName = "TimeBuy";
-            this.timeBuyDataGridViewTextBoxColumn1.HeaderText = "TimeBuy";
-            this.timeBuyDataGridViewTextBoxColumn1.Name = "timeBuyDataGridViewTextBoxColumn1";
-            this.timeBuyDataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
             // usdtValueDataGridViewTextBoxColumn2
             // 
             this.usdtValueDataGridViewTextBoxColumn2.DataPropertyName = "UsdtValue";
             this.usdtValueDataGridViewTextBoxColumn2.HeaderText = "UsdtValue";
             this.usdtValueDataGridViewTextBoxColumn2.Name = "usdtValueDataGridViewTextBoxColumn2";
             this.usdtValueDataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // pricePaidDataGridViewTextBoxColumn1
+            // 
+            this.pricePaidDataGridViewTextBoxColumn1.DataPropertyName = "PricePaid";
+            this.pricePaidDataGridViewTextBoxColumn1.HeaderText = "PricePaid";
+            this.pricePaidDataGridViewTextBoxColumn1.Name = "pricePaidDataGridViewTextBoxColumn1";
+            this.pricePaidDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // priceLastDataGridViewTextBoxColumn1
             // 
@@ -1499,12 +1490,19 @@
             this.hPDiffDataGridViewTextBoxColumn1.Name = "hPDiffDataGridViewTextBoxColumn1";
             this.hPDiffDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
-            // toleranceProfitHighDiffDataGridViewTextBoxColumn1
+            // TolAjustedDataGridViewTextBoxColumn1
             // 
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.DataPropertyName = "ToleranceProfitHighDiff";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.HeaderText = "ToleranceProfitHighDiff";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.Name = "toleranceProfitHighDiffDataGridViewTextBoxColumn1";
-            this.toleranceProfitHighDiffDataGridViewTextBoxColumn1.ReadOnly = true;
+            this.TolAjustedDataGridViewTextBoxColumn1.DataPropertyName = "TolAjusted";
+            this.TolAjustedDataGridViewTextBoxColumn1.HeaderText = "TolAjusted";
+            this.TolAjustedDataGridViewTextBoxColumn1.Name = "TolAjustedDataGridViewTextBoxColumn1";
+            this.TolAjustedDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // timeBuyDataGridViewTextBoxColumn1
+            // 
+            this.timeBuyDataGridViewTextBoxColumn1.DataPropertyName = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn1.HeaderText = "TimeBuy";
+            this.timeBuyDataGridViewTextBoxColumn1.Name = "timeBuyDataGridViewTextBoxColumn1";
+            this.timeBuyDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // lastTickerDataGridViewTextBoxColumn1
             // 
@@ -1520,19 +1518,10 @@
             this.tradeDataGridViewTextBoxColumn1.Name = "tradeDataGridViewTextBoxColumn1";
             this.tradeDataGridViewTextBoxColumn1.Visible = false;
             // 
-            // botDataGridViewTextBoxColumn1
+            // Action
             // 
-            this.botDataGridViewTextBoxColumn1.DataPropertyName = "Bot";
-            this.botDataGridViewTextBoxColumn1.HeaderText = "Bot";
-            this.botDataGridViewTextBoxColumn1.Name = "botDataGridViewTextBoxColumn1";
-            this.botDataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // tickerDataGridViewTextBoxColumn1
-            // 
-            this.tickerDataGridViewTextBoxColumn1.DataPropertyName = "Ticker";
-            this.tickerDataGridViewTextBoxColumn1.HeaderText = "Ticker";
-            this.tickerDataGridViewTextBoxColumn1.Name = "tickerDataGridViewTextBoxColumn1";
-            this.tickerDataGridViewTextBoxColumn1.Visible = false;
+            this.Action.HeaderText = "Action";
+            this.Action.Name = "Action";
             // 
             // MainForm
             // 
@@ -1649,7 +1638,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtBotAmount;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label Total;
+        private System.Windows.Forms.Label lblValueTotal;
         private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceMultiplicatorDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDiffDataGridViewTextBoxColumn1;
@@ -1663,7 +1652,7 @@
         private System.Windows.Forms.Label lblValueToleranceBuy;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TrackBar trbToleranceBuy;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblTitleTotal;
         private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn lossToleranceMultiplicatorDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDiffDataGridViewTextBoxColumn;
@@ -1694,41 +1683,42 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn28;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn29;
         private System.Windows.Forms.BindingSource flatTradeModelBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn botDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn botDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ToleranceBuy;
         private System.Windows.Forms.DataGridViewTextBoxColumn toleranceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn multiplicatorDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn amountDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn usdtValueDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceLastDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn profitDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hPDiffDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn toleranceProfitHighDiffDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TolAjustedDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastTickerDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewButtonColumn actionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn tradeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn botDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn tickerDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn currencyPairDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private System.Windows.Forms.DataGridViewTextBoxColumn toleranceDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn multiplicatorDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn amountDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn usdtValueDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pricePaidDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceLastDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn profitDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn highestProfitDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn hPDiffDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn toleranceProfitHighDiffDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TolAjustedDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn timeBuyDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastTickerDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn tradeDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn botDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn tickerDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Action;
     }
 }
 
