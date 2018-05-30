@@ -18,16 +18,6 @@ namespace Jojatekok.PoloniexAPI
         const double BEST_PRICE_MULTIPLICATOR = 0.0000001;
         const int SLEEP_BETWEEN_MOVEORDER = 2000;
 
-        public double? Prixpaye = null;
-        public double PrixActuelCurrencyQuote = 0;
-        public double PrixPlusFort = 0;
-        public double pourcentageRisque = 0;
-        public const decimal TolerancePerteProfits = -3m;
-        public const decimal TolerancePerteProfitsMax = -3m;
-        public double? QuoteAvailable = null;
-        public double? prixActuelCurrencyBase = null;
-        public List<string> ListeCoinOnOrder;
-
         MarketController _mc;
         private MarketController MC
         {
@@ -115,7 +105,7 @@ namespace Jojatekok.PoloniexAPI
         public OrderModel PostBestBuyOrder(CurrencyPair currencyPair, bool realTrade, double USDT = 0)
         {
             if (!realTrade)
-                return PostBestBuyOrderFictif(currencyPair, USDT);
+                return PostBestBuyOrderFictive(currencyPair, USDT);
 
             var tradeId = new ulong();
             OrderModel order = new OrderModel();
@@ -177,7 +167,7 @@ namespace Jojatekok.PoloniexAPI
             }
 
             System.Media.SystemSounds.Exclamation.Play();
-            Debug.WriteLine("TOUT ACHETÉ!\n");
+            Debug.WriteLine("BUY COMPLETED!\n");
 
             PushMessage("BOUGHT!",
                 $"Currency: {currencyPair}\\n" +
@@ -194,7 +184,7 @@ namespace Jojatekok.PoloniexAPI
             return order;
         }
 
-        public OrderModel PostBestBuyOrderFictif(CurrencyPair currencyPair, double USDT = 0)
+        public OrderModel PostBestBuyOrderFictive(CurrencyPair currencyPair, double USDT = 0)
         {
             OrderModel order = new OrderModel();
             double bestPricePerCoin = 0;
@@ -223,7 +213,7 @@ namespace Jojatekok.PoloniexAPI
         public OrderModel PostBestSellOrder(CurrencyPair currencyPair, bool realTrade, double USDT = 0, ulong previousIdOrder = 0)
         {
             if (!realTrade)
-                return PostBestSellOrderFictif(currencyPair, USDT);
+                return PostBestSellOrderFictive(currencyPair, USDT);
 
             var tradeId = new ulong();
             OrderModel order = new OrderModel();
@@ -289,7 +279,7 @@ namespace Jojatekok.PoloniexAPI
             }            
 
             System.Media.SystemSounds.Exclamation.Play();
-            Debug.WriteLine("TOUT VENDU!\n");
+            Debug.WriteLine("SELL COMPLETED!\n");
 
             //if (previousIdOrder != 0)
             //{
@@ -317,7 +307,7 @@ namespace Jojatekok.PoloniexAPI
             return order;
         }
 
-        public OrderModel PostBestSellOrderFictif(CurrencyPair currencyPair, double USDT = 0)
+        public OrderModel PostBestSellOrderFictive(CurrencyPair currencyPair, double USDT = 0)
         {
             OrderModel order = new OrderModel();
             double bestPricePerCoin = 0;

@@ -111,6 +111,18 @@ namespace FormConsole
             }
         }
 
+        private bool RealTrade
+        {
+            get
+            {
+                return chkRealTrade.Checked;
+            }
+            set
+            {
+                chkRealTrade.Checked = value;
+            }
+        }
+
         private string BalanceBuy
         {
             get
@@ -440,13 +452,47 @@ namespace FormConsole
                 FlatTradeModel flatTrade = new FlatTradeModel(trade);
                 _blCurrentTrades.Add(flatTrade);
 
+                Subject<SignalModel> manualSignal = SetManualSignal();
+
                 _signal = new Signal(trade.CurrencyPair);
-                _subsSignals.Add(trade.CurrencyPair, _signal.DataSource
-                    .ObserveOn(WindowsFormsSynchronizationContext.Current)
-                    .Subscribe(x => AnalyseSignal(trade, x)));
+                _subsSignals.Add(trade.CurrencyPair, 
+                    _signal.DataSource
+                        .Merge(manualSignal)
+                        .ObserveOn(WindowsFormsSynchronizationContext.Current)
+                        .Subscribe(x => AnalyseSignal(trade, x)));
             }
             else
                 txtLogs.AppendText($"Bot {trade.CurrencyPair} => Already running{Environment.NewLine}");
+        }
+
+        private Subject<SignalModel> SetManualSignal()
+        {
+            Subject<SignalModel> manualSignal = new Subject<SignalModel>();
+
+            this.dgvCurrentTrades.CellContentClick += (object sender, DataGridViewCellEventArgs e) =>
+            {
+                var senderGrid = (DataGridView)sender;
+
+                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
+                {
+                    TradeModel trade = (TradeModel)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Trade");
+
+                    OrderType orderType = OrderType.Buy;
+                    if (trade.Action == OrderType.Buy.ToString().ToUpper())
+                        orderType = OrderType.Buy;
+                    else if (trade.Action == OrderType.Sell.ToString().ToUpper())
+                        orderType = OrderType.Sell;
+
+                    SignalModel signal = new SignalModel()
+                    {
+                        CurrencyPair = trade.CurrencyPair,
+                        OrderType = orderType
+                    };
+
+                    manualSignal.OnNext(signal);
+                }
+            };
+            return manualSignal;
         }
 
         private void AnalyseSignal(TradeModel trade, SignalModel signal)
@@ -476,10 +522,9 @@ namespace FormConsole
             txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => BUY ...{Environment.NewLine}");
             trade.Status = EnumStatus.BUYING;
             dgvCurrentTrades.Refresh();
-            //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, trade.CurrencyPair, 0);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Buy, trade.CurrencyPair, 0, RealTrade);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
@@ -490,7 +535,6 @@ namespace FormConsole
             trade.TimeBuy = DateTime.Now;
             trade.Action = "SELL";
 
-            //UpdateCurrentTrades(trade);
             dgvCurrentTrades.Refresh();
 
             _ticker = new Ticker(trade.CurrencyPair, trade.Amount, trade.PricePaid, 0);
@@ -516,10 +560,9 @@ namespace FormConsole
             txtLogs.AppendText($"{DateTime.Now} - {trade.CurrencyPair} => SELL {(fromSignal ? "(signal)" : "(tol)")} ...{Environment.NewLine}");
             trade.Status = EnumStatus.SELLING;
             dgvCurrentTrades.Refresh();
-            //UpdateTrades(bot);
 
             stopwatch.Start();
-            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, trade.CurrencyPair, trade.Amount);
+            order = ExecuteOrder.ExecuteBuySell(OrderType.Sell, trade.CurrencyPair, trade.Amount, RealTrade);
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
@@ -532,12 +575,11 @@ namespace FormConsole
             trade.Ticker = null;
             trade.Status = EnumStatus.WAITING;
             dgvCurrentTrades.Refresh();
-            //UpdateCurrentTrades(trade);
         }
 
         private void UpdateCurrentTrades(TradeModel trade)
         {
-            FlatTradeModel flatTrade = _blCurrentTrades.Where(x => object.ReferenceEquals(x.Trade, trade)).First();
+            FlatTradeModel flatTrade = _blCurrentTrades.Where(x => object.Equals(x.Trade.CurrencyPair, trade.CurrencyPair)).First();
 
             flatTrade.Trade = trade;
 
@@ -665,9 +707,10 @@ namespace FormConsole
             lblBalanceTitleSell.Text = $"{CurrencyPair.QuoteCurrency} Balance:";
 
             IList<BalanceModel> balances = BIZ.GetBalances();
-            BalancesBase = BalanceBuy = GetBuyBalance(balances).ToString();
+            BotAmount = BalancesBase = BalanceBuy = GetBuyBalance(balances).ToString();
             //BotAmount = GetBotAmount().ToString();
             BalancesQuote = BalanceSell = GetSellBalance(balances).ToString();
+            RealTrade = false;
 
             IDictionary<CurrencyPair, IMarketData> markets = BIZ.GetSummary();
             BuyPrice = SellPrice = GetBuySellPrice(markets).ToString();
@@ -679,7 +722,6 @@ namespace FormConsole
             SellTotal = string.Empty;
             BuyAmountUsdt = string.Empty;
             SellAmountUsdt = string.Empty;
-
         }
 
         private void btnStartBot_Click(object sender, EventArgs e)
@@ -698,32 +740,7 @@ namespace FormConsole
             AddBot(trade);
         }
 
-        private void dgvCurrentTrades_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
-        {
-            var senderGrid = (DataGridView)sender;
-
-            if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
-                e.RowIndex >= 0)
-            {
-                TradeModel trade = (TradeModel)DataGridHelper.GetCell(dgvCurrentTrades.CurrentRow.Cells, "Trade");
-
-                OrderType orderType = OrderType.Buy;
-                if (trade.Action == "BUY")
-                    orderType = OrderType.Buy;
-                else if (trade.Action == "SELL")
-                    orderType = OrderType.Sell;
-
-                SignalModel signal = new SignalModel()
-                {
-                    CurrencyPair = trade.CurrencyPair,
-                    OrderType = orderType
-                };
-
-                AnalyseSignal(trade, signal);
-            }
-        }
-
-        void dataGridView1_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        void dataGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
             DataGridViewRow row = ((DataGridView)sender).Rows[e.RowIndex];
             TradeModel trade = (TradeModel)DataGridHelper.GetCell(row.Cells, "Trade");

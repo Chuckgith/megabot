@@ -12,38 +12,37 @@ namespace FormConsole
     static class ExecuteOrder
     {
         static Business BIZ = new Business();
-        static bool REAL_TRADE = true;
 
-        public static OrderModel ExecuteBuySell(OrderType orderType, CurrencyPair currencyPair, double amount)
+        public static OrderModel ExecuteBuySell(OrderType orderType, CurrencyPair currencyPair, double amount, bool realTrade)
         {
             OrderModel order = new OrderModel();
 
             if (orderType == OrderType.Buy)
             {
-                order = Buy(currencyPair, amount);
+                order = Buy(currencyPair, amount, realTrade);
             }
             else if (orderType == OrderType.Sell)
             {
-                order = Sell(currencyPair, amount);
+                order = Sell(currencyPair, amount, realTrade);
             }
 
             return order;
         }
 
-        private static OrderModel Buy(CurrencyPair currencyPair, double amount)
+        private static OrderModel Buy(CurrencyPair currencyPair, double amount, bool realTrade)
         {
             OrderModel order = new OrderModel();
 
-            order = BIZ.PostBestBuyOrder(currencyPair, REAL_TRADE, amount);
+            order = BIZ.PostBestBuyOrder(currencyPair, realTrade, amount);
 
             return order;
         }
 
-        private static OrderModel Sell(CurrencyPair currencyPair, double amount)
+        private static OrderModel Sell(CurrencyPair currencyPair, double amount, bool realTrade)
         {
             OrderModel order = new OrderModel();
 
-            order = BIZ.PostBestSellOrder(currencyPair, REAL_TRADE, amount);
+            order = BIZ.PostBestSellOrder(currencyPair, realTrade, amount);
 
             return order;
         }
